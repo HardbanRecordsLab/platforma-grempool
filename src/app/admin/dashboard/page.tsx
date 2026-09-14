@@ -4,12 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   FileText,
-  Truck,
   Package,
   TrendingUp,
   Clock,
-  ArrowUpRight,
-  ArrowDownRight,
   ChevronLeft,
   ChevronRight,
   MapPin,
@@ -19,30 +16,23 @@ import {
 } from "lucide-react";
 import { fetchCalendarEvents, pad, toISODate, type DayEvents } from "@/lib/calendar-data";
 import { getPolishHolidays } from "@/lib/holidays";
-import { SERVICE_LABELS } from "@/lib/supabase";
+import { SERVICE_LABELS, STATUS_LABELS } from "@/lib/supabase";
 import { getMaterials } from "@/lib/materials-store";
-
-const stats = [
-  { label: "Nowe zapytania", value: "7", change: "+12%", up: true, icon: FileText },
-  { label: "Do wyceny", value: "4", change: "-8%", up: false, icon: Clock },
-  { label: "Aktywne zlecenia", value: "8", change: "+25%", up: true, icon: TrendingUp },
-  { label: "Zakończone (miesiąc)", value: "23", change: "+15%", up: true, icon: Package },
-];
-
-const recentLeads = [
-  { id: "GRE-2026-00127", client: "Jan Kowalski", service: "Skup złomu", status: "Nowe", date: "2026-09-12" },
-  { id: "GRE-2026-00126", client: "Firma Budowlana XYZ", service: "Transport", status: "Do wyceny", date: "2026-09-12" },
-  { id: "GRE-2026-00125", client: "Anna Nowak", service: "Koparka", status: "Wycena wysłana", date: "2026-09-11" },
-  { id: "GRE-2026-00124", client: "Marek Wiśniewski", service: "Materiały", status: "Zaakceptowane", date: "2026-09-11" },
-  { id: "GRE-2026-00123", client: "Spółka ABC", service: "Rozbiórka", status: "W realizacji", date: "2026-09-10" },
-];
+import { getLeads } from "@/lib/leads-store";
+import { getOrders } from "@/lib/orders-store";
+import type { Lead, Zlecenie } from "@/types";
 
 const statusColors: Record<string, string> = {
-  "Nowe": "bg-blue-500/20 text-blue-400",
-  "Do wyceny": "bg-yellow-500/20 text-yellow-400",
-  "Wycena wysłana": "bg-purple-500/20 text-purple-400",
-  "Zaakceptowane": "bg-green-500/20 text-green-400",
-  "W realizacji": "bg-orange-500/20 text-orange-400",
+  nowy: "bg-blue-500/20 text-blue-400",
+  do_uzupelnienia: "bg-slate-500/20 text-slate-400",
+  do_wyceny: "bg-yellow-500/20 text-yellow-400",
+  wycena_wyslana: "bg-purple-500/20 text-purple-400",
+  negocjacja: "bg-orange-500/20 text-orange-400",
+  zaakceptowane: "bg-green-500/20 text-green-400",
+  zaplanowane: "bg-teal-500/20 text-teal-400",
+  w_realizacji: "bg-cyan-500/20 text-cyan-400",
+  zakonczone: "bg-emerald-500/20 text-emerald-400",
+  utracone: "bg-red-500/20 text-red-400",
 };
 
 const daysOfWeek = ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Ndz"];
@@ -183,10 +173,46 @@ function DashboardCalendar() {
 
 export default function DashboardPage() {
   const [materialsCount, setMaterialsCount] = useState<number | null>(null);
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [orders, setOrders] = useState<Zlecenie[]>([]);
+  const [loadingStats, setLoadingStats] = useState(true);
 
   useEffect(() => {
     getMaterials().then((m) => setMaterialsCount(m.length)).catch(() => setMaterialsCount(null));
+    Promise.all([getLeads(), getOrders()])
+      .then(([l, o]) => {
+        setLeads(l);
+        setOrders(o);
+      })
+      .catch(() => {
+        setLeads([]);
+        setOrders([]);
+      })
+      .finally(() => setLoadingStats(false));
   }, []);
+
+  const now = new Date();
+  const stats = [
+    { label: "Nowe zapytania", value: leads.filter((l) => l.status === "nowy").length, icon: FileText },
+    { label: "Do wyceny", value: leads.filter((l) => l.status === "do_wyceny").length, icon: Clock },
+    {
+      label: "Aktywne zlecenia",
+      value: orders.filter((o) => o.status === "zaplanowane" || o.status === "w_realizacji").length,
+      icon: TrendingUp,
+    },
+    {
+      label: "Zakończone (miesiąc)",
+      value: orders.filter((o) => {
+        const d = new Date(o.termin);
+        return o.status === "zakonczone" && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+      }).length,
+      icon: Package,
+    },
+  ];
+
+  const recentLeads = [...leads]
+    .sort((a, b) => new Date(b.data_kontaktu).getTime() - new Date(a.data_kontaktu).getTime())
+    .slice(0, 5);
 
   return (
     <div>
@@ -200,12 +226,8 @@ export default function DashboardPage() {
               <div className="w-10 h-10 rounded-lg bg-[#f0a500]/10 flex items-center justify-center">
                 <stat.icon className="text-[#f0a500] size-5" />
               </div>
-              <div className={`flex items-center gap-1 text-sm ${stat.up ? 'text-green-400' : 'text-red-400'}`}>
-                {stat.up ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
-                {stat.change}
-              </div>
             </div>
-            <div className="text-3xl font-bold mb-1">{stat.value}</div>
+            <div className="text-3xl font-bold mb-1">{loadingStats ? "—" : stat.value}</div>
             <div className="text-sm text-[#b8c5d6]">{stat.label}</div>
           </div>
         ))}
@@ -233,17 +255,24 @@ export default function DashboardPage() {
               </tr>
             </thead>
             <tbody>
+              {!loadingStats && recentLeads.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="p-8 text-center text-sm text-[#b8c5d6]">
+                    Brak zapytań. Nowe pojawią się tu automatycznie po wysłaniu formularza wyceny.
+                  </td>
+                </tr>
+              )}
               {recentLeads.map((lead) => (
                 <tr key={lead.id} className="border-b border-[#2a3a4a] hover:bg-[#0f1419] transition-colors">
-                  <td className="p-4 text-sm font-mono text-[#f0a500]">{lead.id}</td>
-                  <td className="p-4 text-sm">{lead.client}</td>
-                  <td className="p-4 text-sm text-[#b8c5d6]">{lead.service}</td>
+                  <td className="p-4 text-sm font-mono text-[#f0a500]">{lead.numer}</td>
+                  <td className="p-4 text-sm">{lead.klient_imie} {lead.klient_nazwisko}</td>
+                  <td className="p-4 text-sm text-[#b8c5d6]">{SERVICE_LABELS[lead.usluga] ?? lead.usluga}</td>
                   <td className="p-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColors[lead.status] || 'bg-gray-500/20 text-gray-400'}`}>
-                      {lead.status}
+                      {STATUS_LABELS[lead.status] ?? lead.status}
                     </span>
                   </td>
-                  <td className="p-4 text-sm text-[#b8c5d6]">{lead.date}</td>
+                  <td className="p-4 text-sm text-[#b8c5d6]">{new Date(lead.data_kontaktu).toLocaleDateString("pl-PL")}</td>
                 </tr>
               ))}
             </tbody>
