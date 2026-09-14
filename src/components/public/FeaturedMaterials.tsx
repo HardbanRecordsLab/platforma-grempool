@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Package, ArrowRight } from "lucide-react";
 import type { Material } from "@/types";
-import { MATERIAL_CATEGORIES, getAvailableMaterials, onMaterialsUpdated } from "@/lib/materials-store";
+import { MATERIAL_CATEGORIES, getAvailableMaterials } from "@/lib/materials-store";
 
 const categoryLabel = (value: Material["kategoria"]) =>
   MATERIAL_CATEGORIES.find((c) => c.value === value)?.label ?? value;
@@ -13,9 +13,9 @@ export default function FeaturedMaterials() {
   const [materials, setMaterials] = useState<Material[]>([]);
 
   useEffect(() => {
-    const refresh = () => setMaterials(getAvailableMaterials().slice(0, 6));
-    refresh();
-    return onMaterialsUpdated(refresh);
+    getAvailableMaterials()
+      .then((data) => setMaterials(data.slice(0, 6)))
+      .catch(() => setMaterials([]));
   }, []);
 
   return (

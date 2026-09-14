@@ -1,8 +1,5 @@
 import type { Material, MaterialStatus } from "@/types";
 
-const STORAGE_KEY = "grempool_materials_v1";
-const UPDATE_EVENT = "grempool:materials-updated";
-
 export const MATERIAL_CATEGORIES: { value: Material["kategoria"]; label: string }[] = [
   { value: "stal", label: "Stal użytkowa" },
   { value: "cegla", label: "Cegła" },
@@ -26,165 +23,85 @@ export const MATERIAL_STATUSES: { value: MaterialStatus; label: string }[] = [
   { value: "do_weryfikacji", label: "Do weryfikacji" },
 ];
 
-function seedMaterials(): Material[] {
-  const now = new Date().toISOString();
-  const seed: Array<Omit<Material, "id" | "utworzone" | "zaktualizowane">> = [
-    {
-      id_materialu: "MAT-000184",
-      kategoria: "stal",
-      nazwa: "Profil stalowy 100x100",
-      wymiary: "100 × 100 mm",
-      dlugosc: 4.2,
-      ilosc: 6,
-      stan: "uzywany",
-      zdjecia: [],
-      lokalizacja: "Plac A / sektor 3",
-      status: "dostepny",
-      notatki: "",
-    },
-    {
-      id_materialu: "MAT-000185",
-      kategoria: "cegla",
-      nazwa: "Cegła rozbiórkowa",
-      wymiary: "Standard 25 × 12 × 6,5 cm",
-      ilosc: 1500,
-      stan: "uzywany",
-      zdjecia: [],
-      lokalizacja: "Plac B / sektor 1",
-      cena: 0.8,
-      status: "dostepny",
-      notatki: "Cena za sztukę",
-    },
-    {
-      id_materialu: "MAT-000186",
-      kategoria: "okna",
-      nazwa: "Okno PCV 120x150",
-      wymiary: "120 × 150 cm",
-      ilosc: 8,
-      stan: "dobry",
-      zdjecia: [],
-      lokalizacja: "Magazyn",
-      cena: 250,
-      status: "dostepny",
-      notatki: "",
-    },
-    {
-      id_materialu: "MAT-000187",
-      kategoria: "drzwi",
-      nazwa: "Drzwi stalowe wejściowe",
-      wymiary: "100 × 210 cm",
-      ilosc: 3,
-      stan: "dobry",
-      zdjecia: [],
-      lokalizacja: "Magazyn",
-      cena: 450,
-      status: "dostepny",
-      notatki: "",
-    },
-    {
-      id_materialu: "MAT-000188",
-      kategoria: "inne",
-      nazwa: "Kostka brukowa",
-      wymiary: "20 × 10 cm",
-      ilosc: 500,
-      stan: "uzywany",
-      zdjecia: [],
-      lokalizacja: "Plac A / sektor 1",
-      cena: 12,
-      status: "dostepny",
-      notatki: "Cena za m²",
-    },
-  ];
-
-  return seed.map((item, index) => ({
-    ...item,
-    id: `local-${index + 1}`,
-    utworzone: now,
-    zaktualizowane: now,
-  }));
+interface MaterialRow {
+  id: string;
+  id_materialu: string;
+  kategoria: Material["kategoria"];
+  nazwa: string;
+  wymiary: string;
+  dlugosc: number | null;
+  ilosc: number;
+  stan: Material["stan"];
+  zdjecia: string[] | null;
+  lokalizacja: string;
+  cena: number | null;
+  status: MaterialStatus;
+  notatki: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
-function readAll(): Material[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      const seeded = seedMaterials();
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(seeded));
-      return seeded;
-    }
-    return JSON.parse(raw) as Material[];
-  } catch {
-    return [];
-  }
-}
-
-function writeAll(materials: Material[]) {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(materials));
-  window.dispatchEvent(new CustomEvent(UPDATE_EVENT));
-}
-
-export function onMaterialsUpdated(callback: () => void): () => void {
-  if (typeof window === "undefined") return () => {};
-  window.addEventListener(UPDATE_EVENT, callback);
-  window.addEventListener("storage", callback);
-  return () => {
-    window.removeEventListener(UPDATE_EVENT, callback);
-    window.removeEventListener("storage", callback);
+function fromRow(row: MaterialRow): Material {
+  return {
+    id: row.id,
+    id_materialu: row.id_materialu,
+    kategoria: row.kategoria,
+    nazwa: row.nazwa,
+    wymiary: row.wymiary,
+    dlugosc: row.dlugosc ?? undefined,
+    ilosc: row.ilosc,
+    stan: row.stan,
+    zdjecia: row.zdjecia ?? [],
+    lokalizacja: row.lokalizacja,
+    cena: row.cena ?? undefined,
+    status: row.status,
+    notatki: row.notatki ?? undefined,
+    utworzone: row.created_at,
+    zaktualizowane: row.updated_at,
   };
 }
 
-export function getMaterials(): Material[] {
-  return readAll().sort((a, b) => b.utworzone.localeCompare(a.utworzone));
+async function parseOrThrow(res: Response) {
+  const body = await res.json();
+  if (!res.ok) throw new Error(body.error ?? "Wystąpił błąd zapytania do bazy danych");
+  return body;
 }
 
-export function getAvailableMaterials(): Material[] {
-  return getMaterials().filter((m) => m.status === "dostepny");
+export async function getMaterials(): Promise<Material[]> {
+  const res = await fetch("/api/materials", { cache: "no-store" });
+  const rows: MaterialRow[] = await parseOrThrow(res);
+  return rows.map(fromRow);
 }
 
-export function getMaterial(id: string): Material | undefined {
-  return readAll().find((m) => m.id === id);
-}
-
-function nextMaterialCode(materials: Material[]): string {
-  const max = materials.reduce((acc, m) => {
-    const match = m.id_materialu.match(/(\d+)$/);
-    const num = match ? parseInt(match[1], 10) : 0;
-    return Math.max(acc, num);
-  }, 100);
-  return `MAT-${String(max + 1).padStart(6, "0")}`;
+export async function getAvailableMaterials(): Promise<Material[]> {
+  const res = await fetch("/api/materials?available=1", { cache: "no-store" });
+  const rows: MaterialRow[] = await parseOrThrow(res);
+  return rows.map(fromRow);
 }
 
 export type MaterialInput = Omit<Material, "id" | "id_materialu" | "utworzone" | "zaktualizowane">;
 
-export function createMaterial(data: MaterialInput): Material {
-  const all = readAll();
-  const now = new Date().toISOString();
-  const material: Material = {
-    ...data,
-    id: `local-${Date.now()}`,
-    id_materialu: nextMaterialCode(all),
-    utworzone: now,
-    zaktualizowane: now,
-  };
-  writeAll([material, ...all]);
-  return material;
-}
-
-export function updateMaterial(id: string, data: Partial<MaterialInput>): Material | undefined {
-  const all = readAll();
-  let updated: Material | undefined;
-  const next = all.map((m) => {
-    if (m.id !== id) return m;
-    updated = { ...m, ...data, zaktualizowane: new Date().toISOString() };
-    return updated;
+export async function createMaterial(data: MaterialInput): Promise<Material> {
+  const res = await fetch("/api/materials", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
   });
-  if (updated) writeAll(next);
-  return updated;
+  const row: MaterialRow = await parseOrThrow(res);
+  return fromRow(row);
 }
 
-export function deleteMaterial(id: string): void {
-  const all = readAll();
-  writeAll(all.filter((m) => m.id !== id));
+export async function updateMaterial(id: string, data: Partial<MaterialInput>): Promise<Material> {
+  const res = await fetch(`/api/materials/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  const row: MaterialRow = await parseOrThrow(res);
+  return fromRow(row);
+}
+
+export async function deleteMaterial(id: string): Promise<void> {
+  const res = await fetch(`/api/materials/${id}`, { method: "DELETE" });
+  await parseOrThrow(res);
 }

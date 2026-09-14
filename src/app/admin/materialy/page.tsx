@@ -23,7 +23,6 @@ import {
   createMaterial,
   deleteMaterial,
   getMaterials,
-  onMaterialsUpdated,
   updateMaterial,
   type MaterialInput,
 } from "@/lib/materials-store";
@@ -64,12 +63,22 @@ export default function MaterialyPage() {
   const [form, setForm] = useState<MaterialInput>(emptyForm);
   const [askPrice, setAskPrice] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const refresh = () => setMaterials(getMaterials());
+  const refresh = async () => {
+    try {
+      setMaterials(await getMaterials());
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Nie udało się wczytać materiałów");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     refresh();
-    return onMaterialsUpdated(refresh);
   }, []);
 
   const filteredMaterials = useMemo(() => {
@@ -118,9 +127,14 @@ export default function MaterialyPage() {
 
   const closeModal = () => setModalOpen(false);
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (!confirm("Na pewno usunąć tę ofertę z magazynu?")) return;
-    deleteMaterial(id);
+    try {
+      await deleteMaterial(id);
+      await refresh();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Nie udało się usunąć materiału");
+    }
   };
 
   const handleFiles = async (files: FileList | null) => {
@@ -138,7 +152,7 @@ export default function MaterialyPage() {
     setForm((prev) => ({ ...prev, zdjecia: (prev.zdjecia ?? []).filter((_, i) => i !== index) }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.nazwa.trim() || !form.wymiary.trim() || !form.lokalizacja.trim()) return;
 
@@ -147,12 +161,20 @@ export default function MaterialyPage() {
       cena: askPrice ? undefined : form.cena,
     };
 
-    if (editingId) {
-      updateMaterial(editingId, payload);
-    } else {
-      createMaterial(payload);
+    setSaving(true);
+    try {
+      if (editingId) {
+        await updateMaterial(editingId, payload);
+      } else {
+        await createMaterial(payload);
+      }
+      await refresh();
+      setModalOpen(false);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Nie udało się zapisać materiału");
+    } finally {
+      setSaving(false);
     }
-    setModalOpen(false);
   };
 
   return (
@@ -167,6 +189,18 @@ export default function MaterialyPage() {
         </button>
       </div>
 
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl mb-6 text-sm">
+          {error}
+        </div>
+      )}
+
+      {loading ? (
+        <div className="bg-[#1a2332] p-12 rounded-xl border border-[#2a3a4a] text-center text-[#b8c5d6] flex items-center justify-center gap-3">
+          <Loader2 className="animate-spin" size={18} /> Wczytywanie materiałów...
+        </div>
+      ) : (
+      <>
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-[#1a2332] p-4 rounded-xl border border-[#2a3a4a]">
@@ -303,6 +337,8 @@ export default function MaterialyPage() {
             );
           })}
         </div>
+      )}
+      </>
       )}
 
       {/* Add / Edit Modal */}
@@ -487,13 +523,19 @@ export default function MaterialyPage() {
               </div>
 
               <div className="flex items-center gap-3 pt-2">
-                <button type="submit" className="btn-primary flex-1 px-6 py-3 rounded-lg font-semibold text-[#0f1419]">
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="btn-primary flex-1 px-6 py-3 rounded-lg font-semibold text-[#0f1419] disabled:opacity-60 flex items-center justify-center gap-2"
+                >
+                  {saving && <Loader2 size={16} className="animate-spin" />}
                   {editingId ? "Zapisz zmiany" : "Dodaj do magazynu"}
                 </button>
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-6 py-3 rounded-lg font-semibold border border-[#2a3a4a] text-[#b8c5d6] hover:text-white"
+                  disabled={saving}
+                  className="px-6 py-3 rounded-lg font-semibold border border-[#2a3a4a] text-[#b8c5d6] hover:text-white disabled:opacity-60"
                 >
                   Anuluj
                 </button>

@@ -6,20 +6,22 @@ import Footer from "@/components/public/Footer";
 import { Package, Phone, ArrowRight, Search } from "lucide-react";
 import Link from "next/link";
 import type { Material } from "@/types";
-import { MATERIAL_CATEGORIES, getAvailableMaterials, onMaterialsUpdated } from "@/lib/materials-store";
+import { MATERIAL_CATEGORIES, getAvailableMaterials } from "@/lib/materials-store";
 
 const categoryLabel = (value: Material["kategoria"]) =>
   MATERIAL_CATEGORIES.find((c) => c.value === value)?.label ?? value;
 
 export default function MaterialyPage() {
   const [materials, setMaterials] = useState<Material[]>([]);
+  const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("Wszystkie");
 
   useEffect(() => {
-    const refresh = () => setMaterials(getAvailableMaterials());
-    refresh();
-    return onMaterialsUpdated(refresh);
+    getAvailableMaterials()
+      .then(setMaterials)
+      .catch(() => setMaterials([]))
+      .finally(() => setLoading(false));
   }, []);
 
   const categorySummary = useMemo(() => {
@@ -132,7 +134,11 @@ export default function MaterialyPage() {
             </div>
           </div>
 
-          {filtered.length === 0 ? (
+          {loading ? (
+            <div className="bg-[#1a2332] p-12 rounded-xl border border-[#2a3a4a] text-center text-[#b8c5d6]">
+              Wczytywanie katalogu...
+            </div>
+          ) : filtered.length === 0 ? (
             <div className="bg-[#1a2332] p-12 rounded-xl border border-[#2a3a4a] text-center text-[#b8c5d6]">
               Brak materiałów spełniających kryteria. Zadzwoń — być może mamy coś, czego jeszcze nie dodaliśmy do katalogu.
             </div>
