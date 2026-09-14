@@ -9,7 +9,6 @@ export default function Navbar() {
 
   const navLinks = [
     { href: "/", label: "STRONA GŁÓWNA" },
-    { href: "/#o-nas", label: "O NAS" },
     { href: "/uslugi/skup-zlomu", label: "SKUP ZŁOMU" },
     { href: "/uslugi", label: "USŁUGI" },
     { href: "/uslugi/materialy", label: "SKLEP" },

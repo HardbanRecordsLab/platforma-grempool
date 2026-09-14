@@ -12,21 +12,15 @@ export default function Home() {
       <Services />
       <FeaturedMaterials />
 
-      {/* About Section */}
-      <section id="o-nas" className="py-20 bg-[#1a2332]">
+      {/* Image band */}
+      <section className="py-20 bg-[#1a2332]">
         <div className="container mx-auto px-4">
-          <div className="relative max-w-2xl mx-auto">
-            <div className="aspect-[21/9] rounded-2xl overflow-hidden border-4 border-[#f0a500]/20">
-              <img
-                src="https://images.unsplash.com/photo-1761665698795-ac9df3438b74?auto=format&fit=crop&w=1200&q=80"
-                alt="GREMPOOL - koparka na złomowisku"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="absolute -bottom-6 -right-6 bg-[#f0a500] text-[#0f1419] p-6 rounded-xl font-montserrat font-bold">
-              <div className="text-3xl">10+</div>
-              <div className="text-sm">LAT DOŚWIADCZENIA</div>
-            </div>
+          <div className="max-w-2xl mx-auto aspect-[21/9] rounded-2xl overflow-hidden border-4 border-[#f0a500]/20">
+            <img
+              src="https://images.unsplash.com/photo-1761665698795-ac9df3438b74?auto=format&fit=crop&w=1200&q=80"
+              alt="GREMPOOL - koparka na złomowisku"
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
       </section>

@@ -76,13 +76,19 @@ export default function Hero() {
                 i klimatyzację samochodową. Dzięki własnemu taborowi pojazdów i profesjonalnemu sprzętowi
                 jesteśmy w stanie sprostać nawet najbardziej wymagającym zleceniom.
               </p>
-              <div className="flex flex-wrap gap-4">
-                <a href="tel:+48123456789" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#0f1419]">
-                  ZADZWOŃ
-                </a>
-                <Link href="/wycena" className="px-6 py-3 rounded-lg font-semibold border-2 border-[#f0a500] text-[#f0a500] hover:bg-[#f0a500] hover:text-[#0f1419] transition-all">
-                  WYCENA ONLINE
-                </Link>
+              <div className="flex flex-wrap items-center gap-6">
+                <div className="flex gap-4">
+                  <a href="tel:+48123456789" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#0f1419]">
+                    ZADZWOŃ
+                  </a>
+                  <Link href="/wycena" className="px-6 py-3 rounded-lg font-semibold border-2 border-[#f0a500] text-[#f0a500] hover:bg-[#f0a500] hover:text-[#0f1419] transition-all">
+                    WYCENA ONLINE
+                  </Link>
+                </div>
+                <div className="bg-[#f0a500] text-[#0f1419] px-5 py-3 rounded-xl font-montserrat font-bold leading-none">
+                  <div className="text-2xl">10+</div>
+                  <div className="text-xs whitespace-nowrap">LAT DOŚWIADCZENIA</div>
+                </div>
               </div>
             </div>
           </div>
