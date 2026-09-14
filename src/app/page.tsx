@@ -1,6 +1,7 @@
 import Navbar from "@/components/public/Navbar";
 import Hero from "@/components/public/Hero";
 import Services from "@/components/public/Services";
+import FeaturedMaterials from "@/components/public/FeaturedMaterials";
 import Footer from "@/components/public/Footer";
 
 export default function Home() {
@@ -9,7 +10,8 @@ export default function Home() {
       <Navbar />
       <Hero />
       <Services />
-      
+      <FeaturedMaterials />
+
       {/* About Section */}
       <section id="o-nas" className="py-20 bg-[#1a2332]">
         <div className="container mx-auto px-4">
@@ -42,7 +44,7 @@ export default function Home() {
             <div className="relative">
               <div className="aspect-square rounded-2xl overflow-hidden border-4 border-[#f0a500]/20">
                 <img 
-                  src="/assets/hero-bg.jpg" 
+                  src="https://images.unsplash.com/photo-1761665698795-ac9df3438b74?auto=format&fit=crop&w=1200&q=80"
                   alt="GREMPOOL - koparka na złomowisku"
                   className="w-full h-full object-cover"
                 />

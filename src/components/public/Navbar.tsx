@@ -12,7 +12,7 @@ export default function Navbar() {
     { href: "/#o-nas", label: "O NAS" },
     { href: "/uslugi/skup-zlomu", label: "SKUP ZŁOMU" },
     { href: "/uslugi", label: "USŁUGI" },
-    { href: "/uslugi/transport", label: "TRANSPORT" },
+    { href: "/uslugi/materialy", label: "SKLEP" },
     { href: "/kontakt", label: "KONTAKT" },
   ];
 

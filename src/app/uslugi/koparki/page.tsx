@@ -61,7 +61,7 @@ export default function KoparkiPage() {
             </div>
             <div className="relative">
               <div className="aspect-video rounded-2xl overflow-hidden border-4 border-[#f0a500]/20">
-                <img src="/assets/hero-bg.jpg" alt="Koparka" className="w-full h-full object-cover" />
+                <img src="https://images.unsplash.com/photo-1764448726225-12da63f109e6?auto=format&fit=crop&w=1200&q=80" alt="Koparka" className="w-full h-full object-cover" />
               </div>
             </div>
           </div>

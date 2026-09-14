@@ -59,7 +59,7 @@ export default function KlimatyzacjaPage() {
             </div>
             <div className="relative">
               <div className="aspect-video rounded-2xl overflow-hidden border-4 border-[#f0a500]/20">
-                <img src="/assets/hero-bg.jpg" alt="Klimatyzacja aut" className="w-full h-full object-cover" />
+                <img src="https://images.unsplash.com/photo-1625047509248-ec889cbff17f?auto=format&fit=crop&w=1200&q=80" alt="Klimatyzacja aut" className="w-full h-full object-cover" />
               </div>
             </div>
           </div>

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
 import { Send, Upload, CheckCircle2 } from "lucide-react";
@@ -37,7 +38,8 @@ const serviceFields: Record<ServiceType, { label: string; fields: string[] }[]> 
   ],
 };
 
-export default function WycenaPage() {
+function WycenaForm() {
+  const searchParams = useSearchParams();
   const [selectedService, setSelectedService] = useState<ServiceType | null>(null);
   const [formData, setFormData] = useState({
     imie: "",
@@ -48,6 +50,18 @@ export default function WycenaPage() {
     termin: "",
   });
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    const materialId = searchParams.get("material");
+    const materialName = searchParams.get("nazwa");
+    if (materialId) {
+      setSelectedService("materialy");
+      setFormData((prev) => ({
+        ...prev,
+        opis: `Zapytanie dotyczące materiału ${materialId}${materialName ? ` - ${materialName}` : ""}.`,
+      }));
+    }
+  }, [searchParams]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -230,5 +244,13 @@ export default function WycenaPage() {
 
       <Footer />
     </main>
+  );
+}
+
+export default function WycenaPage() {
+  return (
+    <Suspense fallback={null}>
+      <WycenaForm />
+    </Suspense>
   );
 }

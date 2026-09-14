@@ -17,7 +17,7 @@ export default function Hero() {
       <div 
         className="absolute inset-0 hero-bg"
         style={{
-          backgroundImage: "url('/assets/hero-bg.jpg')",
+          backgroundImage: "url('https://images.unsplash.com/photo-1722695694560-f452b0919d3a?auto=format&fit=crop&w=1600&q=80')",
         }}
       />
       <div className="absolute inset-0 gradient-overlay" />

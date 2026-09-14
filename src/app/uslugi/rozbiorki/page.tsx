@@ -54,7 +54,7 @@ export default function RozbiorkiPage() {
             </div>
             <div className="relative">
               <div className="aspect-video rounded-2xl overflow-hidden border-4 border-[#f0a500]/20">
-                <img src="/assets/hero-bg.jpg" alt="Rozbiórka" className="w-full h-full object-cover" />
+                <img src="https://images.unsplash.com/photo-1776594974675-b21647efe342?auto=format&fit=crop&w=1200&q=80" alt="Rozbiórka" className="w-full h-full object-cover" />
               </div>
             </div>
           </div>

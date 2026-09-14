@@ -57,7 +57,7 @@ export default function SkupZlomuPage() {
             </div>
             <div className="relative">
               <div className="aspect-video rounded-2xl overflow-hidden border-4 border-[#f0a500]/20">
-                <img src="/assets/hero-bg.jpg" alt="Skup złomu" className="w-full h-full object-cover" />
+                <img src="https://images.unsplash.com/photo-1761665698795-ac9df3438b74?auto=format&fit=crop&w=1200&q=80" alt="Skup złomu" className="w-full h-full object-cover" />
               </div>
             </div>
           </div>
