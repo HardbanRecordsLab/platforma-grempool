@@ -75,9 +75,6 @@ function WycenaForm() {
 
     const [klient_imie, ...rest] = formData.imie.trim().split(/\s+/);
     const klient_nazwisko = rest.join(" ") || "-";
-    const opisZTerminem = formData.termin
-      ? `${formData.opis}\n\nPreferowany termin: ${formData.termin}`
-      : formData.opis;
 
     setSubmitting(true);
     setError(null);
@@ -92,7 +89,8 @@ function WycenaForm() {
           klient_email: formData.email || null,
           usluga: selectedService,
           lokalizacja: formData.lokalizacja,
-          opis: opisZTerminem,
+          opis: formData.opis,
+          preferowany_termin: formData.termin || null,
           status: "nowy",
         }),
       });

@@ -42,6 +42,7 @@ export interface Lead {
   przypisany_pracownik?: string;
   notatki?: string;
   wartosc_wyceny?: number;
+  preferowany_termin?: string;
   utworzone: string;
   zaktualizowane: string;
 }
@@ -140,6 +141,17 @@ export interface Fakt {
   status: 'potwierdzone' | 'do_sprawdzenia' | 'wygasle' | 'nie_publikowac';
   publikacja: boolean;
   utworzone: string;
+}
+
+export interface Task {
+  id: string;
+  tytul: string;
+  opis?: string;
+  data: string;
+  godzina?: string;
+  status: 'do_zrobienia' | 'w_trakcie' | 'zrobione';
+  utworzone: string;
+  zaktualizowane: string;
 }
 
 export interface ScrapPrice {
