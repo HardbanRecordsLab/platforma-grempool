@@ -1,7 +1,12 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
-import { Phone, ArrowRight } from "lucide-react";
+import { Phone, ArrowRight, Package } from "lucide-react";
 import Link from "next/link";
+import type { CustomService } from "@/types";
+import { getActiveCustomServices } from "@/lib/custom-services-store";
 
 const services = [
   {
@@ -49,6 +54,12 @@ const services = [
 ];
 
 export default function UslugiPage() {
+  const [extraServices, setExtraServices] = useState<CustomService[]>([]);
+
+  useEffect(() => {
+    getActiveCustomServices().then(setExtraServices).catch(() => setExtraServices([]));
+  }, []);
+
   return (
     <main className="min-h-screen">
       <Navbar />
@@ -103,6 +114,41 @@ export default function UslugiPage() {
                       </li>
                     ))}
                   </ul>
+                  <div className="flex items-center gap-2 text-[#f0a500] font-semibold text-sm group-hover:gap-4 transition-all">
+                    Dowiedz się więcej <ArrowRight size={16} />
+                  </div>
+                </div>
+              </Link>
+            ))}
+
+            {extraServices.map((service) => (
+              <Link
+                key={service.id}
+                href={service.href || "/wycena"}
+                className="card-hover bg-[#0f1419] rounded-2xl border border-[#2a3a4a] overflow-hidden group"
+              >
+                <div className="aspect-video overflow-hidden">
+                  {service.zdjecie ? (
+                    <img
+                      src={service.zdjecie}
+                      alt={service.nazwa}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-[#1a2332] flex items-center justify-center">
+                      <Package className="text-[#2a3a4a] size-10" />
+                    </div>
+                  )}
+                </div>
+                <div className="p-8">
+                  <h2 className="text-xl font-montserrat font-bold mb-3">
+                    {service.nazwa.toUpperCase()}
+                  </h2>
+                  {service.opis && (
+                    <p className="text-[#b8c5d6] text-sm mb-6">
+                      {service.opis}
+                    </p>
+                  )}
                   <div className="flex items-center gap-2 text-[#f0a500] font-semibold text-sm group-hover:gap-4 transition-all">
                     Dowiedz się więcej <ArrowRight size={16} />
                   </div>

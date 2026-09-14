@@ -16,6 +16,7 @@ import {
   Loader2,
   Bookmark,
   BookmarkCheck,
+  Camera,
 } from "lucide-react";
 import type { Material, MaterialStatus } from "@/types";
 import {
@@ -530,16 +531,36 @@ export default function MaterialyPage() {
                       </button>
                     </div>
                   ))}
-                  <label className="w-20 h-20 rounded-lg border border-dashed border-[#2a3a4a] flex items-center justify-center cursor-pointer hover:border-[#f0a500] transition-colors">
+                  <label className="w-20 h-20 rounded-lg border border-dashed border-[#2a3a4a] flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-[#f0a500] transition-colors" title="Wybierz z galerii">
                     {uploading ? (
                       <Loader2 size={20} className="animate-spin text-[#f0a500]" />
                     ) : (
-                      <ImagePlus size={20} className="text-[#b8c5d6]" />
+                      <>
+                        <ImagePlus size={18} className="text-[#b8c5d6]" />
+                        <span className="text-[9px] text-[#b8c5d6]">Galeria</span>
+                      </>
                     )}
                     <input
                       type="file"
                       accept="image/*"
                       multiple
+                      className="hidden"
+                      onChange={(e) => handleFiles(e.target.files)}
+                    />
+                  </label>
+                  <label className="w-20 h-20 rounded-lg border border-dashed border-[#2a3a4a] flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-[#f0a500] transition-colors" title="Zrób zdjęcie aparatem">
+                    {uploading ? (
+                      <Loader2 size={20} className="animate-spin text-[#f0a500]" />
+                    ) : (
+                      <>
+                        <Camera size={18} className="text-[#b8c5d6]" />
+                        <span className="text-[9px] text-[#b8c5d6]">Aparat</span>
+                      </>
+                    )}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
                       className="hidden"
                       onChange={(e) => handleFiles(e.target.files)}
                     />

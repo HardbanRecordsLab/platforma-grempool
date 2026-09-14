@@ -165,6 +165,18 @@ export interface ScrapPrice {
   zaktualizowane: string;
 }
 
+export interface CustomService {
+  id: string;
+  nazwa: string;
+  opis?: string;
+  zdjecie?: string;
+  href?: string;
+  kolejnosc: number;
+  aktywny: boolean;
+  utworzone: string;
+  zaktualizowane: string;
+}
+
 export interface SocialChannel {
   id: string;
   platforma: string;

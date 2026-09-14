@@ -1,8 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Package } from "lucide-react";
+import type { CustomService } from "@/types";
+import { getActiveCustomServices } from "@/lib/custom-services-store";
 
-const services = [
+const coreServices = [
   {
     title: "SKUP ZŁOMU",
     description: "Negocjacje cen przy dużych ilościach",
@@ -36,6 +40,12 @@ const services = [
 ];
 
 export default function Services() {
+  const [extraServices, setExtraServices] = useState<CustomService[]>([]);
+
+  useEffect(() => {
+    getActiveCustomServices().then(setExtraServices).catch(() => setExtraServices([]));
+  }, []);
+
   return (
     <section className="py-20 bg-[#0f1419]">
       <div className="container mx-auto px-4">
@@ -44,7 +54,7 @@ export default function Services() {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-          {services.map((service) => (
+          {coreServices.map((service) => (
             <Link
               key={service.title}
               href={service.href}
@@ -63,6 +73,33 @@ export default function Services() {
                 <p className="text-[#b8c5d6] text-xs">
                   {service.description}
                 </p>
+              </div>
+            </Link>
+          ))}
+
+          {extraServices.map((service) => (
+            <Link
+              key={service.id}
+              href={service.href || "/wycena"}
+              className="card-hover group relative rounded-xl overflow-hidden border border-[#2a3a4a] aspect-[3/4]"
+            >
+              {service.zdjecie ? (
+                <img
+                  src={service.zdjecie}
+                  alt={service.nazwa}
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-[#1a2332] flex items-center justify-center">
+                  <Package className="text-[#2a3a4a] size-10" />
+                </div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-[#0f1419]/60 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-4">
+                <h3 className="font-montserrat font-semibold text-sm mb-1 text-white">
+                  {service.nazwa.toUpperCase()}
+                </h3>
+                {service.opis && <p className="text-[#b8c5d6] text-xs">{service.opis}</p>}
               </div>
             </Link>
           ))}
