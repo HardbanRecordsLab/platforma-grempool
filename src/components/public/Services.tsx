@@ -1,38 +1,37 @@
 "use client";
 
 import Link from "next/link";
-import { Truck, Anchor, Wrench, Package, Snowflake, Recycle } from "lucide-react";
 
 const services = [
   {
-    icon: Recycle,
     title: "SKUP ZŁOMU",
     description: "Negocjacje cen przy dużych ilościach",
     href: "/uslugi/skup-zlomu",
+    image: "https://images.unsplash.com/photo-1761665698795-ac9df3438b74?auto=format&fit=crop&w=600&q=80",
   },
   {
-    icon: Truck,
     title: "TRANSPORT",
     description: "Busy i ciężarówki z HDS",
     href: "/uslugi/transport",
+    image: "https://images.unsplash.com/photo-1682033239272-6b60b828a9a2?auto=format&fit=crop&w=600&q=80",
   },
   {
-    icon: Anchor,
     title: "USŁUGI KOPARKĄ",
     description: "Wywóz, niwelacje, rozbiórki",
     href: "/uslugi/koparki",
+    image: "https://images.unsplash.com/photo-1764448726225-12da63f109e6?auto=format&fit=crop&w=600&q=80",
   },
   {
-    icon: Package,
     title: "MATERIAŁY BUDOWLANE",
     description: "Cegła, cement, kruszywa, piasek, kostka brukowa",
     href: "/uslugi/materialy",
+    image: "https://images.unsplash.com/photo-1711989691538-4c1aac2c4279?auto=format&fit=crop&w=600&q=80",
   },
   {
-    icon: Snowflake,
     title: "KLIMATYZACJA AUT",
     description: "Napełnianie, czyszczenie w autach",
     href: "/uslugi/klimatyzacja",
+    image: "https://images.unsplash.com/photo-1625047509248-ec889cbff17f?auto=format&fit=crop&w=600&q=80",
   },
 ];
 
@@ -49,17 +48,22 @@ export default function Services() {
             <Link
               key={service.title}
               href={service.href}
-              className="card-hover bg-[#1a2332] p-6 rounded-xl border border-[#2a3a4a] text-center group"
+              className="card-hover group relative rounded-xl overflow-hidden border border-[#2a3a4a] aspect-[3/4]"
             >
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#f0a500]/10 flex items-center justify-center group-hover:bg-[#f0a500]/20 transition-colors">
-                <service.icon className="text-[#f0a500] size-8" />
+              <img
+                src={service.image}
+                alt={service.title}
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-[#0f1419]/60 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-4">
+                <h3 className="font-montserrat font-semibold text-sm mb-1 text-white">
+                  {service.title}
+                </h3>
+                <p className="text-[#b8c5d6] text-xs">
+                  {service.description}
+                </p>
               </div>
-              <h3 className="font-montserrat font-semibold text-sm mb-2">
-                {service.title}
-              </h3>
-              <p className="text-[#b8c5d6] text-xs">
-                {service.description}
-              </p>
             </Link>
           ))}
         </div>

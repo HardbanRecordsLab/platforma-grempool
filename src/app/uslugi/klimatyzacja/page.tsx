@@ -3,6 +3,13 @@ import Footer from "@/components/public/Footer";
 import { Snowflake, Phone, ArrowRight, CheckCircle2, Thermometer, Wind, Wrench } from "lucide-react";
 import Link from "next/link";
 
+const gallery = [
+  "https://images.unsplash.com/photo-1742445134000-339f7e711477?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1560024253-0a0dd047818e?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1656958258484-7ee6452cfd92?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1750800668889-aa4c851bd7a8?auto=format&fit=crop&w=800&q=80",
+];
+
 export default function KlimatyzacjaPage() {
   const services = [
     { icon: Thermometer, title: "Napełnianie klimatyzacji", desc: "Profesjonalne napełnianie układu chłodniczego czynnikiem R134a lub R1234yf" },
@@ -147,6 +154,22 @@ export default function KlimatyzacjaPage() {
               <h3 className="font-montserrat font-bold mb-2">Testowanie</h3>
               <p className="text-sm text-[#b8c5d6]">Weryfikacja poprawności działania</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Gallery */}
+      <section className="py-16 bg-[#0f1419]">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-montserrat font-bold text-center mb-12">
+            NASZ <span className="text-[#f0a500]">WARSZTAT</span>
+          </h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {gallery.map((src, i) => (
+              <div key={i} className="aspect-square rounded-xl overflow-hidden border border-[#2a3a4a]">
+                <img src={src} alt="Klimatyzacja — realizacje" className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
+              </div>
+            ))}
           </div>
         </div>
       </section>

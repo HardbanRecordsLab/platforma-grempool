@@ -50,6 +50,9 @@ function WycenaForm() {
     termin: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [leadNumer, setLeadNumer] = useState<string | null>(null);
 
   useEffect(() => {
     const materialId = searchParams.get("material");
@@ -63,9 +66,45 @@ function WycenaForm() {
     }
   }, [searchParams]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    if (!selectedService) {
+      setError("Wybierz usługę, której dotyczy zapytanie.");
+      return;
+    }
+
+    const [klient_imie, ...rest] = formData.imie.trim().split(/\s+/);
+    const klient_nazwisko = rest.join(" ") || "-";
+    const opisZTerminem = formData.termin
+      ? `${formData.opis}\n\nPreferowany termin: ${formData.termin}`
+      : formData.opis;
+
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          klient_imie: klient_imie || formData.imie,
+          klient_nazwisko,
+          klient_telefon: formData.telefon,
+          klient_email: formData.email || null,
+          usluga: selectedService,
+          lokalizacja: formData.lokalizacja,
+          opis: opisZTerminem,
+          status: "nowy",
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Nie udało się wysłać zapytania");
+      setLeadNumer(data.numer);
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Nie udało się wysłać zapytania");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -93,7 +132,7 @@ function WycenaForm() {
                 Dziękujemy za zapytanie. Nasz konsultant skontaktuje się z Tobą w ciągu 24 godzin.
               </p>
               <p className="text-[#f0a500] font-semibold">
-                Numer zapytania: GRE-2026-{String(Math.floor(Math.random() * 99999)).padStart(5, "0")}
+                Numer zapytania: {leadNumer}
               </p>
             </div>
           ) : (
@@ -229,12 +268,19 @@ function WycenaForm() {
                   </div>
                 </div>
 
+                {error && (
+                  <div className="mb-4 bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-lg text-sm">
+                    {error}
+                  </div>
+                )}
+
                 <button
                   type="submit"
-                  className="w-full btn-primary py-4 rounded-lg font-semibold text-[#0f1419] text-lg flex items-center justify-center gap-2"
+                  disabled={submitting}
+                  className="w-full btn-primary py-4 rounded-lg font-semibold text-[#0f1419] text-lg flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   <Send size={20} />
-                  WYŚLIJ ZAPYTANIE
+                  {submitting ? "WYSYŁANIE..." : "WYŚLIJ ZAPYTANIE"}
                 </button>
               </form>
             </div>

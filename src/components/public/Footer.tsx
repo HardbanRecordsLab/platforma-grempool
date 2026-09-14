@@ -10,11 +10,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo & Info */}
           <div>
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="text-2xl font-montserrat font-bold">
-                <span className="text-[#f0a500]">GREM</span>
-                <span className="text-white">POOL</span>
-              </div>
+            <Link href="/" className="flex items-center mb-4">
+              <img src="/assets/logo-mark.png" alt="GREMPOOL — Złom, Transport, Usługi" className="h-11 w-auto" />
             </Link>
             <p className="text-[#b8c5d6] text-sm mb-4">
               Złom • Transport • Usługi

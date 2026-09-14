@@ -3,6 +3,13 @@ import Footer from "@/components/public/Footer";
 import { Hammer, Phone, ArrowRight, CheckCircle2, Truck, Recycle } from "lucide-react";
 import Link from "next/link";
 
+const gallery = [
+  "https://images.unsplash.com/photo-1758965285803-1cdd3371563b?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1777364702593-a975b49659af?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1768056089011-d31299b45d3c?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1776594974675-b21647efe342?auto=format&fit=crop&w=800&q=80",
+];
+
 export default function RozbiorkiPage() {
   const services = [
     "Wyburzanie budynków",
@@ -130,6 +137,22 @@ export default function RozbiorkiPage() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Gallery */}
+      <section className="py-16 bg-[#0f1419]">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-montserrat font-bold text-center mb-12">
+            REALIZACJE <span className="text-[#f0a500]">ROZBIÓREK</span>
+          </h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {gallery.map((src, i) => (
+              <div key={i} className="aspect-square rounded-xl overflow-hidden border border-[#2a3a4a]">
+                <img src={src} alt="Rozbiórki — realizacje" className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
+              </div>
+            ))}
           </div>
         </div>
       </section>

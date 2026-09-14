@@ -1,7 +1,15 @@
 import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
+import ScrapPriceTicker from "@/components/public/ScrapPriceTicker";
 import { Recycle, Phone, ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
+
+const gallery = [
+  "https://images.unsplash.com/photo-1578483006555-aa8ab7bb01e2?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1671362935207-d9abfc5b9509?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1702196665517-9d3670421443?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1679996287979-166522b96c39?auto=format&fit=crop&w=800&q=80",
+];
 
 export default function SkupZlomuPage() {
   const materials = [
@@ -27,7 +35,8 @@ export default function SkupZlomuPage() {
   return (
     <main className="min-h-screen">
       <Navbar />
-      
+      <ScrapPriceTicker />
+
       {/* Hero */}
       <section className="relative py-20 bg-[#0f1419]">
         <div className="container mx-auto px-4">
@@ -77,6 +86,22 @@ export default function SkupZlomuPage() {
                   <Recycle className="text-[#f0a500] size-6" />
                 </div>
                 <span className="text-sm font-semibold">{material}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Gallery */}
+      <section className="py-16 bg-[#0f1419]">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-montserrat font-bold text-center mb-12">
+            NASZA <span className="text-[#f0a500]">PRACA</span>
+          </h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {gallery.map((src, i) => (
+              <div key={i} className="aspect-square rounded-xl overflow-hidden border border-[#2a3a4a]">
+                <img src={src} alt="Skup złomu — realizacje" className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
               </div>
             ))}
           </div>

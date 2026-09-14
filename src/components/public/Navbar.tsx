@@ -41,14 +41,8 @@ export default function Navbar() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3">
-              <div className="text-2xl font-montserrat font-bold">
-                <span className="text-[#f0a500]">GREM</span>
-                <span className="text-white">POOL</span>
-              </div>
-              <div className="text-[10px] text-[#b8c5d6] tracking-wider">
-                ZŁOM • TRANSPORT • USŁUGI
-              </div>
+            <Link href="/" className="flex items-center">
+              <img src="/assets/logo-mark.png" alt="GREMPOOL — Złom, Transport, Usługi" className="h-11 w-auto" />
             </Link>
 
             {/* Desktop Navigation */}

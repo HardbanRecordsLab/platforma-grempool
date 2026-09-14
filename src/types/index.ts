@@ -142,6 +142,17 @@ export interface Fakt {
   utworzone: string;
 }
 
+export interface ScrapPrice {
+  id: string;
+  nazwa: string;
+  cena_od: number;
+  jednostka: string;
+  kolejnosc: number;
+  aktywny: boolean;
+  utworzone: string;
+  zaktualizowane: string;
+}
+
 export interface User {
   id: string;
   email: string;

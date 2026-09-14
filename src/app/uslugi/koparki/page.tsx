@@ -3,6 +3,13 @@ import Footer from "@/components/public/Footer";
 import { Wrench, Phone, ArrowRight, CheckCircle2, MapPin, Clock } from "lucide-react";
 import Link from "next/link";
 
+const gallery = [
+  "https://images.unsplash.com/photo-1503708928676-1cb796a0891e?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1719411606465-5143b163b608?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1494778924281-cce023ab1acb?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1751054770504-c69daeec4721?auto=format&fit=crop&w=800&q=80",
+];
+
 export default function KoparkiPage() {
   const machines = [
     { name: "Koparka #01", model: "Caterpillar 320D", weight: "22 tony", depth: "6.7m", equipment: ["Łyżka 0.8m³", "Łyżka 1.2m³", "Świder", "Chwytak"] },
@@ -139,6 +146,22 @@ export default function KoparkiPage() {
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Gallery */}
+      <section className="py-16 bg-[#0f1419]">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-montserrat font-bold text-center mb-12">
+            NASZ <span className="text-[#f0a500]">SPRZĘT W AKCJI</span>
+          </h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {gallery.map((src, i) => (
+              <div key={i} className="aspect-square rounded-xl overflow-hidden border border-[#2a3a4a]">
+                <img src={src} alt="Usługi koparką — realizacje" className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
+              </div>
+            ))}
           </div>
         </div>
       </section>

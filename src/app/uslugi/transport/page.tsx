@@ -3,6 +3,13 @@ import Footer from "@/components/public/Footer";
 import { Truck, Phone, ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 
+const gallery = [
+  "https://images.unsplash.com/photo-1746349086423-06ea6b4d73f7?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1568732165868-b260eeea27f0?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1716066749933-b517a86a1afd?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1682033239272-6b60b828a9a2?auto=format&fit=crop&w=800&q=80",
+];
+
 export default function TransportPage() {
   const vehicles = [
     { name: "Bus krótki", capacity: "do 1.5 tony", use: "Przesyłki, małe ładunki" },
@@ -104,6 +111,22 @@ export default function TransportPage() {
               <h3 className="font-montserrat font-bold mb-2">Płatność</h3>
               <p className="text-sm text-[#b8c5d6]">Gotówka lub przelew</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Gallery */}
+      <section className="py-16 bg-[#0f1419]">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-montserrat font-bold text-center mb-12">
+            NASZA <span className="text-[#f0a500]">FLOTA</span>
+          </h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {gallery.map((src, i) => (
+              <div key={i} className="aspect-square rounded-xl overflow-hidden border border-[#2a3a4a]">
+                <img src={src} alt="Transport — realizacje" className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
+              </div>
+            ))}
           </div>
         </div>
       </section>

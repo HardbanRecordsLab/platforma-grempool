@@ -7,9 +7,10 @@ import {
   Users, 
   FileText, 
   Package, 
-  Calendar, 
-  Truck, 
+  Calendar,
+  Truck,
   Wrench,
+  Tags,
   Settings,
   LogOut,
   Menu,
@@ -22,6 +23,7 @@ const menuItems = [
   { icon: Users, label: "CRM / Leady", href: "/admin/crm" },
   { icon: FileText, label: "Zlecenia", href: "/admin/zlecenia" },
   { icon: Package, label: "Materiały", href: "/admin/materialy" },
+  { icon: Tags, label: "Cennik złomu", href: "/admin/cennik" },
   { icon: Calendar, label: "Kalendarz", href: "/admin/kalendarz" },
   { icon: Truck, label: "Flota", href: "/admin/flota" },
   { icon: Wrench, label: "Maszyny", href: "/admin/maszyny" },
@@ -41,11 +43,8 @@ export default function AdminLayout({
       {/* Sidebar */}
       <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-[#1a2332] border-r border-[#2a3a4a] transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         <div className="p-6 border-b border-[#2a3a4a]">
-          <Link href="/admin/dashboard" className="flex items-center gap-2">
-            <div className="text-xl font-montserrat font-bold">
-              <span className="text-[#f0a500]">GREM</span>
-              <span className="text-white">POOL</span>
-            </div>
+          <Link href="/admin/dashboard" className="flex items-center">
+            <img src="/assets/logo-mark.png" alt="GREMPOOL" className="h-9 w-auto" />
           </Link>
           <p className="text-xs text-[#b8c5d6] mt-1">Panel Administracyjny</p>
         </div>
