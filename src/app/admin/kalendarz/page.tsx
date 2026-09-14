@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -14,8 +14,8 @@ import {
   Loader2,
   Trash2,
 } from "lucide-react";
-import type { Zlecenie, Lead, Task } from "@/types";
 import { SERVICE_LABELS, STATUS_LABELS } from "@/lib/supabase";
+import { fetchCalendarEvents, pad, toISODate, type DayEvents } from "@/lib/calendar-data";
 
 const daysOfWeek = ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Ndz"];
 const months = [
@@ -23,23 +23,11 @@ const months = [
   "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień",
 ];
 
-const pad = (n: number) => String(n).padStart(2, "0");
-const toISODate = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-
-async function fetchJSON<T>(url: string): Promise<T> {
-  const res = await fetch(url, { cache: "no-store" });
-  const body = await res.json();
-  if (!res.ok) throw new Error(body.error ?? "Błąd zapytania");
-  return body;
-}
-
 export default function KalendarzPage() {
   const today = new Date();
   const [currentDate, setCurrentDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
   const [selectedDate, setSelectedDate] = useState(toISODate(today));
-  const [orders, setOrders] = useState<Zlecenie[]>([]);
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [eventsByDay, setEventsByDay] = useState<Record<string, DayEvents>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [taskModalOpen, setTaskModalOpen] = useState(false);
@@ -51,17 +39,9 @@ export default function KalendarzPage() {
 
   const refresh = async () => {
     setLoading(true);
-    const from = toISODate(monthStart);
-    const to = toISODate(monthEnd);
     try {
-      const [o, l, t] = await Promise.all([
-        fetchJSON<Zlecenie[]>(`/api/orders?from=${from}&to=${to}T23:59:59`),
-        fetchJSON<Lead[]>(`/api/leads?from=${from}&to=${to}`),
-        fetchJSON<Task[]>(`/api/tasks?from=${from}&to=${to}`),
-      ]);
-      setOrders(o);
-      setLeads(l);
-      setTasks(t);
+      const map = await fetchCalendarEvents(toISODate(monthStart), toISODate(monthEnd));
+      setEventsByDay(map);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Nie udało się wczytać kalendarza");
@@ -74,17 +54,6 @@ export default function KalendarzPage() {
     refresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDate]);
-
-  const eventsByDay = useMemo(() => {
-    const map: Record<string, { orders: Zlecenie[]; leads: Lead[]; tasks: Task[] }> = {};
-    const bucket = (day: string) => (map[day] ??= { orders: [], leads: [], tasks: [] });
-    orders.forEach((o) => bucket(o.termin.slice(0, 10)).orders.push(o));
-    leads.forEach((l) => {
-      if (l.preferowany_termin) bucket(l.preferowany_termin.slice(0, 10)).leads.push(l);
-    });
-    tasks.forEach((t) => bucket(t.data.slice(0, 10)).tasks.push(t));
-    return map;
-  }, [orders, leads, tasks]);
 
   const getDaysInMonth = (date: Date) => new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
   const getFirstDayOfMonth = (date: Date) => {

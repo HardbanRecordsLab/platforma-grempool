@@ -76,16 +76,22 @@ export default function AdminLayout({
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="relative flex-1 flex flex-col min-h-screen">
+        <div
+          className="fixed inset-0 lg:left-64 bg-cover bg-center"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1722695694560-f452b0919d3a?auto=format&fit=crop&w=1600&q=60')" }}
+        />
+        <div className="fixed inset-0 lg:left-64 bg-[#0f1419]/93" />
+
         {/* Top Bar */}
-        <header className="h-16 bg-[#1a2332] border-b border-[#2a3a4a] flex items-center justify-between px-6">
+        <header className="relative z-10 h-16 bg-[#1a2332] border-b border-[#2a3a4a] flex items-center justify-between px-6">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="lg:hidden text-white"
           >
             {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
-          
+
           <div className="flex items-center gap-4">
             <div className="text-sm text-[#b8c5d6]">
               Zalogowany jako: <span className="text-white font-semibold">Właściciel</span>
@@ -97,7 +103,7 @@ export default function AdminLayout({
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-6 overflow-auto">
+        <main className="relative z-10 flex-1 p-6 overflow-auto">
           {children}
         </main>
       </div>

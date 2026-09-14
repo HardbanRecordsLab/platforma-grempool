@@ -14,6 +14,8 @@ import {
   X,
   ImagePlus,
   Loader2,
+  Bookmark,
+  BookmarkCheck,
 } from "lucide-react";
 import type { Material, MaterialStatus } from "@/types";
 import {
@@ -126,6 +128,16 @@ export default function MaterialyPage() {
   };
 
   const closeModal = () => setModalOpen(false);
+
+  const handleToggleReserve = async (material: Material) => {
+    const nextStatus: MaterialStatus = material.status === "zarezerwowany" ? "dostepny" : "zarezerwowany";
+    try {
+      await updateMaterial(material.id, { status: nextStatus });
+      await refresh();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Nie udało się zmienić statusu rezerwacji");
+    }
+  };
 
   const handleDelete = async (id: string) => {
     if (!confirm("Na pewno usunąć tę ofertę z magazynu?")) return;
@@ -328,6 +340,19 @@ export default function MaterialyPage() {
                     >
                       <Edit size={14} /> Edytuj
                     </button>
+                    {(material.status === "dostepny" || material.status === "zarezerwowany") && (
+                      <button
+                        onClick={() => handleToggleReserve(material)}
+                        className="p-2 rounded-lg hover:bg-[#2a3a4a] transition-colors"
+                        title={material.status === "zarezerwowany" ? "Zdejmij rezerwację" : "Zarezerwuj"}
+                      >
+                        {material.status === "zarezerwowany" ? (
+                          <BookmarkCheck size={14} className="text-yellow-400" />
+                        ) : (
+                          <Bookmark size={14} className="text-[#b8c5d6]" />
+                        )}
+                      </button>
+                    )}
                     <button onClick={() => handleDelete(material.id)} className="p-2 rounded-lg hover:bg-[#2a3a4a] transition-colors" title="Usuń">
                       <Trash2 size={14} className="text-red-400" />
                     </button>

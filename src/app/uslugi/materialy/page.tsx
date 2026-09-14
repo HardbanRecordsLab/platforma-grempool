@@ -141,7 +141,7 @@ export default function MaterialyPage() {
               Brak materiałów spełniających kryteria. Zadzwoń — być może mamy coś, czego jeszcze nie dodaliśmy do katalogu.
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
               {filtered.map((item) => (
                 <div key={item.id} className="bg-[#1a2332] rounded-xl border border-[#2a3a4a] hover:border-[#f0a500]/30 transition-colors overflow-hidden">
                   <div className="aspect-video bg-[#0f1419] flex items-center justify-center overflow-hidden">
@@ -151,29 +151,26 @@ export default function MaterialyPage() {
                       <Package className="text-[#2a3a4a] size-12" />
                     )}
                   </div>
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-3">
-                      <span className="font-mono text-[#f0a500] text-xs">{item.id_materialu}</span>
-                      <span className="px-2 py-1 rounded text-xs font-semibold bg-green-500/20 text-green-400">
+                  <div className="p-4">
+                    <div className="flex items-start justify-between mb-2 gap-1">
+                      <span className="font-mono text-[#f0a500] text-[10px] truncate">{item.id_materialu}</span>
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-green-500/20 text-green-400 shrink-0">
                         Dostępny
                       </span>
                     </div>
-                    <h3 className="font-semibold text-lg mb-2">{item.nazwa}</h3>
-                    <div className="space-y-1 text-sm text-[#b8c5d6] mb-4">
-                      <div>Kategoria: <span className="text-white">{categoryLabel(item.kategoria)}</span></div>
-                      <div>Wymiary: <span className="text-white">{item.wymiary}</span></div>
-                      {item.dlugosc && <div>Długość: <span className="text-white">{item.dlugosc} m</span></div>}
+                    <h3 className="font-semibold text-sm mb-2 line-clamp-2 min-h-[2.5rem]">{item.nazwa}</h3>
+                    <div className="space-y-0.5 text-xs text-[#b8c5d6] mb-3">
+                      <div className="truncate">Wymiary: <span className="text-white">{item.wymiary}</span></div>
                       <div>Ilość: <span className="text-white">{item.ilosc} szt.</span></div>
-                      <div>Lokalizacja: <span className="text-white">{item.lokalizacja}</span></div>
                     </div>
-                    <div className="text-xl font-bold text-[#f0a500] mb-4">
+                    <div className="text-base font-bold text-[#f0a500] mb-3">
                       {item.cena ? `${item.cena.toFixed(2)} zł` : "Zapytaj o cenę"}
                     </div>
                     <Link
                       href={`/wycena?material=${encodeURIComponent(item.id_materialu)}&nazwa=${encodeURIComponent(item.nazwa)}`}
-                      className="block w-full text-center py-2 rounded-lg bg-[#2a3a4a] text-sm font-semibold hover:bg-[#f0a500] hover:text-[#0f1419] transition-colors"
+                      className="block w-full text-center py-2 rounded-lg bg-[#2a3a4a] text-xs font-semibold hover:bg-[#f0a500] hover:text-[#0f1419] transition-colors"
                     >
-                      Zapytaj o ten materiał
+                      Zapytaj
                     </Link>
                   </div>
                 </div>
