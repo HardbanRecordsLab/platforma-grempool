@@ -33,36 +33,34 @@ export default function RozbiorkiPage() {
       <Navbar />
       
       {/* Hero */}
-      <section className="py-20 bg-[#0f1419]">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-lg bg-[#f0a500]/10 flex items-center justify-center">
-                  <Hammer className="text-[#f0a500] size-6" />
-                </div>
-                <span className="text-[#f0a500] font-semibold">USŁUGA</span>
+      <section className="relative py-32 overflow-hidden">
+        <div
+          className="absolute inset-0 hero-bg"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1776594974675-b21647efe342?auto=format&fit=crop&w=1600&q=80')" }}
+        />
+        <div className="absolute inset-0 gradient-overlay" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 rounded-lg bg-[#f0a500]/10 flex items-center justify-center">
+                <Hammer className="text-[#f0a500] size-6" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-montserrat font-bold mb-6">
-                <span className="text-[#f0a500]">ROZBIÓRKI</span>
-              </h1>
-              <p className="text-[#b8c5d6] text-lg mb-8">
-                Kompleksowe rozbiórki budynków i obiektów z segregacją materiałów. 
-                Zapewniamy bezpieczeństwo, terminowość i$dbłość o środowisko.
-              </p>
-              <div className="flex gap-4">
-                <a href="tel:+48123456789" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#0f1419] flex items-center gap-2">
-                  <Phone size={20} /> ZADZWOŃ
-                </a>
-                <Link href="/wycena" className="px-6 py-3 rounded-lg font-semibold border-2 border-[#f0a500] text-[#f0a500] hover:bg-[#f0a500] hover:text-[#0f1419] transition-all">
-                  WYCENA
-                </Link>
-              </div>
+              <span className="text-[#f0a500] font-semibold">USŁUGA</span>
             </div>
-            <div className="relative">
-              <div className="aspect-video rounded-2xl overflow-hidden border-4 border-[#f0a500]/20">
-                <img src="https://images.unsplash.com/photo-1776594974675-b21647efe342?auto=format&fit=crop&w=1200&q=80" alt="Rozbiórka" className="w-full h-full object-cover" />
-              </div>
+            <h1 className="text-4xl md:text-5xl font-montserrat font-bold mb-6">
+              <span className="text-[#f0a500]">ROZBIÓRKI</span>
+            </h1>
+            <p className="text-[#b8c5d6] text-lg mb-8">
+              Kompleksowe rozbiórki budynków i obiektów z segregacją materiałów.
+              Zapewniamy bezpieczeństwo, terminowość i dbałość o środowisko.
+            </p>
+            <div className="flex gap-4">
+              <a href="tel:+48123456789" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#0f1419] flex items-center gap-2">
+                <Phone size={20} /> ZADZWOŃ
+              </a>
+              <Link href="/wycena" className="px-6 py-3 rounded-lg font-semibold border-2 border-[#f0a500] text-[#f0a500] hover:bg-[#f0a500] hover:text-[#0f1419] transition-all">
+                WYCENA
+              </Link>
             </div>
           </div>
         </div>

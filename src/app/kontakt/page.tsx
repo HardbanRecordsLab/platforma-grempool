@@ -8,8 +8,13 @@ export default function KontaktPage() {
       <Navbar />
       
       {/* Hero */}
-      <section className="py-20 bg-[#0f1419]">
-        <div className="container mx-auto px-4 text-center">
+      <section className="relative py-28 overflow-hidden">
+        <div
+          className="absolute inset-0 hero-bg"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1722695694560-f452b0919d3a?auto=format&fit=crop&w=1600&q=80')" }}
+        />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(15,20,25,0.85) 0%, rgba(15,20,25,0.92) 100%)" }} />
+        <div className="container mx-auto px-4 relative z-10 text-center">
           <h1 className="text-4xl md:text-5xl font-montserrat font-bold mb-4">
             <span className="text-[#f0a500]">KONTAKT</span>
           </h1>

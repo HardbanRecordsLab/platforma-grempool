@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Navbar from "@/components/public/Footer";
+import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
 import { Camera, MapPin, Calendar, Wrench, Truck, Recycle, Filter } from "lucide-react";
 import Link from "next/link";
@@ -14,7 +14,11 @@ const realizations = [
     location: "Głogów",
     date: "2026-08-15",
     description: "Kompleksowa rozbiórka hali magazynowej o powierzchni 2000 m² z segregacją materiałów.",
-    images: ["/assets/hero-bg.jpg", "/assets/hero-bg.jpg", "/assets/hero-bg.jpg"],
+    images: [
+      "https://images.unsplash.com/photo-1758965285803-1cdd3371563b?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1777364702593-a975b49659af?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1768056089011-d31299b45d3c?auto=format&fit=crop&w=800&q=80",
+    ],
   },
   {
     id: 2,
@@ -23,7 +27,10 @@ const realizations = [
     location: "Lubin",
     date: "2026-07-20",
     description: "Wykop pod fundamenty domu jednorodzinnego z niwelacją terenu.",
-    images: ["/assets/hero-bg.jpg", "/assets/hero-bg.jpg"],
+    images: [
+      "https://images.unsplash.com/photo-1503708928676-1cb796a0891e?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1719411606465-5143b163b608?auto=format&fit=crop&w=800&q=80",
+    ],
   },
   {
     id: 3,
@@ -32,7 +39,7 @@ const realizations = [
     location: "Legnica",
     date: "2026-07-10",
     description: "Transport 15 ton złomu stalowego z opuszczonej fabryki.",
-    images: ["/assets/hero-bg.jpg"],
+    images: ["https://images.unsplash.com/photo-1746349086423-06ea6b4d73f7?auto=format&fit=crop&w=800&q=80"],
   },
   {
     id: 4,
@@ -41,7 +48,10 @@ const realizations = [
     location: "Raszówka",
     date: "2026-06-25",
     description: "Skup i demontaż starych maszyn przemysłowych z odzyskiem materiałów.",
-    images: ["/assets/hero-bg.jpg", "/assets/hero-bg.jpg"],
+    images: [
+      "https://images.unsplash.com/photo-1578483006555-aa8ab7bb01e2?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1671362935207-d9abfc5b9509?auto=format&fit=crop&w=800&q=80",
+    ],
   },
   {
     id: 5,
@@ -50,7 +60,7 @@ const realizations = [
     location: "Polkowice",
     date: "2026-06-15",
     description: "Niwelacja i utwardzenie terenu pod budowę parkingu na 50 samochodów.",
-    images: ["/assets/hero-bg.jpg"],
+    images: ["https://images.unsplash.com/photo-1751054770504-c69daeec4721?auto=format&fit=crop&w=800&q=80"],
   },
   {
     id: 6,
@@ -59,7 +69,10 @@ const realizations = [
     location: "Chocianów",
     date: "2026-05-30",
     description: "Dostawa cegły rozbiórkowej i stali użytkowej na budowę.",
-    images: ["/assets/hero-bg.jpg", "/assets/hero-bg.jpg"],
+    images: [
+      "https://images.unsplash.com/photo-1712044155581-e343dfa5dda7?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1632758821173-61a44f0ee0d5?auto=format&fit=crop&w=800&q=80",
+    ],
   },
 ];
 
@@ -84,8 +97,13 @@ export default function RealizacjePage() {
       <Navbar />
       
       {/* Hero */}
-      <section className="py-20 bg-[#0f1419]">
-        <div className="container mx-auto px-4 text-center">
+      <section className="relative py-28 overflow-hidden">
+        <div
+          className="absolute inset-0 hero-bg"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1776594974675-b21647efe342?auto=format&fit=crop&w=1600&q=80')" }}
+        />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(15,20,25,0.85) 0%, rgba(15,20,25,0.92) 100%)" }} />
+        <div className="container mx-auto px-4 relative z-10 text-center">
           <h1 className="text-4xl md:text-5xl font-montserrat font-bold mb-4">
             NASZE <span className="text-[#f0a500]">REALIZACJE</span>
           </h1>

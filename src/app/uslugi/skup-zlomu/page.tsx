@@ -13,14 +13,14 @@ const gallery = [
 
 export default function SkupZlomuPage() {
   const materials = [
-    "Stal węglowa",
-    "Stal nierdzewna",
-    "Żeliwo",
-    "Miedź",
-    "Aluminium",
-    "Ołów",
-    "Cynk",
-    "Brąz",
+    { name: "Stal węglowa", image: "https://images.unsplash.com/photo-1763771420303-0f11ccf613d1?auto=format&fit=crop&w=400&q=80" },
+    { name: "Stal nierdzewna", image: "https://images.unsplash.com/photo-1538474705339-e87de81450e8?auto=format&fit=crop&w=400&q=80" },
+    { name: "Żeliwo", image: "https://images.unsplash.com/photo-1693092180995-ae2b4d8083f9?auto=format&fit=crop&w=400&q=80" },
+    { name: "Miedź", image: "https://images.unsplash.com/photo-1546229738-ed21fb6e3158?auto=format&fit=crop&w=400&q=80" },
+    { name: "Aluminium", image: "https://images.unsplash.com/photo-1485211177140-aa3b17a0c7b6?auto=format&fit=crop&w=400&q=80" },
+    { name: "Ołów", image: "https://images.unsplash.com/photo-1679996287979-166522b96c39?auto=format&fit=crop&w=400&q=80" },
+    { name: "Cynk", image: "https://images.unsplash.com/photo-1578483006555-aa8ab7bb01e2?auto=format&fit=crop&w=400&q=80" },
+    { name: "Brąz", image: "https://images.unsplash.com/photo-1702196665517-9d3670421443?auto=format&fit=crop&w=400&q=80" },
   ];
 
   const benefits = [
@@ -38,36 +38,34 @@ export default function SkupZlomuPage() {
       <ScrapPriceTicker />
 
       {/* Hero */}
-      <section className="relative py-20 bg-[#0f1419]">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-lg bg-[#f0a500]/10 flex items-center justify-center">
-                  <Recycle className="text-[#f0a500] size-6" />
-                </div>
-                <span className="text-[#f0a500] font-semibold">USŁUGA</span>
+      <section className="relative py-32 overflow-hidden">
+        <div
+          className="absolute inset-0 hero-bg"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1761665698795-ac9df3438b74?auto=format&fit=crop&w=1600&q=80')" }}
+        />
+        <div className="absolute inset-0 gradient-overlay" />
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 rounded-lg bg-[#f0a500]/10 flex items-center justify-center">
+                <Recycle className="text-[#f0a500] size-6" />
               </div>
-              <h1 className="text-4xl md:text-5xl font-montserrat font-bold mb-6">
-                SKUP <span className="text-[#f0a500]">ZŁOMU</span>
-              </h1>
-              <p className="text-[#b8c5d6] text-lg mb-8">
-                Skupujemy wszystkie rodzaje złomu stalowego i metali kolorowych. 
-                Oferujemy atrakcyjne ceny, szybki odbiór i profesjonalną obsługę.
-              </p>
-              <div className="flex gap-4">
-                <a href="tel:+48123456789" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#0f1419] flex items-center gap-2">
-                  <Phone size={20} /> ZADZWOŃ
-                </a>
-                <Link href="/wycena" className="px-6 py-3 rounded-lg font-semibold border-2 border-[#f0a500] text-[#f0a500] hover:bg-[#f0a500] hover:text-[#0f1419] transition-all">
-                  SZYBKA WYCENA
-                </Link>
-              </div>
+              <span className="text-[#f0a500] font-semibold">USŁUGA</span>
             </div>
-            <div className="relative">
-              <div className="aspect-video rounded-2xl overflow-hidden border-4 border-[#f0a500]/20">
-                <img src="https://images.unsplash.com/photo-1761665698795-ac9df3438b74?auto=format&fit=crop&w=1200&q=80" alt="Skup złomu" className="w-full h-full object-cover" />
-              </div>
+            <h1 className="text-4xl md:text-5xl font-montserrat font-bold mb-6">
+              SKUP <span className="text-[#f0a500]">ZŁOMU</span>
+            </h1>
+            <p className="text-[#b8c5d6] text-lg mb-8">
+              Skupujemy wszystkie rodzaje złomu stalowego i metali kolorowych.
+              Oferujemy atrakcyjne ceny, szybki odbiór i profesjonalną obsługę.
+            </p>
+            <div className="flex gap-4">
+              <a href="tel:+48123456789" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#0f1419] flex items-center gap-2">
+                <Phone size={20} /> ZADZWOŃ
+              </a>
+              <Link href="/wycena" className="px-6 py-3 rounded-lg font-semibold border-2 border-[#f0a500] text-[#f0a500] hover:bg-[#f0a500] hover:text-[#0f1419] transition-all">
+                SZYBKA WYCENA
+              </Link>
             </div>
           </div>
         </div>
@@ -81,11 +79,11 @@ export default function SkupZlomuPage() {
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {materials.map((material) => (
-              <div key={material} className="bg-[#0f1419] p-4 rounded-xl border border-[#2a3a4a] text-center">
-                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-[#f0a500]/10 flex items-center justify-center">
-                  <Recycle className="text-[#f0a500] size-6" />
+              <div key={material.name} className="bg-[#0f1419] rounded-xl border border-[#2a3a4a] text-center overflow-hidden">
+                <div className="aspect-square overflow-hidden">
+                  <img src={material.image} alt={material.name} className="w-full h-full object-cover" />
                 </div>
-                <span className="text-sm font-semibold">{material}</span>
+                <span className="block py-3 text-sm font-semibold">{material.name}</span>
               </div>
             ))}
           </div>
