@@ -27,9 +27,6 @@ export default function Hero() {
       <div className="container mx-auto px-4 relative z-10 py-20">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-10">
           <div className="max-w-2xl">
-            <p className="text-[#f0a500] font-montserrat font-semibold tracking-wide text-sm md:text-base mb-3">
-              TWÓJ PARTNER W TRANSPORCIE, ZŁOMIE I USŁUGACH
-            </p>
             <h1 className="text-5xl md:text-6xl font-montserrat font-bold mb-4">
               <span className="text-white">SKUP ZŁOMU</span>
               <br />
@@ -62,6 +59,31 @@ export default function Hero() {
               >
                 NASZE USŁUGI
               </Link>
+            </div>
+
+            <div className="mt-12 pt-10 border-t border-white/10">
+              <h2 className="text-2xl md:text-3xl font-montserrat font-bold mb-5">
+                TWÓJ PARTNER W <span className="text-[#f0a500]">TRANSPORCIE</span>,<br />
+                ZŁOMIE I USŁUGACH
+              </h2>
+              <p className="text-[#b8c5d6] mb-4">
+                Działamy szybko, rzetelnie i w uczciwy sposób. GREMPOOL to firma z wieloletnim doświadczeniem
+                w branży złomowej, transportowej i budowlanej. Naszym celem jest świadczenie usług na najwyższym
+                poziomie, z zachowaniem uczciwości i terminowości.
+              </p>
+              <p className="text-[#b8c5d6] mb-8">
+                Oferujemy kompleksowe rozwiązania - od skupu złomu, przez transport, aż po usługi budowlane
+                i klimatyzację samochodową. Dzięki własnemu taborowi pojazdów i profesjonalnemu sprzętowi
+                jesteśmy w stanie sprostać nawet najbardziej wymagającym zleceniom.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <a href="tel:+48123456789" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#0f1419]">
+                  ZADZWOŃ
+                </a>
+                <Link href="/wycena" className="px-6 py-3 rounded-lg font-semibold border-2 border-[#f0a500] text-[#f0a500] hover:bg-[#f0a500] hover:text-[#0f1419] transition-all">
+                  WYCENA ONLINE
+                </Link>
+              </div>
             </div>
           </div>
 
