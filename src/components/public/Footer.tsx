@@ -1,9 +1,18 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Phone, Mail, MapPin, Globe, Camera } from "lucide-react";
+import { Phone, Mail, MapPin, Globe } from "lucide-react";
+import type { SocialChannel } from "@/types";
+import { getActiveSocialChannels } from "@/lib/social-channels-store";
 
 export default function Footer() {
+  const [channels, setChannels] = useState<SocialChannel[]>([]);
+
+  useEffect(() => {
+    getActiveSocialChannels().then(setChannels).catch(() => setChannels([]));
+  }, []);
+
   return (
     <footer className="bg-[#1a2332] border-t border-[#2a3a4a]">
       <div className="container mx-auto px-4 py-12">
@@ -16,14 +25,22 @@ export default function Footer() {
             <p className="text-[#b8c5d6] text-sm mb-4">
               Złom • Transport • Usługi
             </p>
-            <div className="flex gap-4">
-              <a href="#" className="text-[#b8c5d6] hover:text-[#f0a500] transition-colors">
-                <Globe size={20} />
-              </a>
-              <a href="#" className="text-[#b8c5d6] hover:text-[#f0a500] transition-colors">
-                <Camera size={20} />
-              </a>
-            </div>
+            {channels.length > 0 && (
+              <div className="flex gap-4">
+                {channels.map((channel) => (
+                  <a
+                    key={channel.id}
+                    href={channel.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    title={channel.nazwa}
+                    className="text-[#b8c5d6] hover:text-[#f0a500] transition-colors"
+                  >
+                    <Globe size={20} />
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Services */}

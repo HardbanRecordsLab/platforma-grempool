@@ -8,15 +8,15 @@ import { Send, Upload, CheckCircle2 } from "lucide-react";
 
 type ServiceType = "skup_zlomu" | "transport" | "koparki" | "rozbiorki" | "materialy" | "klimatyzacja";
 
-const serviceFields: Record<ServiceType, { label: string; fields: string[] }[]> = {
+const serviceFields: Record<ServiceType, { label: string; fields: string[]; placeholder?: string }[]> = {
   skup_zlomu: [
     { label: "Rodzaj złomu", fields: ["stal", "metale kolorowe", "inne"] },
     { label: "Orientacyjna ilość", fields: ["do 1 tony", "1-5 ton", "powyżej 5 ton"] },
     { label: "Potrzeba odbioru", fields: ["tak", "nie"] },
   ],
   transport: [
-    { label: "Skąd", fields: ["miejscowość"] },
-    { label: "Dokąd", fields: ["miejscowość"] },
+    { label: "Skąd", fields: [], placeholder: "miejscowość" },
+    { label: "Dokąd", fields: [], placeholder: "miejscowość" },
     { label: "Rodzaj ładunku", fields: ["złom", "materiały budowlane", "inne"] },
     { label: "Masz/gabaryt", fields: ["mały", "średni", "duży"] },
   ],
@@ -25,7 +25,7 @@ const serviceFields: Record<ServiceType, { label: string; fields: string[] }[]> 
     { label: "Warunki dojazdu", fields: ["dobre", "średnie", "trudne"] },
   ],
   rozbiorki: [
-    { label: "Typ obiektu", fields: ["budynek", "garaż", "altına", "inne"] },
+    { label: "Typ obiektu", fields: ["budynek", "garaż", "altana", "inne"] },
     { label: "Zakres", fields: ["całkowita", "częściowa", "wyburzenie"] },
   ],
   materialy: [
@@ -41,6 +41,7 @@ const serviceFields: Record<ServiceType, { label: string; fields: string[] }[]> 
 function WycenaForm() {
   const searchParams = useSearchParams();
   const [selectedService, setSelectedService] = useState<ServiceType | null>(null);
+  const [dynamicFields, setDynamicFields] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     imie: "",
     telefon: "",
@@ -50,6 +51,11 @@ function WycenaForm() {
     termin: "",
   });
   const [submitted, setSubmitted] = useState(false);
+
+  const selectService = (service: ServiceType) => {
+    setSelectedService(service);
+    setDynamicFields({});
+  };
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [leadNumer, setLeadNumer] = useState<string | null>(null);
@@ -76,6 +82,11 @@ function WycenaForm() {
     const [klient_imie, ...rest] = formData.imie.trim().split(/\s+/);
     const klient_nazwisko = rest.join(" ") || "-";
 
+    const detailsSummary = serviceFields[selectedService]
+      .map((field) => (dynamicFields[field.label] ? `${field.label}: ${dynamicFields[field.label]}` : null))
+      .filter(Boolean)
+      .join("; ");
+
     setSubmitting(true);
     setError(null);
     try {
@@ -90,6 +101,7 @@ function WycenaForm() {
           usluga: selectedService,
           lokalizacja: formData.lokalizacja,
           opis: formData.opis,
+          notatki: detailsSummary || null,
           preferowany_termin: formData.termin || null,
           status: "nowy",
         }),
@@ -144,7 +156,7 @@ function WycenaForm() {
                   {(["skup_zlomu", "transport", "koparki", "rozbiorki", "materialy", "klimatyzacja"] as ServiceType[]).map((service) => (
                     <button
                       key={service}
-                      onClick={() => setSelectedService(service)}
+                      onClick={() => selectService(service)}
                       className={`p-4 rounded-lg border-2 transition-all text-sm font-semibold ${
                         selectedService === service
                           ? "border-[#f0a500] bg-[#f0a500]/10 text-[#f0a500]"
@@ -174,12 +186,26 @@ function WycenaForm() {
                         <label className="block text-sm text-[#b8c5d6] mb-2">
                           {field.label}
                         </label>
-                        <select className="w-full bg-[#1a2332] border border-[#2a3a4a] rounded-lg p-3 text-white">
-                          <option value="">Wybierz...</option>
-                          {field.fields.map((opt) => (
-                            <option key={opt} value={opt}>{opt}</option>
-                          ))}
-                        </select>
+                        {field.fields.length > 0 ? (
+                          <select
+                            value={dynamicFields[field.label] ?? ""}
+                            onChange={(e) => setDynamicFields((prev) => ({ ...prev, [field.label]: e.target.value }))}
+                            className="w-full bg-[#1a2332] border border-[#2a3a4a] rounded-lg p-3 text-white"
+                          >
+                            <option value="">Wybierz...</option>
+                            {field.fields.map((opt) => (
+                              <option key={opt} value={opt}>{opt}</option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            type="text"
+                            value={dynamicFields[field.label] ?? ""}
+                            onChange={(e) => setDynamicFields((prev) => ({ ...prev, [field.label]: e.target.value }))}
+                            placeholder={field.placeholder}
+                            className="w-full bg-[#1a2332] border border-[#2a3a4a] rounded-lg p-3 text-white"
+                          />
+                        )}
                       </div>
                     ))}
                   </div>

@@ -58,19 +58,11 @@ Centrum zdjęć
 
 Opinie, reputacja i Google Business Profile
 
-Moduł dokumentów
-
 CZĘŚĆ IV — CENY, SPRZEDAŻ I DOŚWIADCZENIE KLIENTA
 
 Ceny, wyceny i negocjacje
 
-Powiązania usług i cross-selling
-
 Customer Journey
-
-Źródła klientów i analiza utraconych zleceń
-
-Inteligentny asystent kontaktowy
 
 GREMPOOL Digital — Koncepcja systemu cyfrowego Strona 2 z 32
 
@@ -79,8 +71,6 @@ GREMPOOL DIGITAL
 CZĘŚĆ V — AUTOMATYZACJA I JAKOŚĆ DANYCH
 
 Automatyzacje i integracje
-
-Fact Control
 
 Panel administracyjny i role użytkowników
 
@@ -147,8 +137,6 @@ bazę materiałów i dostępności bibliotekę zdjęć i realizacji
 automatyczne powiadomienia
 
 dashboard i raporty
-
-kontrolę faktów przed publikacją
 
 GREMPOOL Digital — Koncepcja systemu cyfrowego Strona 4 z 32
 
@@ -635,15 +623,6 @@ Moduł „Proś o opinię”
 
 Po zakończonym zleceniu pracownik klika „Wyślij prośbę o opinię” — system przygotowuje wiadomość i kieruje klienta do właściwego miejsca. To może być bardzo skuteczne dla lokalnego biznesu.
 
-19 Moduł dokumentów
-Nie chodzi o przechowywanie wszystkiego bez ładu.
-
-Pojazdy Ubezpieczenia Przeglądy Maszyny Certyfikaty Umowy Realizacje
-
-Dokumentacja firmy
-
-Dokumenty przechowywane są z odpowiednimi uprawnieniami i powinny być oddzielone od danych publicznych.
-
 GREMPOOL Digital — Koncepcja systemu cyfrowego Strona 18 z 32
 
 GREMPOOL DIGITAL
@@ -665,23 +644,6 @@ Formularze kontekstowe
 szybka wycena złomu zamów odbiór złomu wyceń transport zamów koparkę
 
 zapytanie o rozbiórkę zapytanie o materiał klimatyzacja
-
-21 Powiązania usług i cross-selling
-Wykorzystanie pełnego wachlarza GREMPOOL.
-
-Naturalną przewagą GREMPOOL jest możliwość obsługi kilku potrzeb w jednym łańcuchu. System powinien to zauważać i ułatwiać pracownikowi proponowanie kolejnego kroku.
-
-Obszar Proponowane rozwiązanie
-
-Rozbiórka rozbiórka → segregacja → złom → transport → odzysk materiałów
-
-Złom skup → odbiór → transport → regularna współpraca
-
-Koparka wykop → załadunek → wywóz → dowóz materiału
-
-Materiały zapytanie → rezerwacja → transport
-
-Klient firmowy jednorazowe zlecenie → stały klient → cykliczna obsługa
 
 GREMPOOL Digital — Koncepcja systemu cyfrowego Strona 19 z 32
 
@@ -709,34 +671,6 @@ Potwierdzenie wykonania
 Opinia / kolejny zakup
 
 Na każdym etapie system powinien odpowiadać na jedno pytanie: co musi wiedzieć pracownik i co musi wiedzieć klient, żeby kolejny krok był możliwy?
-
-23 Źródła klientów i analiza utraconych zleceń
-Decyzje oparte na danych, nie intuicji.
-
-Obszar Proponowane rozwiązanie
-
-Źródła leadów Google, polecenia, social media, portale ogłoszeniowe, bezpośredni kontakt, inne
-
-Wartość źródła liczba leadów, liczba zleceń, wartość zleceń
-
-Utracone zlecenia cena, termin, obszar, brak sprzętu, konkurencja, brak kontaktu, inne
-
-Porzucone formularze gdzie użytkownicy przerywają proces
-
-Wnioski które elementy strony i procesu trzeba poprawić
-
-GREMPOOL Digital — Koncepcja systemu cyfrowego Strona 20 z 32
-
-GREMPOOL DIGITAL
-
-24 Inteligentny asystent kontaktowy
-Nie chatbot AI odpowiadający na wszystko.
-
-Lepszym rozwiązaniem niż „AI chatbot, który odpowiada na wszystko” jest inteligentny asystent kontaktowy, który zbiera dane, a nie wymyśla ceny — to bardzo ważna zasada.
-
-Klient: “Ile płacicie za złom?” System: “Cena zależy od rodzaju i ilości. Prześlij zdjęcie i orientacyjną ilość, a przygotujemy wycenę.”
-
-Klient: “Potrzebuję koparki.” System: “Podaj miejscowość, zakres prac i termin.”
 
 GREMPOOL Digital — Koncepcja systemu cyfrowego Strona 21 z 32
 
@@ -778,27 +712,6 @@ GREMPOOL Digital — Koncepcja systemu cyfrowego Strona 22 z 32
 
 GREMPOOL DIGITAL
 
-26 Fact Control
-Warstwa jakości informacji przed publikacją.
-
-Wszystkie kluczowe twierdzenia na stronie powinny mieć status: potwierdzone, do weryfikacji, wygasłe albo nie publikować. To szczególnie ważne przy parametrach pojazdów, maszyn, godzinach, obszarach działania, cenach, kwalifikacjach i deklaracjach dotyczących oferty.
-
-Obszar Proponowane rozwiązanie
-
-Fakt treść informacji
-
-Źródło dokument / dane firmowe / zdjęcie / osoba potwierdzająca
-
-Data ostatnia weryfikacja
-
-Status potwierdzone / do sprawdzenia / wygasłe / nie publikować
-
-Publikacja czy informacja może trafić na stronę
-
-Przykład: stwierdzenie „firma działa od 2014 roku” nie ląduje na stronie tylko dlatego, że ktoś tak powiedział — wymaga wskazanego źródła i statusu weryfikacji.
-
-R E Z U LTAT Strona może rosnąć bez utraty kontroli nad jakością danych. Zmiana informacji uruchamia ponowną weryfikację zamiast pozostawiać starą treść.
-
 27 Panel administracyjny i role użytkowników
 Dostęp tylko do danych potrzebnych danej osobie.
 
@@ -813,8 +726,6 @@ Pracownik przypisane zlecenia, zdjęcia, statusy
 Magazyn / materiały materiały, stany, zdjęcia, rezerwacje
 
 Redaktor treści publiczne, FAQ, realizacje, katalog
-
-Audyt / faktów zatwierdzanie danych publikowanych (Fact Control)
 
 GREMPOOL Digital — Koncepcja systemu cyfrowego Strona 23 z 32
 
@@ -1054,8 +965,6 @@ Baza danych klienci, leady, usługi, materiały, pojazdy, maszyny, realizacje
 
 Automatyzacje powiadomienia i procesy follow-up
 
-Fact Control kontrola danych przed publikacją
-
 Analityka dashboard i podstawowe raportowanie
 
 PWA mobilny dostęp do najważniejszych funkcji
@@ -1105,7 +1014,7 @@ D O K U M E N T W E J Ś C I O W Y Szczegółowy kwestionariusz Fact-Driven Disc
 37 Rekomendacja końcowa
 GREMPOOL jako spójny ekosystem cyfrowy.
 
-Rekomendowany kierunek to nie „duża strona”, lecz mały, modularny system operacyjny dla firmy. Publiczna strona ma generować wartościowe zapytania, a panel ma zamieniać je w uporządkowane zlecenia. Katalog materiałów ma odzwierciedlać rzeczywistą dostępność, a warstwa Fact Control ma pilnować jakości danych.
+Rekomendowany kierunek to nie „duża strona”, lecz mały, modularny system operacyjny dla firmy. Publiczna strona ma generować wartościowe zapytania, a panel ma zamieniać je w uporządkowane zlecenia. Katalog materiałów ma odzwierciedlać rzeczywistą dostępność.
 
 Takie podejście pozwala zacząć od prostego MVP i rozwijać rozwiązanie bez wymiany fundamentów. Najpierw procesy, które oszczędzają czas i generują przychód; później funkcje zwiększające automatyzację i skalę.
 

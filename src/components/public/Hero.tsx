@@ -25,6 +25,9 @@ export default function Hero() {
       {/* Content */}
       <div className="container mx-auto px-4 relative z-10 py-20">
         <div className="max-w-2xl">
+          <p className="text-[#f0a500] font-montserrat font-semibold tracking-wide text-sm md:text-base mb-3">
+            TWÓJ PARTNER W TRANSPORCIE, ZŁOMIE I USŁUGACH
+          </p>
           <h1 className="text-5xl md:text-6xl font-montserrat font-bold mb-4">
             <span className="text-white">SKUP ZŁOMU</span>
             <br />
