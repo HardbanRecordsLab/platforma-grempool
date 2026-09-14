@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { SERVICE_LABELS, STATUS_LABELS } from "@/lib/supabase";
 import { fetchCalendarEvents, pad, toISODate, type DayEvents } from "@/lib/calendar-data";
+import { getPolishHolidays } from "@/lib/holidays";
 
 const daysOfWeek = ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Ndz"];
 const months = [
@@ -64,6 +65,8 @@ export default function KalendarzPage() {
   const daysInMonth = getDaysInMonth(currentDate);
   const firstDay = getFirstDayOfMonth(currentDate);
   const todayISO = toISODate(today);
+
+  const holidaysMap = new Map(getPolishHolidays(currentDate.getFullYear()).map((h) => [h.date, h.name]));
 
   const prevMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
   const nextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
@@ -164,21 +167,24 @@ export default function KalendarzPage() {
               const isToday = iso === todayISO;
               const isSelected = iso === selectedDate;
               const dayEvents = eventsByDay[iso];
+              const holidayName = holidaysMap.get(iso);
 
               return (
                 <button
                   key={day}
                   onClick={() => setSelectedDate(iso)}
+                  title={holidayName}
                   className={`aspect-square rounded-lg flex flex-col items-center justify-center relative transition-colors ${
-                    isSelected ? "bg-[#f0a500] text-[#0f1419]" : isToday ? "bg-[#f0a500]/20 text-[#f0a500]" : "hover:bg-[#2a3a4a]"
+                    isSelected ? "bg-[#f0a500] text-[#0f1419]" : isToday ? "bg-[#f0a500]/20 text-[#f0a500]" : holidayName ? "text-red-400 hover:bg-[#2a3a4a]" : "hover:bg-[#2a3a4a]"
                   }`}
                 >
                   <span className="font-semibold">{day}</span>
-                  {dayEvents && (
+                  {(dayEvents || holidayName) && (
                     <div className="flex gap-1 mt-1">
-                      {dayEvents.orders.length > 0 && <div className="w-1.5 h-1.5 rounded-full bg-green-500" />}
-                      {dayEvents.leads.length > 0 && <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />}
-                      {dayEvents.tasks.length > 0 && <div className="w-1.5 h-1.5 rounded-full bg-[#f0a500]" />}
+                      {holidayName && <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? "bg-[#0f1419]" : "bg-red-500"}`} />}
+                      {dayEvents && dayEvents.orders.length > 0 && <div className="w-1.5 h-1.5 rounded-full bg-green-500" />}
+                      {dayEvents && dayEvents.leads.length > 0 && <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />}
+                      {dayEvents && dayEvents.tasks.length > 0 && <div className="w-1.5 h-1.5 rounded-full bg-[#f0a500]" />}
                     </div>
                   )}
                 </button>
@@ -190,6 +196,12 @@ export default function KalendarzPage() {
         {/* Day Schedule */}
         <div className="bg-[#1a2332] p-6 rounded-xl border border-[#2a3a4a]">
           <h3 className="text-lg font-montserrat font-bold mb-4">{selectedDayLabel}</h3>
+
+          {holidaysMap.get(selectedDate) && (
+            <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-semibold">
+              {holidaysMap.get(selectedDate)} — dzień wolny od pracy
+            </div>
+          )}
 
           <div className="space-y-4">
             {selectedEvents.orders.length === 0 && selectedEvents.leads.length === 0 && selectedEvents.tasks.length === 0 && !loading && (

@@ -18,6 +18,7 @@ import {
   CalendarDays,
 } from "lucide-react";
 import { fetchCalendarEvents, pad, toISODate, type DayEvents } from "@/lib/calendar-data";
+import { getPolishHolidays } from "@/lib/holidays";
 import { SERVICE_LABELS } from "@/lib/supabase";
 import { getMaterials } from "@/lib/materials-store";
 
@@ -80,6 +81,8 @@ function DashboardCalendar() {
     const d = new Date(selectedDate + "T00:00:00");
     return `${d.getDate()} ${months[d.getMonth()]}`;
   })();
+  const holidaysMap = new Map(getPolishHolidays(currentDate.getFullYear()).map((h) => [h.date, h.name]));
+  const selectedHoliday = holidaysMap.get(selectedDate);
 
   return (
     <div className="bg-[#1a2332] rounded-xl border border-[#2a3a4a] p-6">
@@ -117,17 +120,21 @@ function DashboardCalendar() {
               const isSelected = iso === selectedDate;
               const dayEvents = eventsByDay[iso];
               const hasEvents = dayEvents && (dayEvents.orders.length + dayEvents.leads.length + dayEvents.tasks.length) > 0;
+              const holidayName = holidaysMap.get(iso);
 
               return (
                 <button
                   key={day}
                   onClick={() => setSelectedDate(iso)}
+                  title={holidayName}
                   className={`aspect-square rounded text-xs flex flex-col items-center justify-center transition-colors ${
-                    isSelected ? "bg-[#f0a500] text-[#0f1419] font-semibold" : isToday ? "bg-[#f0a500]/20 text-[#f0a500]" : "hover:bg-[#2a3a4a]"
+                    isSelected ? "bg-[#f0a500] text-[#0f1419] font-semibold" : isToday ? "bg-[#f0a500]/20 text-[#f0a500]" : holidayName ? "text-red-400 hover:bg-[#2a3a4a]" : "hover:bg-[#2a3a4a]"
                   }`}
                 >
                   {day}
-                  {hasEvents && <div className={`w-1 h-1 rounded-full mt-0.5 ${isSelected ? "bg-[#0f1419]" : "bg-[#f0a500]"}`} />}
+                  {(hasEvents || holidayName) && (
+                    <div className={`w-1 h-1 rounded-full mt-0.5 ${isSelected ? "bg-[#0f1419]" : holidayName ? "bg-red-500" : "bg-[#f0a500]"}`} />
+                  )}
                 </button>
               );
             })}
@@ -136,6 +143,11 @@ function DashboardCalendar() {
 
         <div>
           <div className="text-sm font-semibold mb-3">{selectedLabel}</div>
+          {selectedHoliday && (
+            <div className="mb-2 p-2 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-semibold">
+              {selectedHoliday}
+            </div>
+          )}
           <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
             {loading ? (
               <p className="text-xs text-[#b8c5d6]">Wczytywanie...</p>
