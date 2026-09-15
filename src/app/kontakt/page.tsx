@@ -1,8 +1,55 @@
+"use client";
+
+import { useState } from "react";
 import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
-import { Phone, Mail, MapPin, Clock, Send } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, Send, Loader2, CheckCircle2 } from "lucide-react";
+import { createContactMessage } from "@/lib/contact-messages-store";
+
+const TEMAT_LABELS: Record<string, string> = {
+  skup: "Skup złomu",
+  transport: "Transport",
+  koparki: "Usługi koparką",
+  materialy: "Materiały budowlane",
+  klimatyzacja: "Klimatyzacja",
+  inne: "Inne",
+};
 
 export default function KontaktPage() {
+  const [form, setForm] = useState({
+    imie: "",
+    nazwisko: "",
+    email: "",
+    telefon: "",
+    temat: "",
+    wiadomosc: "",
+  });
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setSending(true);
+    try {
+      await createContactMessage({
+        imie: form.imie,
+        nazwisko: form.nazwisko,
+        email: form.email,
+        telefon: form.telefon || undefined,
+        temat: TEMAT_LABELS[form.temat] ?? form.temat,
+        wiadomosc: form.wiadomosc,
+      });
+      setSent(true);
+      setForm({ imie: "", nazwisko: "", email: "", telefon: "", temat: "", wiadomosc: "" });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Nie udało się wysłać wiadomości. Spróbuj ponownie lub zadzwoń.");
+    } finally {
+      setSending(false);
+    }
+  };
+
   return (
     <main className="min-h-screen">
       <Navbar />
@@ -90,45 +137,103 @@ export default function KontaktPage() {
               <h2 className="text-2xl font-montserrat font-bold mb-6">
                 NAPISZ DO <span className="text-[#f0a500]">NAS</span>
               </h2>
-              <form className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm text-[#b8c5d6] mb-2">Imię *</label>
-                    <input type="text" required className="w-full bg-[#1a2332] border border-[#2a3a4a] rounded-lg p-3 text-white" placeholder="Jan" />
+              {sent ? (
+                <div className="bg-green-500/10 border border-green-500/30 text-green-400 p-6 rounded-xl text-center flex flex-col items-center gap-3">
+                  <CheckCircle2 size={32} />
+                  <p className="font-semibold">Wiadomość wysłana!</p>
+                  <p className="text-sm text-[#b8c5d6]">Odezwiemy się do Ciebie najszybciej jak to możliwe.</p>
+                  <button onClick={() => setSent(false)} className="text-sm text-[#f0a500] hover:underline">
+                    Wyślij kolejną wiadomość
+                  </button>
+                </div>
+              ) : (
+                <form className="space-y-4" onSubmit={handleSubmit}>
+                  {error && (
+                    <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-lg text-sm">{error}</div>
+                  )}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm text-[#b8c5d6] mb-2">Imię *</label>
+                      <input
+                        type="text"
+                        required
+                        value={form.imie}
+                        onChange={(e) => setForm({ ...form, imie: e.target.value })}
+                        className="w-full bg-[#1a2332] border border-[#2a3a4a] rounded-lg p-3 text-white"
+                        placeholder="Jan"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm text-[#b8c5d6] mb-2">Nazwisko *</label>
+                      <input
+                        type="text"
+                        required
+                        value={form.nazwisko}
+                        onChange={(e) => setForm({ ...form, nazwisko: e.target.value })}
+                        className="w-full bg-[#1a2332] border border-[#2a3a4a] rounded-lg p-3 text-white"
+                        placeholder="Kowalski"
+                      />
+                    </div>
                   </div>
                   <div>
-                    <label className="block text-sm text-[#b8c5d6] mb-2">Nazwisko *</label>
-                    <input type="text" required className="w-full bg-[#1a2332] border border-[#2a3a4a] rounded-lg p-3 text-white" placeholder="Kowalski" />
+                    <label className="block text-sm text-[#b8c5d6] mb-2">Email *</label>
+                    <input
+                      type="email"
+                      required
+                      value={form.email}
+                      onChange={(e) => setForm({ ...form, email: e.target.value })}
+                      className="w-full bg-[#1a2332] border border-[#2a3a4a] rounded-lg p-3 text-white"
+                      placeholder="jan@example.com"
+                    />
                   </div>
-                </div>
-                <div>
-                  <label className="block text-sm text-[#b8c5d6] mb-2">Email *</label>
-                  <input type="email" required className="w-full bg-[#1a2332] border border-[#2a3a4a] rounded-lg p-3 text-white" placeholder="jan@example.com" />
-                </div>
-                <div>
-                  <label className="block text-sm text-[#b8c5d6] mb-2">Telefon</label>
-                  <input type="tel" className="w-full bg-[#1a2332] border border-[#2a3a4a] rounded-lg p-3 text-white" placeholder="+48 123 456 789" />
-                </div>
-                <div>
-                  <label className="block text-sm text-[#b8c5d6] mb-2">Temat *</label>
-                  <select required className="w-full bg-[#1a2332] border border-[#2a3a4a] rounded-lg p-3 text-white">
-                    <option value="">Wybierz temat...</option>
-                    <option value="skup">Skup złomu</option>
-                    <option value="transport">Transport</option>
-                    <option value="koparki">Usługi koparką</option>
-                    <option value="materialy">Materiały budowlane</option>
-                    <option value="klimatyzacja">Klimatyzacja</option>
-                    <option value="inne">Inne</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm text-[#b8c5d6] mb-2">Wiadomość *</label>
-                  <textarea required rows={4} className="w-full bg-[#1a2332] border border-[#2a3a4a] rounded-lg p-3 text-white" placeholder="Treść wiadomości..." />
-                </div>
-                <button type="submit" className="w-full btn-primary py-4 rounded-lg font-semibold text-[#0f1419] flex items-center justify-center gap-2">
-                  <Send size={20} /> WYŚLIJ WIADOMOŚĆ
-                </button>
-              </form>
+                  <div>
+                    <label className="block text-sm text-[#b8c5d6] mb-2">Telefon</label>
+                    <input
+                      type="tel"
+                      value={form.telefon}
+                      onChange={(e) => setForm({ ...form, telefon: e.target.value })}
+                      className="w-full bg-[#1a2332] border border-[#2a3a4a] rounded-lg p-3 text-white"
+                      placeholder="+48 123 456 789"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-[#b8c5d6] mb-2">Temat *</label>
+                    <select
+                      required
+                      value={form.temat}
+                      onChange={(e) => setForm({ ...form, temat: e.target.value })}
+                      className="w-full bg-[#1a2332] border border-[#2a3a4a] rounded-lg p-3 text-white"
+                    >
+                      <option value="">Wybierz temat...</option>
+                      <option value="skup">Skup złomu</option>
+                      <option value="transport">Transport</option>
+                      <option value="koparki">Usługi koparką</option>
+                      <option value="materialy">Materiały budowlane</option>
+                      <option value="klimatyzacja">Klimatyzacja</option>
+                      <option value="inne">Inne</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm text-[#b8c5d6] mb-2">Wiadomość *</label>
+                    <textarea
+                      required
+                      rows={4}
+                      value={form.wiadomosc}
+                      onChange={(e) => setForm({ ...form, wiadomosc: e.target.value })}
+                      className="w-full bg-[#1a2332] border border-[#2a3a4a] rounded-lg p-3 text-white"
+                      placeholder="Treść wiadomości..."
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={sending}
+                    className="w-full btn-primary py-4 rounded-lg font-semibold text-[#0f1419] flex items-center justify-center gap-2 disabled:opacity-60"
+                  >
+                    {sending ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
+                    WYŚLIJ WIADOMOŚĆ
+                  </button>
+                </form>
+              )}
             </div>
           </div>
         </div>

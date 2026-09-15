@@ -81,7 +81,8 @@ export interface Pojazd {
   przeglad?: string;
   oc?: string;
   serwis?: string;
-  utworzone: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Maszyna {
@@ -96,7 +97,8 @@ export interface Maszyna {
   osprzet: string[];
   status: 'dostepna' | 'w_trakcie' | 'przeglad' | 'serwis';
   operator?: string;
-  utworzone: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Material {
@@ -119,7 +121,7 @@ export interface Material {
 
 export interface Realizacja {
   id: string;
-  zlecenie_id: string;
+  order_id?: string;
   usluga: ServiceType;
   lokalizacja: string;
   zakres: string;
@@ -130,7 +132,8 @@ export interface Realizacja {
   data_realizacji: string;
   zgoda_publikacja: boolean;
   status: 'robocza' | 'zatwierdzona' | 'publiczna';
-  utworzone: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Fakt {
@@ -163,6 +166,19 @@ export interface ScrapPrice {
   aktywny: boolean;
   utworzone: string;
   zaktualizowane: string;
+}
+
+export interface ContactMessage {
+  id: string;
+  imie: string;
+  nazwisko: string;
+  email: string;
+  telefon?: string;
+  temat: string;
+  wiadomosc: string;
+  status: 'nowa' | 'przeczytana';
+  created_at: string;
+  updated_at: string;
 }
 
 export interface CustomService {

@@ -17,7 +17,9 @@ import {
   Settings,
   LogOut,
   Menu,
-  X
+  X,
+  Mail,
+  Image as ImageIcon
 } from "lucide-react";
 import { useState } from "react";
 
@@ -32,6 +34,8 @@ const menuItems = [
   { icon: Calendar, label: "Kalendarz", href: "/admin/kalendarz" },
   { icon: Truck, label: "Flota", href: "/admin/flota" },
   { icon: Wrench, label: "Maszyny", href: "/admin/maszyny" },
+  { icon: Mail, label: "Wiadomości", href: "/admin/wiadomosci" },
+  { icon: ImageIcon, label: "Realizacje", href: "/admin/realizacje" },
   { icon: Settings, label: "Ustawienia", href: "/admin/ustawienia" },
 ];
 
