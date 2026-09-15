@@ -28,9 +28,9 @@ export default function Navbar() {
             <Phone size={14} />
             <span>+48 123 456 789</span>
           </a>
-          <a href="mailto:biuro@grempool.pl" className="flex items-center gap-2 hover:text-[#f0a500] transition-colors">
+          <a href="mailto:grempool@proton.me" className="flex items-center gap-2 hover:text-[#f0a500] transition-colors">
             <Mail size={14} />
-            <span>biuro@grempool.pl</span>
+            <span>grempool@proton.me</span>
           </a>
         </div>
       </div>

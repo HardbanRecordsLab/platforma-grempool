@@ -83,8 +83,8 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="text-[#f0a500] size-5 shrink-0" />
-                <a href="mailto:biuro@grempool.pl" className="hover:text-[#f0a500] transition-colors">
-                  biuro@grempool.pl
+                <a href="mailto:grempool@proton.me" className="hover:text-[#f0a500] transition-colors">
+                  grempool@proton.me
                 </a>
               </li>
             </ul>

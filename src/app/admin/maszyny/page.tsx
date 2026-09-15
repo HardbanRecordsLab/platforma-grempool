@@ -101,9 +101,8 @@ export default function MaszynyPage() {
     if (!form.nazwa.trim()) return;
     setSaving(true);
     try {
-      const { operator: _operator, ...rest } = form;
       const payload: MachineInput = {
-        ...rest,
+        ...form,
         osprzet: osprzetText
           .split(",")
           .map((s) => s.trim())
@@ -362,6 +361,15 @@ export default function MaszynyPage() {
                     className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
                   />
                 </div>
+              </div>
+              <div>
+                <label className="block text-sm text-[#b8c5d6] mb-1">Operator</label>
+                <input
+                  value={form.operator}
+                  onChange={(e) => setForm({ ...form, operator: e.target.value })}
+                  placeholder="np. Jan Kowalczyk"
+                  className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+                />
               </div>
               <div>
                 <label className="block text-sm text-[#b8c5d6] mb-1">Osprzęt (oddziel przecinkami)</label>

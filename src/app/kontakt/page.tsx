@@ -110,8 +110,8 @@ export default function KontaktPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Email</h3>
-                    <a href="mailto:biuro@grempool.pl" className="text-[#b8c5d6] hover:text-[#f0a500] transition-colors">
-                      biuro@grempool.pl
+                    <a href="mailto:grempool@proton.me" className="text-[#b8c5d6] hover:text-[#f0a500] transition-colors">
+                      grempool@proton.me
                     </a>
                   </div>
                 </div>

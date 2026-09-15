@@ -78,7 +78,7 @@ export default function UstawieniaPage() {
                   </div>
                   <div>
                     <label className="block text-sm text-[#b8c5d6] mb-2">Email</label>
-                    <input type="email" defaultValue="biuro@grempool.pl" className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg p-3 text-white" />
+                    <input type="email" defaultValue="grempool@proton.me" className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg p-3 text-white" />
                   </div>
                 </div>
 
