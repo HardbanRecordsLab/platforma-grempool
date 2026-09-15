@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
 import { Snowflake, Phone, ArrowRight, CheckCircle2, Thermometer, Wind, Wrench } from "lucide-react";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Klimatyzacja Samochodowa - Napełnianie, Czyszczenie, Diagnostyka",
+  description:
+    "Napełnianie, czyszczenie i diagnostyka klimatyzacji samochodowej. Wszystkie typy pojazdów - osobowe, dostawcze, ciężarowe.",
+  alternates: { canonical: "/uslugi/klimatyzacja" },
+};
 
 const gallery = [
   "https://images.unsplash.com/photo-1742445134000-339f7e711477?auto=format&fit=crop&w=800&q=80",

@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
 import { Truck, Phone, ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Transport - Busy, Ciężarówki z HDS, Wywrotki, Transport Aut",
+  description:
+    "Transport ładunków różnego rodzaju - od małych po duże gabaryty. Busy krótkie i długie, ciężarówki z HDS, wywrotki, transport aut.",
+  alternates: { canonical: "/uslugi/transport" },
+};
 
 const gallery = [
   "https://images.unsplash.com/photo-1746349086423-06ea6b4d73f7?auto=format&fit=crop&w=800&q=80",

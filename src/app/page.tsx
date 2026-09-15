@@ -1,8 +1,16 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/public/Navbar";
 import Hero from "@/components/public/Hero";
 import Services from "@/components/public/Services";
 import FeaturedMaterials from "@/components/public/FeaturedMaterials";
 import Footer from "@/components/public/Footer";
+
+export const metadata: Metadata = {
+  title: "GREMPOOL - Skup Złomu, Transport, Usługi Koparką | Legnicko-Głogowskie",
+  description:
+    "Skup złomu, transport, usługi koparką, rozbiórki, materiały budowlane z odzysku i klimatyzacja aut. Solidnie. Terminowo. Na lata. Region legnicko-głogowski.",
+  alternates: { canonical: "/" },
+};
 
 export default function Home() {
   return (

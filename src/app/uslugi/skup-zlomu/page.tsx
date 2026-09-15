@@ -1,8 +1,16 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
 import ScrapPriceTicker from "@/components/public/ScrapPriceTicker";
 import { Recycle, Phone, ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Skup Złomu - Stal, Metale Kolorowe, Odbiór Własnym Transportem",
+  description:
+    "Skupujemy wszystkie rodzaje złomu stalowego i metali kolorowych. Atrakcyjne ceny, szybki odbiór, własny transport. Aktualny cennik złomu.",
+  alternates: { canonical: "/uslugi/skup-zlomu" },
+};
 
 const gallery = [
   "https://images.unsplash.com/photo-1578483006555-aa8ab7bb01e2?auto=format&fit=crop&w=800&q=80",

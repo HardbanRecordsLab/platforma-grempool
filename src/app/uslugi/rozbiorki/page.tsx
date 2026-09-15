@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
 import { Hammer, Phone, ArrowRight, CheckCircle2, Truck, Recycle } from "lucide-react";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Rozbiórki Budynków i Obiektów z Segregacją Materiałów",
+  description:
+    "Kompleksowe rozbiórki budynków, garaży i altan z segregacją materiałów i odzyskiem złomu. Wyburzanie całkowite i częściowe.",
+  alternates: { canonical: "/uslugi/rozbiorki" },
+};
 
 const gallery = [
   "https://images.unsplash.com/photo-1758965285803-1cdd3371563b?auto=format&fit=crop&w=800&q=80",

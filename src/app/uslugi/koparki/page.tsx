@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
 import { Wrench, Phone, ArrowRight, CheckCircle2, MapPin, Clock } from "lucide-react";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Usługi Koparką - Wykopy, Niwelacje, Prace Ziemne",
+  description:
+    "Profesjonalne usługi koparką - wykopy fundamentowe, niwelacje terenu, rozbiórki i prace ziemne. Własny sprzęt i doświadczeni operatorzy.",
+  alternates: { canonical: "/uslugi/koparki" },
+};
 
 const gallery = [
   "https://images.unsplash.com/photo-1503708928676-1cb796a0891e?auto=format&fit=crop&w=800&q=80",
