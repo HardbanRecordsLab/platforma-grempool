@@ -44,10 +44,10 @@ export default function Home() {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <a 
-              href="tel:+48123456789" 
+              href="tel:+48663288533" 
               className="bg-[#0f1419] text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-[#1a2332] transition-colors"
             >
-              +48 123 456 789
+              +48 663 288 533
             </a>
             <a 
               href="/wycena" 

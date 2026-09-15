@@ -169,8 +169,8 @@ export default function UslugiClient() {
             Skontaktuj się z nami lub wypełnij formularz szybkiej wyceny
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href="tel:+48123456789" className="bg-[#0f1419] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#1a2332] transition-colors flex items-center gap-2">
-              <Phone size={20} /> +48 123 456 789
+            <a href="tel:+48663288533" className="bg-[#0f1419] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#1a2332] transition-colors flex items-center gap-2">
+              <Phone size={20} /> +48 663 288 533
             </a>
             <Link href="/wycena" className="bg-white text-[#f0a500] px-8 py-4 rounded-lg font-semibold hover:bg-[#b8c5d6] transition-colors">
               SZYBKA WYCENA

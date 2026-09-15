@@ -24,9 +24,9 @@ export default function Navbar() {
             <MapPin size={14} />
             <span>ul. Kolejowa 5a, 59-307 Raszówka</span>
           </a>
-          <a href="tel:+48123456789" className="flex items-center gap-2 hover:text-[#f0a500] transition-colors">
+          <a href="tel:+48663288533" className="flex items-center gap-2 hover:text-[#f0a500] transition-colors">
             <Phone size={14} />
-            <span>+48 123 456 789</span>
+            <span>+48 663 288 533</span>
           </a>
           <a href="mailto:grempool@proton.me" className="flex items-center gap-2 hover:text-[#f0a500] transition-colors">
             <Mail size={14} />

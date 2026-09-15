@@ -78,7 +78,7 @@ export default function Hero() {
               </p>
               <div className="flex flex-wrap items-center gap-6">
                 <div className="flex gap-4">
-                  <a href="tel:+48123456789" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#0f1419]">
+                  <a href="tel:+48663288533" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#0f1419]">
                     ZADZWOŃ
                   </a>
                   <Link href="/wycena" className="px-6 py-3 rounded-lg font-semibold border-2 border-[#f0a500] text-[#f0a500] hover:bg-[#f0a500] hover:text-[#0f1419] transition-all">

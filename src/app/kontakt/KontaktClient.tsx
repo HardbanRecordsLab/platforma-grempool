@@ -98,8 +98,8 @@ export default function KontaktClient() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Telefon</h3>
-                    <a href="tel:+48123456789" className="text-[#b8c5d6] hover:text-[#f0a500] transition-colors">
-                      +48 123 456 789
+                    <a href="tel:+48663288533" className="text-[#b8c5d6] hover:text-[#f0a500] transition-colors">
+                      +48 663 288 533
                     </a>
                   </div>
                 </div>
@@ -193,7 +193,7 @@ export default function KontaktClient() {
                       value={form.telefon}
                       onChange={(e) => setForm({ ...form, telefon: e.target.value })}
                       className="w-full bg-[#1a2332] border border-[#2a3a4a] rounded-lg p-3 text-white"
-                      placeholder="+48 123 456 789"
+                      placeholder="+48 663 288 533"
                     />
                   </div>
                   <div>

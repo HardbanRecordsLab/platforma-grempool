@@ -74,7 +74,7 @@ export default function UstawieniaPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm text-[#b8c5d6] mb-2">Telefon</label>
-                    <input type="tel" defaultValue="+48 123 456 789" className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg p-3 text-white" />
+                    <input type="tel" defaultValue="+48 663 288 533" className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg p-3 text-white" />
                   </div>
                   <div>
                     <label className="block text-sm text-[#b8c5d6] mb-2">Email</label>

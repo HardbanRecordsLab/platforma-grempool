@@ -68,7 +68,7 @@ export default function MaterialyClient() {
               Stal, cegła, okna, drzwi i wiele więcej. Poniżej aktualna dostępność z naszego placu.
             </p>
             <div className="flex gap-4">
-              <a href="tel:+48123456789" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#0f1419] flex items-center gap-2">
+              <a href="tel:+48663288533" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#0f1419] flex items-center gap-2">
                 <Phone size={20} /> ZADZWOŃ
               </a>
               <Link href="/wycena" className="px-6 py-3 rounded-lg font-semibold border-2 border-[#f0a500] text-[#f0a500] hover:bg-[#f0a500] hover:text-[#0f1419] transition-all">
@@ -188,8 +188,8 @@ export default function MaterialyClient() {
           </h2>
           <p className="text-[#0f1419]/80 mb-8">Zadzwoń lub napisz - pomożemy znaleźć to, czego potrzebujesz</p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href="tel:+48123456789" className="bg-[#0f1419] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#1a2332] transition-colors flex items-center gap-2">
-              <Phone size={20} /> +48 123 456 789
+            <a href="tel:+48663288533" className="bg-[#0f1419] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#1a2332] transition-colors flex items-center gap-2">
+              <Phone size={20} /> +48 663 288 533
             </a>
             <Link href="/wycena" className="bg-white text-[#f0a500] px-8 py-4 rounded-lg font-semibold hover:bg-[#b8c5d6] transition-colors flex items-center gap-2">
               NAPISZ DO NAS <ArrowRight size={20} />

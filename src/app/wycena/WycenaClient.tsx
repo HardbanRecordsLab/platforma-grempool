@@ -234,7 +234,7 @@ function WycenaForm() {
                       value={formData.telefon}
                       onChange={(e) => setFormData({ ...formData, telefon: e.target.value })}
                       className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg p-3 text-white"
-                      placeholder="+48 123 456 789"
+                      placeholder="+48 663 288 533"
                     />
                   </div>
                   <div>

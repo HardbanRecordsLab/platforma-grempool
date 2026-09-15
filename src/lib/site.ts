@@ -9,8 +9,8 @@ export const BUSINESS = {
   legalName: "GREMPOOL",
   description:
     "Skup złomu, transport, usługi koparką, rozbiórki, materiały budowlane z odzysku i klimatyzacja aut w regionie legnicko-głogowskim.",
-  phone: "+48123456789",
-  phoneDisplay: "+48 123 456 789",
+  phone: "+48663288533",
+  phoneDisplay: "+48 663 288 533",
   email: "grempool@proton.me",
   streetAddress: "ul. Kolejowa 5a",
   postalCode: "59-307",
