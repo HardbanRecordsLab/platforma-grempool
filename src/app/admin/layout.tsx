@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import NotificationBell from "@/components/admin/NotificationBell";
 import { 
   LayoutDashboard, 
   Users, 
@@ -97,7 +98,8 @@ export default function AdminLayout({
           </button>
 
           <div className="flex items-center gap-4">
-            <div className="text-sm text-[#b8c5d6]">
+            <NotificationBell />
+            <div className="text-sm text-[#b8c5d6] hidden sm:block">
               Zalogowany jako: <span className="text-white font-semibold">Właściciel</span>
             </div>
             <div className="w-8 h-8 rounded-full bg-[#f0a500] flex items-center justify-center text-[#0f1419] font-bold text-sm">

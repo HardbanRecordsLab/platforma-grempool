@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase-admin";
+import { sendNewLeadNotification } from "@/lib/notifications";
 
 export async function GET(request: NextRequest) {
   const supabase = createAdminClient();
@@ -21,5 +22,8 @@ export async function POST(request: NextRequest) {
 
   const { data, error } = await supabase.from("leads").insert(body).select().single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  sendNewLeadNotification(data).catch(() => {});
+
   return NextResponse.json(data);
 }
