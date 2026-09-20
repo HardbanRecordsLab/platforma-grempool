@@ -609,7 +609,7 @@ GREMPOOL DIGITAL
 C Z Ę Ś Ć I V
 
 Ceny, sprzedaż i doświadczenie klienta
-Jak system wspiera proces wyceny, wykorzystuje powiązania między usługami i prowadzi klienta przez cały cykl współpracy z GREMPOOL.
+Jak system wspiera proces wyceny i prowadzi klienta przez cały cykl współpracy z GREMPOOL.
 
 20 Ceny, wyceny i negocjacje
 System ma wspierać proces, ale nie wymyślać cen.
@@ -658,7 +658,7 @@ GREMPOOL DIGITAL
 C Z Ę Ś Ć V
 
 Automatyzacja i jakość danych
-Jak system usuwa powtarzalną pracę ręczną, dba o wiarygodność publikowanych informacji i kontroluje dostęp.
+Jak system usuwa powtarzalną pracę ręczną i kontroluje dostęp.
 
 25 Automatyzacje i integracje
 Usuwanie powtarzalnej pracy ręcznej.
