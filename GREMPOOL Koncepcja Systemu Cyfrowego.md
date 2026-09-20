@@ -52,8 +52,6 @@ Rezerwacja materiału
 
 Plac, magazyn i dostępność
 
-Realizacje i portfolio
-
 Centrum zdjęć
 
 Opinie, reputacja i Google Business Profile
@@ -118,7 +116,7 @@ inteligentną, szybką wycenę
 
 formularze dopasowane do rodzaju usługi
 
-aktualny katalog materiałów z odzysku realizacje i dowody wykonanej pracy
+aktualny katalog materiałów z odzysku
 
 łatwy kontakt telefoniczny i formularzowy
 
@@ -132,7 +130,7 @@ kalendarz operacyjny
 
 moduł floty i maszyn
 
-bazę materiałów i dostępności bibliotekę zdjęć i realizacji
+bazę materiałów i dostępności bibliotekę zdjęć
 
 automatyczne powiadomienia
 
@@ -149,11 +147,11 @@ Najważniejszym założeniem jest rozdzielenie danych od prezentacji. Strona, pa
 
 Obszar Proponowane rozwiązanie
 
-Publiczny portal Strona, usługi, katalog materiałów, realizacje, FAQ, kontakt, szybkie wyceny
+Publiczny portal Strona, usługi, katalog materiałów, FAQ, kontakt, szybkie wyceny
 
 Panel GREMPOOL Leady, klienci, zlecenia, kalendarz, flota, maszyny, materiały, zadania
 
-Baza danych Jedno źródło prawdy dla klientów, zleceń, produktów, zasobów i faktów
+Baza danych Jedno źródło prawdy dla klientów, zleceń, produktów i zasobów
 
 Automatyzacje Powiadomienia, e-maile, follow-up, raporty i integracje
 
@@ -168,7 +166,7 @@ GREMPOOL DIGITAL
 03 Struktura systemu — mapa modułów
 Jak poszczególne warstwy systemu łączą się ze sobą.
 
-GREMPOOL DIGITAL ├── PUBLIC WEBSITE ├── ADMIN PANEL │ └── Leady ──────────────────────────┐ │ ├── CRM │ └── Zlecenia │ └────────────────────── SUPABASE ───────────────────────── ├── Database ├── Storage ├── Auth │ ├── Klienci │ ├── Leady │ ├── Zlecenia │ ├── Pojazdy │ ├── Maszyny │ ├── Materiały │ ├── Ceny │ ├── Realizacje │ ├── Opinie │ ├── Dokumenty │ └── Fakty │ └── n8n (automatyzacja) ├── Email ├── SMS ├── WhatsApp ├── Google └── Raporty
+GREMPOOL DIGITAL ├── PUBLIC WEBSITE ├── ADMIN PANEL │ └── Leady ──────────────────────────┐ │ ├── CRM │ └── Zlecenia │ └────────────────────── SUPABASE ───────────────────────── ├── Database ├── Storage ├── Auth │ ├── Klienci │ ├── Leady │ ├── Zlecenia │ ├── Pojazdy │ ├── Maszyny │ ├── Materiały │ ├── Ceny │ └── Opinie │ └── n8n (automatyzacja) ├── Email ├── SMS ├── WhatsApp ├── Google └── Raporty
 
 Publiczna strona i panel administracyjny współdzielą jedną bazę danych (Supabase/PostgreSQL). Leady zebrane na stronie trafiają wprost do CRM i modułu zleceń. Warstwa automatyzacji (n8n) rozsyła powiadomienia kanałami e-mail, SMS, WhatsApp oraz zasila raporty i integrację z Google — ale nie jest „sercem” systemu: to baza danych GREMPOOL pozostaje jedynym źródłem prawdy.
 
@@ -239,7 +237,7 @@ maszyny
 
 zakres prac
 
-zdjęcia realizacji wycena
+galeria zdjęć wycena
 
 Rozbiórki
 
@@ -253,7 +251,7 @@ rozbiórka + segregacja + transport
 
 odzysk materiałów
 
-realizacje formularz zapytania
+galeria zdjęć formularz zapytania
 
 Materiały z odzysku
 
@@ -574,31 +572,12 @@ GREMPOOL Digital — Koncepcja systemu cyfrowego Strona 16 z 32
 
 GREMPOOL DIGITAL
 
-16 Realizacje i portfolio
-Pokazywanie dowodów zamiast samych deklaracji.
-
-Każde zakończone zlecenie może zostać oznaczone jako materiał do portfolio. Właściciel decyduje, czy dana realizacja może zostać opublikowana.
-
-Obszar Proponowane rozwiązanie
-
-Realizacja typ usługi, lokalizacja, zakres, opis efektu
-
-Media przed / w trakcie / po, zdjęcia, filmy
-
-Zgoda możliwość wskazania, czy można podać klienta, firmę lub lokalizację
-
-Powiązanie realizacja połączona ze zleceniem i usługą
-
-Publikacja wersja robocza → zatwierdzona → publiczna
-
-W praktyce: pracownik zaznacza „Zlecenie zakończone”, a system pyta „Czy chcesz dodać realizację do portfolio?”. Dodaje zdjęcia przed/w trakcie/po, typ usługi, miejscowość, opis, zakres i użyty sprzęt. Administrator zatwierdza — i gotowe.
-
 17 Centrum zdjęć
 Bardzo ważne dla GREMPOOL — jedna wspólna biblioteka.
 
 Złom Transport Koparki Rozbiórki Stal Cegła Okna Drzwi
 
-Klimatyzacja Realizacje
+Klimatyzacja
 
 Każde zdjęcie może mieć: kategorię, usługę, zlecenie, materiał, datę, miejsce, zgodę na publikację. To pozwala automatycznie zasilać stronę bez ręcznego powielania plików między modułami.
 
@@ -692,7 +671,7 @@ Zmiana statusu automatyczny follow-up zależnie od procesu
 
 Wycena rejestr wysłania, termin ponownego kontaktu
 
-Zlecenie zakończone prośba o opinię + propozycja dodania realizacji
+Zlecenie zakończone prośba o opinię
 
 Nowy materiał publikacja do katalogu po zatwierdzeniu
 
@@ -706,7 +685,7 @@ KLIENT WYSYŁA FORMULARZ → CRM tworzy lead → klient dostaje automatyczne pot
 
 WYCENA Pracownik zmienia: Do wyceny → Wycena gotowa → system wysyła e-mail, opcjonalnie SMS, zapisuje datę, tworzy historię
 
-ZLECENIE ZAKOŃCZONE → wiadomość do klienta → prośba o opinię → zapis realizacji → możliwość dodania zdjęć do portfolio
+ZLECENIE ZAKOŃCZONE → wiadomość do klienta → prośba o opinię
 
 GREMPOOL Digital — Koncepcja systemu cyfrowego Strona 22 z 32
 
@@ -725,7 +704,7 @@ Pracownik przypisane zlecenia, zdjęcia, statusy
 
 Magazyn / materiały materiały, stany, zdjęcia, rezerwacje
 
-Redaktor treści publiczne, FAQ, realizacje, katalog
+Redaktor treści publiczne, FAQ, katalog
 
 GREMPOOL Digital — Koncepcja systemu cyfrowego Strona 23 z 32
 
@@ -882,12 +861,12 @@ GREMPOOL DIGITAL
 31 Model danych
 Jak łączą się ze sobą poszczególne moduły systemu.
 
-GREMPOOL DIGITAL ├── PUBLIC WEBSITE ├── ADMIN PANEL │ └── LEADS ───────────────┬── CRM │ └── ZLECENIA └──────────────── SUPABASE ───────────────────── ├── DATABASE ├── STORAGE ├── AUTH │ ├── Klienci │ ├── Leady │ ├── Zlecenia │ ├── Pojazdy │ ├── Maszyny │ ├── Materiały │ ├── Ceny │ ├── Realizacje │ ├── Opinie │ ├── Dokumenty │ └── Fakty │ └── n8n ├── Email ├── SMS ├── WhatsApp ├── Google └── Raporty
+GREMPOOL DIGITAL ├── PUBLIC WEBSITE ├── ADMIN PANEL │ └── LEADS ───────────────┬── CRM │ └── ZLECENIA └──────────────── SUPABASE ───────────────────── ├── DATABASE ├── STORAGE ├── AUTH │ ├── Klienci │ ├── Leady │ ├── Zlecenia │ ├── Pojazdy │ ├── Maszyny │ ├── Materiały │ ├── Ceny │ └── Opinie │ └── n8n ├── Email ├── SMS ├── WhatsApp ├── Google └── Raporty
 
 32 PWA zamiast osobnej aplikacji mobilnej
 Panel GREMPOOL jako aplikacja webowa.
 
-Panel GREMPOOL proponujemy zbudować jako PWA (Progressive Web App). Pracownik na telefonie wchodzi pod adres typu grepool.pl/panel i od razu dostaje aplikację — bez konieczności instalowania osobnej aplikacji z App Store lub Google Play.
+Panel GREMPOOL proponujemy zbudować jako PWA (Progressive Web App). Pracownik na telefonie wchodzi pod adres typu grempool.pl/admin i od razu dostaje aplikację — bez konieczności instalowania osobnej aplikacji z App Store lub Google Play.
 
 Zlecenia Dodaj zdjęcie Otwórz lokalizację Zadzwoń Zakończ zlecenie
 
@@ -926,8 +905,6 @@ rezerwacje materiałów
 
 biblioteka zdjęć
 
-realizacje
-
 opinie
 
 automatyzacje
@@ -957,11 +934,11 @@ Co finalnie ma działać.
 
 Obszar Proponowane rozwiązanie
 
-Portal publiczny responsywna strona GREMPOOL z usługami, materiałami, realizacjami i kontaktem
+Portal publiczny responsywna strona GREMPOOL z usługami, materiałami i kontaktem
 
 Panel operacyjny CRM + zlecenia + kalendarz + zasoby
 
-Baza danych klienci, leady, usługi, materiały, pojazdy, maszyny, realizacje
+Baza danych klienci, leady, usługi, materiały, pojazdy, maszyny
 
 Automatyzacje powiadomienia i procesy follow-up
 
@@ -1005,7 +982,7 @@ kanały kontaktu źródła obecnych leadów
 
 materiały wizualne
 
-opinie i realizacje
+opinie
 
 dane wymagające weryfikacji przed publikacją
 
