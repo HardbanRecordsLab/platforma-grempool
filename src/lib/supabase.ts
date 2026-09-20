@@ -131,22 +131,6 @@ export interface Material {
   updated_at: string;
 }
 
-export interface Realization {
-  id: string;
-  order_id?: string;
-  usluga: ServiceType;
-  lokalizacja: string;
-  zakres: string;
-  opis: string;
-  zdjecia_przed: string[];
-  zdjecia_w_trakcie: string[];
-  zdjecia_po: string[];
-  data_realizacji: string;
-  zgoda_publikacja: boolean;
-  status: string;
-  created_at: string;
-}
-
 export interface User {
   id: string;
   email: string;

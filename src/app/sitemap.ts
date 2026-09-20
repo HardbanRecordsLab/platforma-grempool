@@ -11,7 +11,6 @@ const staticRoutes: { path: string; priority: number; changeFrequency: MetadataR
   { path: "/uslugi/materialy", priority: 0.8, changeFrequency: "daily" },
   { path: "/uslugi/klimatyzacja", priority: 0.8, changeFrequency: "monthly" },
   { path: "/wycena", priority: 0.9, changeFrequency: "monthly" },
-  { path: "/realizacje", priority: 0.7, changeFrequency: "weekly" },
   { path: "/kontakt", priority: 0.7, changeFrequency: "monthly" },
 ];
 
