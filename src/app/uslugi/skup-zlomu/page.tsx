@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
 import ScrapPriceTicker from "@/components/public/ScrapPriceTicker";
-import ScrapPriceTable from "@/components/public/ScrapPriceTable";
+import ScrapPriceSidebar from "@/components/public/ScrapPriceSidebar";
 import { Recycle, Phone, ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 
@@ -54,33 +54,37 @@ export default function SkupZlomuPage() {
         />
         <div className="absolute inset-0 gradient-overlay" />
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-2xl">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-lg bg-[#f0a500]/10 flex items-center justify-center">
-                <Recycle className="text-[#f0a500] size-6" />
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-10">
+            <div className="max-w-2xl">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 rounded-lg bg-[#f0a500]/10 flex items-center justify-center">
+                  <Recycle className="text-[#f0a500] size-6" />
+                </div>
+                <span className="text-[#f0a500] font-semibold">USŁUGA</span>
               </div>
-              <span className="text-[#f0a500] font-semibold">USŁUGA</span>
+              <h1 className="text-4xl md:text-5xl font-montserrat font-bold mb-6">
+                SKUP <span className="text-[#f0a500]">ZŁOMU</span>
+              </h1>
+              <p className="text-[#b8c5d6] text-lg mb-8">
+                Skupujemy wszystkie rodzaje złomu stalowego i metali kolorowych.
+                Oferujemy atrakcyjne ceny, szybki odbiór i profesjonalną obsługę.
+              </p>
+              <div className="flex gap-4">
+                <a href="tel:+48663288533" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#0f1419] flex items-center gap-2">
+                  <Phone size={20} /> ZADZWOŃ
+                </a>
+                <Link href="/wycena" className="px-6 py-3 rounded-lg font-semibold border-2 border-[#f0a500] text-[#f0a500] hover:bg-[#f0a500] hover:text-[#0f1419] transition-all">
+                  SZYBKA WYCENA
+                </Link>
+              </div>
             </div>
-            <h1 className="text-4xl md:text-5xl font-montserrat font-bold mb-6">
-              SKUP <span className="text-[#f0a500]">ZŁOMU</span>
-            </h1>
-            <p className="text-[#b8c5d6] text-lg mb-8">
-              Skupujemy wszystkie rodzaje złomu stalowego i metali kolorowych.
-              Oferujemy atrakcyjne ceny, szybki odbiór i profesjonalną obsługę.
-            </p>
-            <div className="flex gap-4">
-              <a href="tel:+48663288533" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#0f1419] flex items-center gap-2">
-                <Phone size={20} /> ZADZWOŃ
-              </a>
-              <Link href="/wycena" className="px-6 py-3 rounded-lg font-semibold border-2 border-[#f0a500] text-[#f0a500] hover:bg-[#f0a500] hover:text-[#0f1419] transition-all">
-                SZYBKA WYCENA
-              </Link>
+
+            <div className="w-full lg:w-auto lg:shrink-0">
+              <ScrapPriceSidebar />
             </div>
           </div>
         </div>
       </section>
-
-      <ScrapPriceTable />
 
       {/* Materials */}
       <section className="py-16 bg-[#1a2332]">
