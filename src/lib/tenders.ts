@@ -60,8 +60,8 @@ async function fetchProvinceNotices(province: string, days: number): Promise<Raw
 }
 
 function isRelevant(notice: RawNotice): boolean {
-  const haystack = `${notice.orderObject} ${notice.cpvCode}`.toLowerCase();
-  return KEYWORDS.some((kw) => haystack.includes(kw));
+  const title = notice.orderObject.toLowerCase();
+  return KEYWORDS.some((kw) => title.includes(kw));
 }
 
 export async function getRelevantTenders(days = 14): Promise<TenderMatch[]> {
