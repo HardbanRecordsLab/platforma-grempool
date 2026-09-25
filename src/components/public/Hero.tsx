@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
-import ScrapPriceSidebar from "./ScrapPriceSidebar";
 
 export default function Hero() {
   const benefits = [
@@ -25,7 +24,7 @@ export default function Hero() {
 
       {/* Content */}
       <div className="container mx-auto px-4 relative z-10 py-20">
-        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-10">
+        <div>
           <div className="max-w-2xl">
             <h1 className="text-5xl md:text-6xl font-montserrat font-bold mb-4">
               <span className="text-white">SKUP ZŁOMU</span>
@@ -91,10 +90,6 @@ export default function Hero() {
                 </div>
               </div>
             </div>
-          </div>
-
-          <div className="w-full lg:w-auto lg:shrink-0">
-            <ScrapPriceSidebar />
           </div>
         </div>
       </div>
