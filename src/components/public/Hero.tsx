@@ -67,9 +67,9 @@ export default function Hero() {
                 ZŁOMIE I USŁUGACH
               </h2>
               <p className="text-[#b8c5d6] mb-4">
-                Działamy szybko, rzetelnie i w uczciwy sposób. GREMPOOL to firma z wieloletnim doświadczeniem
-                w branży złomowej, transportowej i budowlanej. Naszym celem jest świadczenie usług na najwyższym
-                poziomie, z zachowaniem uczciwości i terminowości.
+                Działamy szybko, rzetelnie i w uczciwy sposób. GREMPOOL Maria Muczyńska to firma działająca
+                od 2013 roku w branży złomowej, transportowej i budowlanej. Naszym celem jest świadczenie usług
+                na najwyższym poziomie, z zachowaniem uczciwości i terminowości.
               </p>
               <p className="text-[#b8c5d6] mb-8">
                 Oferujemy kompleksowe rozwiązania - od skupu złomu, przez transport, aż po usługi budowlane

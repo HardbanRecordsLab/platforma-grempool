@@ -90,7 +90,8 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-[#2a3a4a] mt-8 pt-8 text-center text-[#b8c5d6] text-sm">
+        <div className="border-t border-[#2a3a4a] mt-8 pt-8 text-center text-[#b8c5d6] text-sm space-y-1">
+          <p>GREMPOOL Maria Muczyńska &middot; NIP 692-11-91-050 &middot; REGON 022118090</p>
           <p>&copy; {new Date().getFullYear()} GREMPOOL. Wszelkie prawa zastrzeżone.</p>
         </div>
       </div>

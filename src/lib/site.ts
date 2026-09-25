@@ -8,7 +8,10 @@ export const SITE_URL =
 
 export const BUSINESS = {
   name: "GREMPOOL",
-  legalName: "GREMPOOL",
+  legalName: "GREMPOOL Maria Muczyńska",
+  taxId: "6921191050",
+  regon: "022118090",
+  foundingDate: "2013-04-19",
   description:
     "Skup złomu, transport, usługi koparką, rozbiórki, materiały budowlane z odzysku i klimatyzacja aut w regionie legnicko-głogowskim.",
   phone: "+48663288533",
