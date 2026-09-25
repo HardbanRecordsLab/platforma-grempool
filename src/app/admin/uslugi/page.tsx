@@ -10,7 +10,7 @@ import {
   updateCustomService,
   type CustomServiceInput,
 } from "@/lib/custom-services-store";
-import { fileToCompressedDataUrl } from "@/lib/image-utils";
+import { uploadImageFile } from "@/lib/image-utils";
 
 const emptyForm: CustomServiceInput = {
   nazwa: "",
@@ -69,8 +69,10 @@ export default function AdminUslugiPage() {
     if (!file) return;
     setUploading(true);
     try {
-      const dataUrl = await fileToCompressedDataUrl(file);
-      setForm((prev) => ({ ...prev, zdjecie: dataUrl }));
+      const url = await uploadImageFile(file, "services");
+      setForm((prev) => ({ ...prev, zdjecie: url }));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Nie udało się wgrać zdjęcia");
     } finally {
       setUploading(false);
     }

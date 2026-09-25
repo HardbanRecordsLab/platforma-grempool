@@ -29,7 +29,7 @@ import {
   updateMaterial,
   type MaterialInput,
 } from "@/lib/materials-store";
-import { fileToCompressedDataUrl } from "@/lib/image-utils";
+import { uploadImageFile } from "@/lib/image-utils";
 
 const statusConfig: Record<MaterialStatus, { label: string; color: string; icon: React.ElementType }> = {
   dostepny: { label: "Dostępny", color: "bg-green-500/20 text-green-400", icon: CheckCircle2 },
@@ -154,8 +154,10 @@ export default function MaterialyPage() {
     if (!files || files.length === 0) return;
     setUploading(true);
     try {
-      const dataUrls = await Promise.all(Array.from(files).map((f) => fileToCompressedDataUrl(f)));
-      setForm((prev) => ({ ...prev, zdjecia: [...(prev.zdjecia ?? []), ...dataUrls] }));
+      const urls = await Promise.all(Array.from(files).map((f) => uploadImageFile(f, "materials")));
+      setForm((prev) => ({ ...prev, zdjecia: [...(prev.zdjecia ?? []), ...urls] }));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Nie udało się wgrać zdjęcia");
     } finally {
       setUploading(false);
     }
