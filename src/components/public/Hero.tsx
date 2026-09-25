@@ -66,14 +66,17 @@ export default function Hero() {
                 ZŁOMIE I USŁUGACH
               </h2>
               <p className="text-[#b8c5d6] mb-4">
-                Działamy szybko, rzetelnie i w uczciwy sposób. GREMPOOL Maria Muczyńska to firma działająca
-                od 2013 roku w branży złomowej, transportowej i budowlanej. Naszym celem jest świadczenie usług
-                na najwyższym poziomie, z zachowaniem uczciwości i terminowości.
+                GREMPOOL Maria Muczyńska działa w Raszówce na Dolnym Śląsku od 2013 roku. Zaczynaliśmy od skupu
+                złomu, a z czasem rozszerzyliśmy działalność o transport, prace koparką, rozbiórki, sprzedaż
+                materiałów budowlanych z odzysku oraz usługi brukarsko-tynkarskie. Nasza firma jest zweryfikowana
+                w rejestrze GUS i figuruje w ewidencji działalności gospodarczej pod numerem NIP 692-11-91-050.
               </p>
               <p className="text-[#b8c5d6] mb-8">
-                Oferujemy kompleksowe rozwiązania - od skupu złomu, przez transport, aż po usługi budowlane
-                i klimatyzację samochodową. Dzięki własnemu taborowi pojazdów i profesjonalnemu sprzętowi
-                jesteśmy w stanie sprostać nawet najbardziej wymagającym zleceniom.
+                Obsługujemy głównie okolice Lubina, Legnicy, Głogowa i Polkowic, ale dojeżdżamy też dalej na
+                terenie Dolnego Śląska. Mamy własny tabor pojazdów i sprzęt do prac ziemnych, więc odbiór,
+                transport i realizację zlecenia załatwiamy sami, bez pośredników. Materiały z rozbiórek segregujemy
+                i sprzedajemy dalej, a każde zlecenie wyceniamy indywidualnie - bez ukrytych kosztów i niespodzianek
+                w trakcie pracy.
               </p>
               <div className="flex flex-wrap items-center gap-6">
                 <div className="flex gap-4">

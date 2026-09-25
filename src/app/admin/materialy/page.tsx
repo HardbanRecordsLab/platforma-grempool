@@ -17,8 +17,10 @@ import {
   Bookmark,
   BookmarkCheck,
   Camera,
+  Share2,
 } from "lucide-react";
 import type { Material, MaterialStatus } from "@/types";
+import PromoteMaterialModal from "@/components/admin/PromoteMaterialModal";
 import {
   MATERIAL_CATEGORIES,
   MATERIAL_CONDITIONS,
@@ -66,6 +68,7 @@ export default function MaterialyPage() {
   const [form, setForm] = useState<MaterialInput>(emptyForm);
   const [askPrice, setAskPrice] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [promotingMaterial, setPromotingMaterial] = useState<Material | null>(null);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -356,6 +359,13 @@ export default function MaterialyPage() {
                         )}
                       </button>
                     )}
+                    <button
+                      onClick={() => setPromotingMaterial(material)}
+                      className="p-2 rounded-lg hover:bg-[#2a3a4a] transition-colors"
+                      title="Wystaw na innych portalach"
+                    >
+                      <Share2 size={14} className="text-[#b8c5d6]" />
+                    </button>
                     <button onClick={() => handleDelete(material.id)} className="p-2 rounded-lg hover:bg-[#2a3a4a] transition-colors" title="Usuń">
                       <Trash2 size={14} className="text-red-400" />
                     </button>
@@ -591,6 +601,10 @@ export default function MaterialyPage() {
             </form>
           </div>
         </div>
+      )}
+
+      {promotingMaterial && (
+        <PromoteMaterialModal material={promotingMaterial} onClose={() => setPromotingMaterial(null)} />
       )}
     </div>
   );

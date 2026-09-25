@@ -18,7 +18,8 @@ import {
   LogOut,
   Menu,
   X,
-  Mail
+  Mail,
+  Gavel
 } from "lucide-react";
 import { useState } from "react";
 
@@ -34,6 +35,7 @@ const menuItems = [
   { icon: Truck, label: "Flota", href: "/admin/flota" },
   { icon: Wrench, label: "Maszyny", href: "/admin/maszyny" },
   { icon: Mail, label: "Wiadomości", href: "/admin/wiadomosci" },
+  { icon: Gavel, label: "Przetargi", href: "/admin/przetargi" },
   { icon: Settings, label: "Ustawienia", href: "/admin/ustawienia" },
 ];
 
