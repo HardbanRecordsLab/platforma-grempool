@@ -21,7 +21,7 @@ import {
   Mail,
   Gavel
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/admin/dashboard" },
@@ -47,8 +47,21 @@ export default function AdminLayout({
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/admin-sw.js", { scope: "/admin/" }).catch(() => {});
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#0f1419] flex">
+      <link rel="manifest" href="/admin-manifest.json" />
+      <link rel="apple-touch-icon" href="/icon-192.png" />
+      <meta name="theme-color" content="#0f1419" />
+      <meta name="mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+      <meta name="apple-mobile-web-app-title" content="GREMPOOL Panel" />
       {/* Sidebar */}
       <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-[#1a2332] border-r border-[#2a3a4a] transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         <div className="p-6 border-b border-[#2a3a4a]">

@@ -1,0 +1,16 @@
+{
+  "name": "GREMPOOL Panel Administracyjny",
+  "short_name": "GREMPOOL Panel",
+  "description": "Panel administracyjny GREMPOOL - CRM, zlecenia, materiały, flota i maszyny.",
+  "start_url": "/admin/dashboard",
+  "scope": "/admin/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f1419",
+  "theme_color": "#0f1419",
+  "lang": "pl",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
