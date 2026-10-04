@@ -16,17 +16,17 @@ export default function ScrapPriceTicker() {
   }, []);
 
   if (loaded && prices.length === 0) return null;
-  if (!loaded) return <div className="h-11 bg-[#141210] border-y border-[#352c1d]" />;
+  if (!loaded) return <div className="h-11 bg-[#0a0a0a] border-y border-[#5c4716]" />;
 
   const items = prices.map((p) => `${p.nazwa} — od ${p.cena_od.toFixed(2)} ${p.jednostka}`);
   const track = [...items, ...items];
 
   return (
-    <div className="relative bg-[#141210] border-y border-[#352c1d] overflow-hidden py-3">
+    <div className="relative bg-[#0a0a0a] border-y border-[#5c4716] overflow-hidden py-3">
       <div className="ticker-track flex items-center gap-10 w-max">
         {track.map((text, i) => (
           <span key={i} className="flex items-center gap-2 text-sm font-semibold whitespace-nowrap">
-            <span className="text-[#d4a24a]">●</span>
+            <span className="text-[#f5b52c]">●</span>
             <span className="text-white">{text}</span>
           </span>
         ))}

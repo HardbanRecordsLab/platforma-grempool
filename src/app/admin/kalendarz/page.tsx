@@ -121,7 +121,7 @@ export default function KalendarzPage() {
         <h1 className="text-2xl font-montserrat font-bold">Kalendarz</h1>
         <button
           onClick={openTaskModal}
-          className="btn-primary px-4 py-2 rounded-lg text-sm font-semibold text-[#0b0b0a] flex items-center gap-2"
+          className="btn-primary px-4 py-2 rounded-lg text-sm font-semibold text-[#000000] flex items-center gap-2"
         >
           <Plus size={16} /> Dodaj zadanie
         </button>
@@ -135,23 +135,23 @@ export default function KalendarzPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Calendar */}
-        <div className="lg:col-span-2 bg-[#141210] p-6 rounded-xl border border-[#352c1d]">
+        <div className="lg:col-span-2 bg-[#0a0a0a] p-6 rounded-xl border border-[#5c4716]">
           <div className="flex items-center justify-between mb-6">
-            <button onClick={prevMonth} className="p-2 hover:bg-[#352c1d] rounded-lg transition-colors">
+            <button onClick={prevMonth} className="p-2 hover:bg-[#5c4716] rounded-lg transition-colors">
               <ChevronLeft size={20} />
             </button>
             <h2 className="text-xl font-montserrat font-bold flex items-center gap-2">
               {months[currentDate.getMonth()]} {currentDate.getFullYear()}
-              {loading && <Loader2 size={16} className="animate-spin text-[#d4a24a]" />}
+              {loading && <Loader2 size={16} className="animate-spin text-[#f5b52c]" />}
             </h2>
-            <button onClick={nextMonth} className="p-2 hover:bg-[#352c1d] rounded-lg transition-colors">
+            <button onClick={nextMonth} className="p-2 hover:bg-[#5c4716] rounded-lg transition-colors">
               <ChevronRight size={20} />
             </button>
           </div>
 
           <div className="grid grid-cols-7 gap-2 mb-4">
             {daysOfWeek.map((day) => (
-              <div key={day} className="text-center text-sm font-semibold text-[#c3b9a7] py-2">
+              <div key={day} className="text-center text-sm font-semibold text-[#e8dfcc] py-2">
                 {day}
               </div>
             ))}
@@ -175,16 +175,16 @@ export default function KalendarzPage() {
                   onClick={() => setSelectedDate(iso)}
                   title={holidayName}
                   className={`aspect-square rounded-lg flex flex-col items-center justify-center relative transition-colors ${
-                    isSelected ? "bg-[#d4a24a] text-[#0b0b0a]" : isToday ? "bg-[#d4a24a]/20 text-[#d4a24a]" : holidayName ? "text-red-400 hover:bg-[#352c1d]" : "hover:bg-[#352c1d]"
+                    isSelected ? "bg-[#f5b52c] text-[#000000]" : isToday ? "bg-[#f5b52c]/20 text-[#f5b52c]" : holidayName ? "text-red-400 hover:bg-[#5c4716]" : "hover:bg-[#5c4716]"
                   }`}
                 >
                   <span className="font-semibold">{day}</span>
                   {(dayEvents || holidayName) && (
                     <div className="flex gap-1 mt-1">
-                      {holidayName && <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? "bg-[#0b0b0a]" : "bg-red-500"}`} />}
+                      {holidayName && <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? "bg-[#000000]" : "bg-red-500"}`} />}
                       {dayEvents && dayEvents.orders.length > 0 && <div className="w-1.5 h-1.5 rounded-full bg-green-500" />}
                       {dayEvents && dayEvents.leads.length > 0 && <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />}
-                      {dayEvents && dayEvents.tasks.length > 0 && <div className="w-1.5 h-1.5 rounded-full bg-[#d4a24a]" />}
+                      {dayEvents && dayEvents.tasks.length > 0 && <div className="w-1.5 h-1.5 rounded-full bg-[#f5b52c]" />}
                     </div>
                   )}
                 </button>
@@ -194,7 +194,7 @@ export default function KalendarzPage() {
         </div>
 
         {/* Day Schedule */}
-        <div className="bg-[#141210] p-6 rounded-xl border border-[#352c1d]">
+        <div className="bg-[#0a0a0a] p-6 rounded-xl border border-[#5c4716]">
           <h3 className="text-lg font-montserrat font-bold mb-4">{selectedDayLabel}</h3>
 
           {holidaysMap.get(selectedDate) && (
@@ -205,7 +205,7 @@ export default function KalendarzPage() {
 
           <div className="space-y-4">
             {selectedEvents.orders.length === 0 && selectedEvents.leads.length === 0 && selectedEvents.tasks.length === 0 && !loading && (
-              <p className="text-sm text-[#c3b9a7]">Brak wydarzeń w tym dniu.</p>
+              <p className="text-sm text-[#e8dfcc]">Brak wydarzeń w tym dniu.</p>
             )}
 
             {selectedEvents.orders.map((order) => (
@@ -213,11 +213,11 @@ export default function KalendarzPage() {
                 <div className="flex items-center gap-2 mb-2">
                   <Clock size={14} className="text-green-400" />
                   <span className="text-sm font-semibold">{new Date(order.termin).toLocaleTimeString("pl-PL", { hour: "2-digit", minute: "2-digit" })}</span>
-                  <span className="text-xs text-[#c3b9a7] ml-auto">Zlecenie {order.numer}</span>
+                  <span className="text-xs text-[#e8dfcc] ml-auto">Zlecenie {order.numer}</span>
                 </div>
                 <h4 className="font-semibold mb-1">{SERVICE_LABELS[order.usluga] ?? order.usluga}</h4>
-                <p className="text-sm text-[#c3b9a7] mb-2">{STATUS_LABELS[order.status] ?? order.status}</p>
-                <div className="flex items-center gap-1 text-xs text-[#c3b9a7]">
+                <p className="text-sm text-[#e8dfcc] mb-2">{STATUS_LABELS[order.status] ?? order.status}</p>
+                <div className="flex items-center gap-1 text-xs text-[#e8dfcc]">
                   <MapPin size={12} /> {order.lokalizacja}
                 </div>
               </div>
@@ -227,12 +227,12 @@ export default function KalendarzPage() {
               <div key={lead.id} className="p-4 rounded-lg border-l-4 border-l-blue-500 bg-blue-500/10">
                 <div className="flex items-center gap-2 mb-2">
                   <FileText size={14} className="text-blue-400" />
-                  <span className="text-xs text-[#c3b9a7] ml-auto">Zapytanie {lead.numer}</span>
+                  <span className="text-xs text-[#e8dfcc] ml-auto">Zapytanie {lead.numer}</span>
                 </div>
                 <h4 className="font-semibold mb-1">
                   {SERVICE_LABELS[lead.usluga] ?? lead.usluga} — {lead.klient_imie} {lead.klient_nazwisko}
                 </h4>
-                <div className="flex items-center gap-4 text-xs text-[#c3b9a7]">
+                <div className="flex items-center gap-4 text-xs text-[#e8dfcc]">
                   <span className="flex items-center gap-1">
                     <MapPin size={12} /> {lead.lokalizacja}
                   </span>
@@ -244,9 +244,9 @@ export default function KalendarzPage() {
             ))}
 
             {selectedEvents.tasks.map((task) => (
-              <div key={task.id} className="p-4 rounded-lg border-l-4 border-l-[#d4a24a] bg-[#d4a24a]/10 group">
+              <div key={task.id} className="p-4 rounded-lg border-l-4 border-l-[#f5b52c] bg-[#f5b52c]/10 group">
                 <div className="flex items-center gap-2 mb-2">
-                  <CheckSquare size={14} className="text-[#d4a24a]" />
+                  <CheckSquare size={14} className="text-[#f5b52c]" />
                   {task.godzina && <span className="text-sm font-semibold">{task.godzina.slice(0, 5)}</span>}
                   <button
                     onClick={() => handleDeleteTask(task.id)}
@@ -256,14 +256,14 @@ export default function KalendarzPage() {
                   </button>
                 </div>
                 <h4 className="font-semibold mb-1">{task.tytul}</h4>
-                {task.opis && <p className="text-sm text-[#c3b9a7]">{task.opis}</p>}
+                {task.opis && <p className="text-sm text-[#e8dfcc]">{task.opis}</p>}
               </div>
             ))}
           </div>
 
           <button
             onClick={openTaskModal}
-            className="w-full mt-4 p-3 rounded-lg border-2 border-dashed border-[#352c1d] text-[#c3b9a7] hover:border-[#d4a24a] hover:text-[#d4a24a] transition-colors flex items-center justify-center gap-2"
+            className="w-full mt-4 p-3 rounded-lg border-2 border-dashed border-[#5c4716] text-[#e8dfcc] hover:border-[#f5b52c] hover:text-[#f5b52c] transition-colors flex items-center justify-center gap-2"
           >
             <Plus size={16} />
             Dodaj zadanie na ten dzień
@@ -274,54 +274,54 @@ export default function KalendarzPage() {
       {/* Add Task Modal */}
       {taskModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70">
-          <div className="bg-[#141210] border border-[#352c1d] rounded-2xl w-full max-w-md">
-            <div className="flex items-center justify-between p-6 border-b border-[#352c1d]">
+          <div className="bg-[#0a0a0a] border border-[#5c4716] rounded-2xl w-full max-w-md">
+            <div className="flex items-center justify-between p-6 border-b border-[#5c4716]">
               <h2 className="text-xl font-montserrat font-bold">Nowe zadanie — {selectedDayLabel}</h2>
-              <button onClick={() => setTaskModalOpen(false)} className="text-[#c3b9a7] hover:text-white">
+              <button onClick={() => setTaskModalOpen(false)} className="text-[#e8dfcc] hover:text-white">
                 <X size={22} />
               </button>
             </div>
             <form onSubmit={handleAddTask} className="p-6 space-y-4">
               <div>
-                <label className="block text-sm text-[#c3b9a7] mb-1">Tytuł *</label>
+                <label className="block text-sm text-[#e8dfcc] mb-1">Tytuł *</label>
                 <input
                   required
                   value={taskForm.tytul}
                   onChange={(e) => setTaskForm({ ...taskForm, tytul: e.target.value })}
-                  className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
+                  className="w-full bg-[#000000] border border-[#5c4716] rounded-lg px-4 py-2 text-sm text-white"
                   placeholder="np. Przegląd busa 1"
                 />
               </div>
               <div>
-                <label className="block text-sm text-[#c3b9a7] mb-1">Godzina</label>
+                <label className="block text-sm text-[#e8dfcc] mb-1">Godzina</label>
                 <input
                   type="time"
                   value={taskForm.godzina}
                   onChange={(e) => setTaskForm({ ...taskForm, godzina: e.target.value })}
-                  className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
+                  className="w-full bg-[#000000] border border-[#5c4716] rounded-lg px-4 py-2 text-sm text-white"
                 />
               </div>
               <div>
-                <label className="block text-sm text-[#c3b9a7] mb-1">Notatka</label>
+                <label className="block text-sm text-[#e8dfcc] mb-1">Notatka</label>
                 <textarea
                   rows={3}
                   value={taskForm.opis}
                   onChange={(e) => setTaskForm({ ...taskForm, opis: e.target.value })}
-                  className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
+                  className="w-full bg-[#000000] border border-[#5c4716] rounded-lg px-4 py-2 text-sm text-white"
                 />
               </div>
               <div className="flex items-center gap-3 pt-2">
                 <button
                   type="submit"
                   disabled={saving}
-                  className="btn-primary flex-1 px-6 py-3 rounded-lg font-semibold text-[#0b0b0a] disabled:opacity-60 flex items-center justify-center gap-2"
+                  className="btn-primary flex-1 px-6 py-3 rounded-lg font-semibold text-[#000000] disabled:opacity-60 flex items-center justify-center gap-2"
                 >
                   {saving && <Loader2 size={16} className="animate-spin" />} Dodaj zadanie
                 </button>
                 <button
                   type="button"
                   onClick={() => setTaskModalOpen(false)}
-                  className="px-6 py-3 rounded-lg font-semibold border border-[#352c1d] text-[#c3b9a7] hover:text-white"
+                  className="px-6 py-3 rounded-lg font-semibold border border-[#5c4716] text-[#e8dfcc] hover:text-white"
                 >
                   Anuluj
                 </button>

@@ -117,35 +117,35 @@ function WycenaForm() {
     <main className="min-h-screen">
       <Navbar />
 
-      <section className="py-20 bg-[#0b0b0a]">
+      <section className="py-20 bg-[#000000]">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-montserrat font-bold mb-4">
-              CENTRUM SZYBKIEJ <span className="text-[#d4a24a]">WYCENY</span>
+              CENTRUM SZYBKIEJ <span className="text-[#f5b52c]">WYCENY</span>
             </h1>
-            <p className="text-[#c3b9a7] text-lg">
+            <p className="text-[#e8dfcc] text-lg">
               Wybierz usługę i wypełnij formularz. Przygotujemy wycenę w ciągu 24 godzin.
             </p>
           </div>
 
           {submitted ? (
-            <div className="bg-[#141210] p-12 rounded-2xl border border-[#352c1d] text-center">
-              <CheckCircle2 className="text-[#d4a24a] size-16 mx-auto mb-6" />
+            <div className="bg-[#0a0a0a] p-12 rounded-2xl border border-[#5c4716] text-center">
+              <CheckCircle2 className="text-[#f5b52c] size-16 mx-auto mb-6" />
               <h2 className="text-2xl font-montserrat font-bold mb-4">
                 Zapytanie wysłane!
               </h2>
-              <p className="text-[#c3b9a7] mb-6">
+              <p className="text-[#e8dfcc] mb-6">
                 Dziękujemy za zapytanie. Nasz konsultant skontaktuje się z Tobą w ciągu 24 godzin.
               </p>
-              <p className="text-[#d4a24a] font-semibold">
+              <p className="text-[#f5b52c] font-semibold">
                 Numer zapytania: {leadNumer}
               </p>
             </div>
           ) : (
-            <div className="bg-[#141210] p-8 rounded-2xl border border-[#352c1d]">
+            <div className="bg-[#0a0a0a] p-8 rounded-2xl border border-[#5c4716]">
               {/* Service Selection */}
               <div className="mb-8">
-                <label className="block text-sm font-semibold mb-4 text-[#c3b9a7]">
+                <label className="block text-sm font-semibold mb-4 text-[#e8dfcc]">
                   WYBIERZ USŁUGĘ *
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -155,8 +155,8 @@ function WycenaForm() {
                       onClick={() => selectService(service)}
                       className={`p-4 rounded-lg border-2 transition-all text-sm font-semibold ${
                         selectedService === service
-                          ? "border-[#d4a24a] bg-[#d4a24a]/10 text-[#d4a24a]"
-                          : "border-[#352c1d] text-[#c3b9a7] hover:border-[#d4a24a]/50"
+                          ? "border-[#f5b52c] bg-[#f5b52c]/10 text-[#f5b52c]"
+                          : "border-[#5c4716] text-[#e8dfcc] hover:border-[#f5b52c]/50"
                       }`}
                     >
                       {service === "skup_zlomu" && "SKUP ZŁOMU"}
@@ -171,21 +171,21 @@ function WycenaForm() {
 
               {/* Dynamic Fields */}
               {selectedService && (
-                <div className="mb-8 p-6 bg-[#0b0b0a] rounded-xl">
-                  <h3 className="text-lg font-montserrat font-semibold mb-4 text-[#d4a24a]">
+                <div className="mb-8 p-6 bg-[#000000] rounded-xl">
+                  <h3 className="text-lg font-montserrat font-semibold mb-4 text-[#f5b52c]">
                     SZCZEGÓŁY USŁUGI
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {serviceFields[selectedService].map((field) => (
                       <div key={field.label}>
-                        <label className="block text-sm text-[#c3b9a7] mb-2">
+                        <label className="block text-sm text-[#e8dfcc] mb-2">
                           {field.label}
                         </label>
                         {field.fields.length > 0 ? (
                           <select
                             value={dynamicFields[field.label] ?? ""}
                             onChange={(e) => setDynamicFields((prev) => ({ ...prev, [field.label]: e.target.value }))}
-                            className="w-full bg-[#141210] border border-[#352c1d] rounded-lg p-3 text-white"
+                            className="w-full bg-[#0a0a0a] border border-[#5c4716] rounded-lg p-3 text-white"
                           >
                             <option value="">Wybierz...</option>
                             {field.fields.map((opt) => (
@@ -198,7 +198,7 @@ function WycenaForm() {
                             value={dynamicFields[field.label] ?? ""}
                             onChange={(e) => setDynamicFields((prev) => ({ ...prev, [field.label]: e.target.value }))}
                             placeholder={field.placeholder}
-                            className="w-full bg-[#141210] border border-[#352c1d] rounded-lg p-3 text-white"
+                            className="w-full bg-[#0a0a0a] border border-[#5c4716] rounded-lg p-3 text-white"
                           />
                         )}
                       </div>
@@ -211,77 +211,77 @@ function WycenaForm() {
               <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div>
-                    <label className="block text-sm text-[#c3b9a7] mb-2">IMIĘ *</label>
+                    <label className="block text-sm text-[#e8dfcc] mb-2">IMIĘ *</label>
                     <input
                       type="text"
                       required
                       value={formData.imie}
                       onChange={(e) => setFormData({ ...formData, imie: e.target.value })}
-                      className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg p-3 text-white"
+                      className="w-full bg-[#000000] border border-[#5c4716] rounded-lg p-3 text-white"
                       placeholder="Jan Kowalski"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#c3b9a7] mb-2">TELEFON *</label>
+                    <label className="block text-sm text-[#e8dfcc] mb-2">TELEFON *</label>
                     <input
                       type="tel"
                       required
                       value={formData.telefon}
                       onChange={(e) => setFormData({ ...formData, telefon: e.target.value })}
-                      className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg p-3 text-white"
+                      className="w-full bg-[#000000] border border-[#5c4716] rounded-lg p-3 text-white"
                       placeholder="+48 663 288 533"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#c3b9a7] mb-2">EMAIL</label>
+                    <label className="block text-sm text-[#e8dfcc] mb-2">EMAIL</label>
                     <input
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg p-3 text-white"
+                      className="w-full bg-[#000000] border border-[#5c4716] rounded-lg p-3 text-white"
                       placeholder="jan@example.com"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#c3b9a7] mb-2">LOKALIZACJA *</label>
+                    <label className="block text-sm text-[#e8dfcc] mb-2">LOKALIZACJA *</label>
                     <input
                       type="text"
                       required
                       value={formData.lokalizacja}
                       onChange={(e) => setFormData({ ...formData, lokalizacja: e.target.value })}
-                      className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg p-3 text-white"
+                      className="w-full bg-[#000000] border border-[#5c4716] rounded-lg p-3 text-white"
                       placeholder="Raszówka"
                     />
                   </div>
                 </div>
 
                 <div className="mb-6">
-                  <label className="block text-sm text-[#c3b9a7] mb-2">OPIS ZLECENIA *</label>
+                  <label className="block text-sm text-[#e8dfcc] mb-2">OPIS ZLECENIA *</label>
                   <textarea
                     required
                     rows={4}
                     value={formData.opis}
                     onChange={(e) => setFormData({ ...formData, opis: e.target.value })}
-                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg p-3 text-white"
+                    className="w-full bg-[#000000] border border-[#5c4716] rounded-lg p-3 text-white"
                     placeholder="Opisz swoje zlecenie..."
                   />
                 </div>
 
                 <div className="mb-6">
-                  <label className="block text-sm text-[#c3b9a7] mb-2">PREFEROWANY TERMIN</label>
+                  <label className="block text-sm text-[#e8dfcc] mb-2">PREFEROWANY TERMIN</label>
                   <input
                     type="date"
                     value={formData.termin}
                     onChange={(e) => setFormData({ ...formData, termin: e.target.value })}
-                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg p-3 text-white"
+                    className="w-full bg-[#000000] border border-[#5c4716] rounded-lg p-3 text-white"
                   />
                 </div>
 
                 <div className="mb-8">
-                  <label className="block text-sm text-[#c3b9a7] mb-2">ZDJĘCIA (opcjonalnie)</label>
-                  <div className="border-2 border-dashed border-[#352c1d] rounded-lg p-8 text-center hover:border-[#d4a24a]/50 transition-colors cursor-pointer">
-                    <Upload className="text-[#c3b9a7] size-8 mx-auto mb-2" />
-                    <p className="text-[#c3b9a7] text-sm">
+                  <label className="block text-sm text-[#e8dfcc] mb-2">ZDJĘCIA (opcjonalnie)</label>
+                  <div className="border-2 border-dashed border-[#5c4716] rounded-lg p-8 text-center hover:border-[#f5b52c]/50 transition-colors cursor-pointer">
+                    <Upload className="text-[#e8dfcc] size-8 mx-auto mb-2" />
+                    <p className="text-[#e8dfcc] text-sm">
                       Przeciągnij zdjęcia lub kliknij, aby dodać
                     </p>
                   </div>
@@ -296,7 +296,7 @@ function WycenaForm() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full btn-primary py-4 rounded-lg font-semibold text-[#0b0b0a] text-lg flex items-center justify-center gap-2 disabled:opacity-60"
+                  className="w-full btn-primary py-4 rounded-lg font-semibold text-[#000000] text-lg flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   <Send size={20} />
                   {submitting ? "WYSYŁANIE..." : "WYŚLIJ ZAPYTANIE"}

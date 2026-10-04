@@ -1,104 +1,104 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X, Phone, Mail, MapPin } from "lucide-react";
 import { BUSINESS } from "@/lib/site";
 
+const navLinks = [
+  { href: "/", label: "STRONA GŁÓWNA" },
+  { href: "/#o-nas", label: "O NAS" },
+  { href: "/uslugi/skup-zlomu", label: "SKUP ZŁOMU" },
+  { href: "/uslugi", label: "USŁUGI" },
+  { href: "/uslugi/transport", label: "TRANSPORT" },
+  { href: "/uslugi/materialy", label: "MATERIAŁY" },
+  { href: "/kontakt", label: "KONTAKT" },
+];
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
-  const navLinks = [
-    { href: "/", label: "STRONA GŁÓWNA" },
-    { href: "/uslugi/skup-zlomu", label: "SKUP ZŁOMU" },
-    { href: "/uslugi", label: "USŁUGI" },
-    { href: "/uslugi/materialy", label: "SKLEP" },
-    { href: "/kontakt", label: "KONTAKT" },
-  ];
+  const isActive = (href: string) => {
+    if (href.includes("#")) return false;
+    return href === "/" ? pathname === "/" : pathname === href;
+  };
 
   return (
-    <>
-      {/* Top Bar */}
-      <div className="bg-[#141210] border-b border-[#352c1d] py-2 text-xs sm:text-sm">
-        <div className="container mx-auto px-4 flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-1 text-[#c3b9a7]">
-          <a href="https://maps.google.com" className="hidden md:flex items-center gap-2 hover:text-[#d4a24a] transition-colors">
-            <MapPin size={14} />
+    <header className="bg-[#000000] border-b border-[#5c4716]">
+      <div className="container mx-auto px-4 py-5 flex items-center justify-between gap-6">
+        <Link href="/" className="flex items-center shrink-0">
+          <img
+            src="/assets/logo-grempool.png"
+            alt="GREMPOOL — Złom, Transport, Usługi"
+            className="h-20 md:h-24 w-auto"
+          />
+        </Link>
+
+        <div className="hidden md:flex flex-col gap-2 border border-[#f5b52c]/50 rounded-lg px-5 py-3 text-sm text-[#e8dfcc]">
+          <div className="flex items-center gap-3">
+            <MapPin size={15} className="text-[#f5b52c] shrink-0" />
             <span>ul. Kolejowa 5a, 59-307 Raszówka</span>
+          </div>
+          <a href={`tel:${BUSINESS.phone}`} className="flex items-center gap-3 hover:text-[#f5b52c] transition-colors">
+            <Phone size={15} className="text-[#f5b52c] shrink-0" />
+            <span>{BUSINESS.phoneDisplay}</span>
           </a>
-          <a href="tel:+48663288533" className="flex items-center gap-2 hover:text-[#d4a24a] transition-colors">
-            <Phone size={14} className="shrink-0" />
-            <span>+48 663 288 533</span>
-          </a>
-          <a href={`mailto:${BUSINESS.email}`} className="flex items-center gap-2 hover:text-[#d4a24a] transition-colors">
-            <Mail size={14} className="shrink-0" />
+          <a href={`mailto:${BUSINESS.email}`} className="flex items-center gap-3 hover:text-[#f5b52c] transition-colors">
+            <Mail size={15} className="text-[#f5b52c] shrink-0" />
             <span>{BUSINESS.email}</span>
           </a>
         </div>
+
+        <button onClick={() => setIsOpen(!isOpen)} className="md:hidden text-white p-2" aria-label="Menu">
+          {isOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </div>
 
-      {/* Main Navigation */}
-      <nav className="bg-[#0b0b0a] sticky top-0 z-50 border-b border-[#352c1d]">
+      <nav className="hidden md:block border-t border-[#5c4716]">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-20">
-            {/* Logo */}
-            <Link href="/" className="flex items-center">
-              <img src="/assets/logo-grempool-wide.png" alt="GREMPOOL — Złom, Transport, Usługi" className="h-11 md:h-14 w-auto" />
-            </Link>
-
-            {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-8">
-              {navLinks.map((link) => (
+          <ul className="flex items-center justify-center gap-10 h-14">
+            {navLinks.map((link) => (
+              <li key={link.href}>
                 <Link
-                  key={link.href}
                   href={link.href}
-                  className="nav-link text-sm font-medium text-[#c3b9a7] hover:text-white transition-colors"
+                  className={`whitespace-nowrap text-sm font-semibold tracking-wide transition-colors pb-1 border-b-2 ${
+                    isActive(link.href)
+                      ? "text-[#f5b52c] border-[#f5b52c]"
+                      : "text-[#e8dfcc] border-transparent hover:text-white"
+                  }`}
                 >
                   {link.label}
                 </Link>
-              ))}
-              <Link
-                href="/wycena"
-                className="btn-primary px-6 py-2 rounded-lg text-sm font-semibold text-[#0b0b0a]"
-              >
-                SZYBKA WYCENA
-              </Link>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden text-white p-2"
-            >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
+              </li>
+            ))}
+          </ul>
         </div>
+      </nav>
 
-        {/* Mobile Navigation */}
-        {isOpen && (
-          <div className="lg:hidden bg-[#141210] border-t border-[#352c1d]">
-            <div className="container mx-auto px-4 py-4">
-              {navLinks.map((link) => (
+      {isOpen && (
+        <nav className="md:hidden bg-[#0a0a0a] border-t border-[#5c4716]">
+          <ul className="container mx-auto px-4 py-4 space-y-4">
+            {navLinks.map((link) => (
+              <li key={link.href}>
                 <Link
-                  key={link.href}
                   href={link.href}
-                  className="block py-3 text-[#c3b9a7] hover:text-white border-b border-[#352c1d]"
                   onClick={() => setIsOpen(false)}
+                  className="block text-sm font-semibold text-[#e8dfcc] hover:text-[#f5b52c]"
                 >
                   {link.label}
                 </Link>
-              ))}
-              <Link
-                href="/wycena"
-                className="block mt-4 btn-primary px-6 py-3 rounded-lg text-center font-semibold text-[#0b0b0a]"
-                onClick={() => setIsOpen(false)}
-              >
-                SZYBKA WYCENA
-              </Link>
-            </div>
-          </div>
-        )}
-      </nav>
-    </>
+              </li>
+            ))}
+            <li className="pt-2 border-t border-[#5c4716] text-sm text-[#e8dfcc] space-y-2">
+              <div>ul. Kolejowa 5a, 59-307 Raszówka</div>
+              <a href={`tel:${BUSINESS.phone}`} className="block hover:text-[#f5b52c]">{BUSINESS.phoneDisplay}</a>
+              <a href={`mailto:${BUSINESS.email}`} className="block hover:text-[#f5b52c]">{BUSINESS.email}</a>
+            </li>
+          </ul>
+        </nav>
+      )}
+    </header>
   );
 }

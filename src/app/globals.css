@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --color-primary: #d4a24a;
+  --color-primary: #f5b52c;
   --color-primary-light: #e8c98a;
-  --color-primary-dark: #a97c2b;
-  --color-dark: #0b0b0a;
-  --color-dark-secondary: #141210;
+  --color-primary-dark: #c98f12;
+  --color-dark: #000000;
+  --color-dark-secondary: #0a0a0a;
   --color-dark-card: #1a1613;
-  --color-text-light: #c3b9a7;
-  --color-border: #352c1d;
+  --color-text-light: #e8dfcc;
+  --color-border: #5c4716;
   --color-border-gold: #64522e;
 }
 
@@ -77,7 +77,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Metallic gold text, as used in the logo wordmark */
 .text-gold-metallic {
-  background: linear-gradient(180deg, #e8c98a 0%, #d4a24a 45%, #a97c2b 100%);
+  background: linear-gradient(180deg, #e8c98a 0%, #f5b52c 45%, #c98f12 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

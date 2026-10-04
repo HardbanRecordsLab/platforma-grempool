@@ -104,7 +104,7 @@ Wizja i zasady projektu
 Fundament koncepcji: czym GREMPOOL Digital ma być, jak zbudowana jest jego architektura i czego świadomie nie robimy na początku.
 
 01 Idea projektu — GREMPOOL jako cyfrowy system operacyjny
-GREMPOOL łączy kilka naturalnie powiązanych obszarów działalności: skup złomu, odbiór materiału, transport, pracę koparką, rozbiórki, usługi budowlane, sprzedaż materiałów z odzysku oraz serwis klimatyzacji samochodowej. Te działalności naturalnie się ze sobą łączą — skup złomu → odbiór → transport → sprzęt → rozbiórka → odzysk materiałów → sprzedaż materiałów, a do tego dochodzi klimatyzacja jako usługa osobna. Dlatego rozwiązanie nie powinno być projektowane jako „strona internetowa firmy”, tylko jako mały cyfrowy system operacyjny firmy, którego strona internetowa jest tylko częścią publiczną. Tę naturalną zależność usług warto wykorzystać zamiast budować siedem niezależnych podstron.
+GREMPOOL łączy kilka naturalnie powiązanych obszarów działalności: skup złomu, odbiór materiału, transport, pracę koparką, rozbiórki, usługi budowlane, sprzedaż materiałów z odzysku oraz serwis pojazdów. Te działalności naturalnie się ze sobą łączą — skup złomu → odbiór → transport → sprzęt → rozbiórka → odzysk materiałów → sprzedaż materiałów. Dlatego rozwiązanie nie powinno być projektowane jako „strona internetowa firmy”, tylko jako mały cyfrowy system operacyjny firmy, którego strona internetowa jest tylko częścią publiczną. Tę naturalną zależność usług warto wykorzystać zamiast budować siedem niezależnych podstron.
 
 C E L N A D R Z Ę D N Y Skrócić drogę od zapytania klienta do realizacji zlecenia, ograniczyć ręczne przepisywanie informacji i stworzyć jedno źródło danych o klientach, usługach, pojazdach, maszynach i materiałach.
 
@@ -267,14 +267,6 @@ bieżąca dostępność
 
 zapytanie o konkretny materiał
 
-Klimatyzacja
-
-napełnianie
-
-czyszczenie
-
-diagnostyka (jeżeli faktycznie jest wykonywana)
-
 kontakt
 
 GREMPOOL Digital — Koncepcja systemu cyfrowego Strona 8 z 32
@@ -286,7 +278,7 @@ Jeden punkt wejścia dla najważniejszych usług — najważniejsze narzędzie c
 
 Zamiast jednego ogólnego formularza „Napisz do nas”, klient od razu wybiera, czego potrzebuje. System pokazuje tylko pytania niezbędne do wykonania szybkiej wyceny — formularz zmienia się automatycznie po wyborze usługi.
 
-Skup złomu Odbiór złomu Transport Koparka Rozbiórka Materiał Klimatyzacja
+Skup złomu Odbiór złomu Transport Koparka Rozbiórka Materiał
 
 Obszar Proponowane rozwiązanie
 
@@ -300,7 +292,6 @@ Rozbiórka typ obiektu, zakres, lokalizacja, zdjęcia, termin, możliwość ogl�
 
 Materiał nazwa/zdjęcie, wymiar, ilość, transport, kontakt
 
-Klimatyzacja typ pojazdu, usługa, preferowany termin, kontakt
 
 Przykład — złom
 
@@ -423,7 +414,7 @@ Bardzo istotne przy tej skali działalności.
 
 Każde zlecenie można przypisać jednocześnie do pojazdu, pracownika i maszyny — wtedy system pilnuje nie tylko terminów klientów, ale też obłożenia sprzętu.
 
-PONIEDZIAŁEK 08:00 — odbiór złomu — Lubin 10:30 — transport materiału — Legnica 13:00 — koparka — Raszówka 16:00 — klimatyzacja
+PONIEDZIAŁEK 08:00 — odbiór złomu — Lubin 10:30 — transport materiału — Legnica 13:00 — koparka — Raszówka 16:00 — rozbiórka — Głogów
 
 GREMPOOL Digital — Koncepcja systemu cyfrowego Strona 12 z 32
 
@@ -577,8 +568,6 @@ Bardzo ważne dla GREMPOOL — jedna wspólna biblioteka.
 
 Złom Transport Koparki Rozbiórki Stal Cegła Okna Drzwi
 
-Klimatyzacja
-
 Każde zdjęcie może mieć: kategorię, usługę, zlecenie, materiał, datę, miejsce, zgodę na publikację. To pozwala automatycznie zasilać stronę bez ręcznego powielania plików między modułami.
 
 GREMPOOL Digital — Koncepcja systemu cyfrowego Strona 17 z 32
@@ -622,7 +611,7 @@ Formularze kontekstowe
 
 szybka wycena złomu zamów odbiór złomu wyceń transport zamów koparkę
 
-zapytanie o rozbiórkę zapytanie o materiał klimatyzacja
+zapytanie o rozbiórkę zapytanie o materiał
 
 GREMPOOL Digital — Koncepcja systemu cyfrowego Strona 19 z 32
 

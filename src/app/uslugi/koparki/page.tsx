@@ -57,23 +57,23 @@ export default function KoparkiPage() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-2xl">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-lg bg-[#d4a24a]/10 flex items-center justify-center">
-                <Wrench className="text-[#d4a24a] size-6" />
+              <div className="w-12 h-12 rounded-lg bg-[#f5b52c]/10 flex items-center justify-center">
+                <Wrench className="text-[#f5b52c] size-6" />
               </div>
-              <span className="text-[#d4a24a] font-semibold">USŁUGA</span>
+              <span className="text-[#f5b52c] font-semibold">USŁUGA</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-montserrat font-bold mb-6">
-              USŁUGI <span className="text-[#d4a24a]">KOPARKĄ</span>
+              USŁUGI <span className="text-[#f5b52c]">KOPARKĄ</span>
             </h1>
-            <p className="text-[#c3b9a7] text-lg mb-8">
+            <p className="text-[#e8dfcc] text-lg mb-8">
               Profesjonalne usługi koparką i koparko-ładowarką. Wykopy, niwelacje, rozbiórki
               i prace ziemne na najwyższym poziomie. Działamy na terenie Dolnego Śląska.
             </p>
             <div className="flex gap-4">
-              <a href="tel:+48663288533" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#0b0b0a] flex items-center gap-2">
+              <a href="tel:+48663288533" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#000000] flex items-center gap-2">
                 <Phone size={20} /> ZADZWOŃ
               </a>
-              <Link href="/wycena" className="px-6 py-3 rounded-lg font-semibold border-2 border-[#d4a24a] text-[#d4a24a] hover:bg-[#d4a24a] hover:text-[#0b0b0a] transition-all">
+              <Link href="/wycena" className="px-6 py-3 rounded-lg font-semibold border-2 border-[#f5b52c] text-[#f5b52c] hover:bg-[#f5b52c] hover:text-[#000000] transition-all">
                 WYCENA
               </Link>
             </div>
@@ -82,20 +82,20 @@ export default function KoparkiPage() {
       </section>
 
       {/* Machines */}
-      <section className="py-16 bg-[#141210]">
+      <section className="py-16 bg-[#0a0a0a]">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-montserrat font-bold text-center mb-12">
-            NASZY <span className="text-[#d4a24a]">SPRZĘT</span>
+            NASZY <span className="text-[#f5b52c]">SPRZĘT</span>
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {machines.map((machine) => (
-              <div key={machine.name} className="bg-[#0b0b0a] p-6 rounded-xl border border-[#352c1d]">
-                <div className="w-14 h-14 mb-4 rounded-lg bg-[#d4a24a]/10 flex items-center justify-center">
-                  <Wrench className="text-[#d4a24a] size-7" />
+              <div key={machine.name} className="bg-[#000000] p-6 rounded-xl border border-[#5c4716]">
+                <div className="w-14 h-14 mb-4 rounded-lg bg-[#f5b52c]/10 flex items-center justify-center">
+                  <Wrench className="text-[#f5b52c] size-7" />
                 </div>
                 <h3 className="font-montserrat font-bold text-lg mb-1">{machine.name}</h3>
-                <p className="text-[#d4a24a] text-sm mb-4">{machine.model}</p>
-                <div className="space-y-2 text-sm text-[#c3b9a7] mb-4">
+                <p className="text-[#f5b52c] text-sm mb-4">{machine.model}</p>
+                <div className="space-y-2 text-sm text-[#e8dfcc] mb-4">
                   <div className="flex justify-between">
                     <span>Masa:</span>
                     <span className="text-white">{machine.weight}</span>
@@ -105,10 +105,10 @@ export default function KoparkiPage() {
                     <span className="text-white">{machine.depth}</span>
                   </div>
                 </div>
-                <div className="text-xs text-[#c3b9a7] mb-2">Osprzęt:</div>
+                <div className="text-xs text-[#e8dfcc] mb-2">Osprzęt:</div>
                 <div className="flex flex-wrap gap-1">
                   {machine.equipment.map((item) => (
-                    <span key={item} className="px-2 py-1 bg-[#352c1d] rounded text-xs">{item}</span>
+                    <span key={item} className="px-2 py-1 bg-[#5c4716] rounded text-xs">{item}</span>
                   ))}
                 </div>
               </div>
@@ -118,17 +118,17 @@ export default function KoparkiPage() {
       </section>
 
       {/* Services */}
-      <section className="py-16 bg-[#0b0b0a]">
+      <section className="py-16 bg-[#000000]">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div>
               <h2 className="text-3xl font-montserrat font-bold mb-8">
-                ZAKRES <span className="text-[#d4a24a]">PRAC</span>
+                ZAKRES <span className="text-[#f5b52c]">PRAC</span>
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {services.map((service) => (
-                  <div key={service} className="flex items-center gap-3 p-4 bg-[#141210] rounded-lg">
-                    <CheckCircle2 className="text-[#d4a24a] size-5 shrink-0" />
+                  <div key={service} className="flex items-center gap-3 p-4 bg-[#0a0a0a] rounded-lg">
+                    <CheckCircle2 className="text-[#f5b52c] size-5 shrink-0" />
                     <span className="text-sm">{service}</span>
                   </div>
                 ))}
@@ -136,17 +136,17 @@ export default function KoparkiPage() {
             </div>
             <div>
               <h2 className="text-3xl font-montserrat font-bold mb-8">
-                JAK <span className="text-[#d4a24a]">DZIAŁAMY</span>?
+                JAK <span className="text-[#f5b52c]">DZIAŁAMY</span>?
               </h2>
               <div className="space-y-6">
                 {process.map((item) => (
                   <div key={item.step} className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-[#d4a24a] text-[#0b0b0a] flex items-center justify-center font-bold shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-[#f5b52c] text-[#000000] flex items-center justify-center font-bold shrink-0">
                       {item.step}
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">{item.title}</h3>
-                      <p className="text-sm text-[#c3b9a7]">{item.desc}</p>
+                      <p className="text-sm text-[#e8dfcc]">{item.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -157,14 +157,14 @@ export default function KoparkiPage() {
       </section>
 
       {/* Gallery */}
-      <section className="py-16 bg-[#0b0b0a]">
+      <section className="py-16 bg-[#000000]">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-montserrat font-bold text-center mb-12">
-            NASZ <span className="text-[#d4a24a]">SPRZĘT W AKCJI</span>
+            NASZ <span className="text-[#f5b52c]">SPRZĘT W AKCJI</span>
           </h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {gallery.map((src, i) => (
-              <div key={i} className="aspect-square rounded-xl overflow-hidden border border-[#352c1d]">
+              <div key={i} className="aspect-square rounded-xl overflow-hidden border border-[#5c4716]">
                 <img src={src} alt="Usługi koparką — realizacje" className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" />
               </div>
             ))}
@@ -173,16 +173,16 @@ export default function KoparkiPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-gradient-to-r from-[#d4a24a] to-[#a97c2b]">
+      <section className="py-16 bg-gradient-to-r from-[#f5b52c] to-[#c98f12]">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-montserrat font-bold text-[#0b0b0a] mb-4">
+          <h2 className="text-3xl font-montserrat font-bold text-[#000000] mb-4">
             POTRZEBUJESZ KOPARKI?
           </h2>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href="tel:+48663288533" className="bg-[#0b0b0a] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#141210] transition-colors flex items-center gap-2">
+            <a href="tel:+48663288533" className="bg-[#000000] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#0a0a0a] transition-colors flex items-center gap-2">
               <Phone size={20} /> +48 663 288 533
             </a>
-            <Link href="/wycena" className="border-2 border-[#0b0b0a] text-[#0b0b0a] px-8 py-4 rounded-lg font-semibold hover:bg-[#0b0b0a] hover:text-[#d4a24a] transition-colors flex items-center gap-2">
+            <Link href="/wycena" className="border-2 border-[#000000] text-[#000000] px-8 py-4 rounded-lg font-semibold hover:bg-[#000000] hover:text-[#f5b52c] transition-colors flex items-center gap-2">
               WYCENA ONLINE <ArrowRight size={20} />
             </Link>
           </div>

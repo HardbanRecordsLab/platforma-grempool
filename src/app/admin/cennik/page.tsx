@@ -71,7 +71,7 @@ export default function CennikPage() {
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-montserrat font-bold">Cennik złomu</h1>
-        <p className="text-sm text-[#c3b9a7] mt-1">
+        <p className="text-sm text-[#e8dfcc] mt-1">
           Widoczny publicznie na stronie głównej (widget) oraz na stronie „Skup złomu” (pasek cen).
           Wyłącz pozycję, żeby ukryć ją bez usuwania.
         </p>
@@ -83,73 +83,73 @@ export default function CennikPage() {
         </div>
       )}
 
-      <form onSubmit={handleAdd} className="bg-[#141210] p-4 rounded-xl border border-[#352c1d] mb-6 flex flex-wrap items-end gap-3">
+      <form onSubmit={handleAdd} className="bg-[#0a0a0a] p-4 rounded-xl border border-[#5c4716] mb-6 flex flex-wrap items-end gap-3">
         <div className="flex-1 min-w-[160px]">
-          <label className="block text-xs text-[#c3b9a7] mb-1">Nazwa (np. Stal, Miedź)</label>
+          <label className="block text-xs text-[#e8dfcc] mb-1">Nazwa (np. Stal, Miedź)</label>
           <input
             value={form.nazwa}
             onChange={(e) => setForm({ ...form, nazwa: e.target.value })}
-            className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-3 py-2 text-sm text-white"
+            className="w-full bg-[#000000] border border-[#5c4716] rounded-lg px-3 py-2 text-sm text-white"
             placeholder="np. Stal czarna"
           />
         </div>
         <div className="w-28">
-          <label className="block text-xs text-[#c3b9a7] mb-1">Cena od</label>
+          <label className="block text-xs text-[#e8dfcc] mb-1">Cena od</label>
           <input
             type="number"
             step="0.01"
             min="0"
             value={form.cena_od || ""}
             onChange={(e) => setForm({ ...form, cena_od: Number(e.target.value) })}
-            className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-3 py-2 text-sm text-white"
+            className="w-full bg-[#000000] border border-[#5c4716] rounded-lg px-3 py-2 text-sm text-white"
           />
         </div>
         <div className="w-28">
-          <label className="block text-xs text-[#c3b9a7] mb-1">Jednostka</label>
+          <label className="block text-xs text-[#e8dfcc] mb-1">Jednostka</label>
           <input
             value={form.jednostka}
             onChange={(e) => setForm({ ...form, jednostka: e.target.value })}
-            className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-3 py-2 text-sm text-white"
+            className="w-full bg-[#000000] border border-[#5c4716] rounded-lg px-3 py-2 text-sm text-white"
           />
         </div>
         <button
           type="submit"
           disabled={saving}
-          className="btn-primary px-4 py-2 rounded-lg text-sm font-semibold text-[#0b0b0a] flex items-center gap-2 disabled:opacity-60"
+          className="btn-primary px-4 py-2 rounded-lg text-sm font-semibold text-[#000000] flex items-center gap-2 disabled:opacity-60"
         >
           {saving ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />} Dodaj
         </button>
       </form>
 
       {loading ? (
-        <div className="bg-[#141210] p-12 rounded-xl border border-[#352c1d] text-center text-[#c3b9a7] flex items-center justify-center gap-3">
+        <div className="bg-[#0a0a0a] p-12 rounded-xl border border-[#5c4716] text-center text-[#e8dfcc] flex items-center justify-center gap-3">
           <Loader2 className="animate-spin" size={18} /> Wczytywanie cennika...
         </div>
       ) : prices.length === 0 ? (
-        <div className="bg-[#141210] p-12 rounded-xl border border-[#352c1d] text-center text-[#c3b9a7]">
+        <div className="bg-[#0a0a0a] p-12 rounded-xl border border-[#5c4716] text-center text-[#e8dfcc]">
           Cennik jest pusty. Dodaj pierwszą pozycję powyżej.
         </div>
       ) : (
-        <div className="bg-[#141210] rounded-xl border border-[#352c1d] divide-y divide-[#352c1d]">
+        <div className="bg-[#0a0a0a] rounded-xl border border-[#5c4716] divide-y divide-[#5c4716]">
           {prices.map((price) => (
             <div key={price.id} className="flex items-center gap-4 p-4">
-              <GripVertical size={16} className="text-[#352c1d] shrink-0" />
+              <GripVertical size={16} className="text-[#5c4716] shrink-0" />
               <div className="flex-1 min-w-0">
-                <div className={`font-semibold ${price.aktywny ? "text-white" : "text-[#c3b9a7] line-through"}`}>
+                <div className={`font-semibold ${price.aktywny ? "text-white" : "text-[#e8dfcc] line-through"}`}>
                   {price.nazwa}
                 </div>
               </div>
-              <div className="text-[#d4a24a] font-bold whitespace-nowrap">
+              <div className="text-[#f5b52c] font-bold whitespace-nowrap">
                 od {price.cena_od.toFixed(2)} {price.jednostka}
               </div>
               <button
                 onClick={() => toggleActive(price)}
-                className="p-2 rounded-lg hover:bg-[#352c1d] transition-colors"
+                className="p-2 rounded-lg hover:bg-[#5c4716] transition-colors"
                 title={price.aktywny ? "Ukryj" : "Pokaż"}
               >
-                {price.aktywny ? <Eye size={16} className="text-green-400" /> : <EyeOff size={16} className="text-[#c3b9a7]" />}
+                {price.aktywny ? <Eye size={16} className="text-green-400" /> : <EyeOff size={16} className="text-[#e8dfcc]" />}
               </button>
-              <button onClick={() => handleDelete(price.id)} className="p-2 rounded-lg hover:bg-[#352c1d] transition-colors" title="Usuń">
+              <button onClick={() => handleDelete(price.id)} className="p-2 rounded-lg hover:bg-[#5c4716] transition-colors" title="Usuń">
                 <Trash2 size={16} className="text-red-400" />
               </button>
             </div>

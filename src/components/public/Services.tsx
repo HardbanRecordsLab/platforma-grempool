@@ -47,10 +47,10 @@ export default function Services() {
   }, []);
 
   return (
-    <section className="py-20 bg-[#0b0b0a]">
+    <section className="py-20 bg-[#000000]">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-montserrat font-bold text-center mb-16">
-          NASZE <span className="text-[#d4a24a]">USŁUGI</span>
+          NASZE <span className="text-[#f5b52c]">USŁUGI</span>
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -58,19 +58,19 @@ export default function Services() {
             <Link
               key={service.title}
               href={service.href}
-              className="card-hover group relative rounded-xl overflow-hidden border border-[#352c1d] aspect-[3/4]"
+              className="card-hover group relative rounded-xl overflow-hidden border border-[#5c4716] aspect-[3/4]"
             >
               <img
                 src={service.image}
                 alt={service.title}
                 className="img-brand absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b0a] via-[#0b0b0a]/60 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#000000] via-[#000000]/60 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-4">
                 <h3 className="font-montserrat font-semibold text-sm mb-1 text-white">
                   {service.title}
                 </h3>
-                <p className="text-[#c3b9a7] text-xs">
+                <p className="text-[#e8dfcc] text-xs">
                   {service.description}
                 </p>
               </div>
@@ -81,7 +81,7 @@ export default function Services() {
             <Link
               key={service.id}
               href={service.href || "/wycena"}
-              className="card-hover group relative rounded-xl overflow-hidden border border-[#352c1d] aspect-[3/4]"
+              className="card-hover group relative rounded-xl overflow-hidden border border-[#5c4716] aspect-[3/4]"
             >
               {service.zdjecie ? (
                 <img
@@ -90,16 +90,16 @@ export default function Services() {
                   className="img-brand absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
               ) : (
-                <div className="absolute inset-0 bg-[#141210] flex items-center justify-center">
-                  <Package className="text-[#352c1d] size-10" />
+                <div className="absolute inset-0 bg-[#0a0a0a] flex items-center justify-center">
+                  <Package className="text-[#5c4716] size-10" />
                 </div>
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b0a] via-[#0b0b0a]/60 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#000000] via-[#000000]/60 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-4">
                 <h3 className="font-montserrat font-semibold text-sm mb-1 text-white">
                   {service.nazwa.toUpperCase()}
                 </h3>
-                {service.opis && <p className="text-[#c3b9a7] text-xs">{service.opis}</p>}
+                {service.opis && <p className="text-[#e8dfcc] text-xs">{service.opis}</p>}
               </div>
             </Link>
           ))}

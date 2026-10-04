@@ -116,7 +116,7 @@ export default async function RootLayout({
 
   return (
     <html lang="pl" className={`${inter.variable} ${montserrat.variable}`}>
-      <body className="min-h-screen bg-[#0b0b0a] text-white font-sans">
+      <body className="min-h-screen bg-[#000000] text-white font-sans">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

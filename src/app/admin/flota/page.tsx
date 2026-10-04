@@ -135,7 +135,7 @@ export default function FlotaPage() {
         <h1 className="text-2xl font-montserrat font-bold">Flota pojazdów</h1>
         <button
           onClick={openAddModal}
-          className="btn-primary px-4 py-2 rounded-lg text-sm font-semibold text-[#0b0b0a] flex items-center gap-2"
+          className="btn-primary px-4 py-2 rounded-lg text-sm font-semibold text-[#000000] flex items-center gap-2"
         >
           <Plus size={16} /> Dodaj pojazd
         </button>
@@ -148,36 +148,36 @@ export default function FlotaPage() {
       )}
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-[#141210] p-4 rounded-xl border border-[#352c1d]">
+        <div className="bg-[#0a0a0a] p-4 rounded-xl border border-[#5c4716]">
           <div className="text-2xl font-bold text-green-400">
             {vehicles.filter((v) => v.status === "dostepny").length}
           </div>
-          <div className="text-sm text-[#c3b9a7]">Dostępne</div>
+          <div className="text-sm text-[#e8dfcc]">Dostępne</div>
         </div>
-        <div className="bg-[#141210] p-4 rounded-xl border border-[#352c1d]">
+        <div className="bg-[#0a0a0a] p-4 rounded-xl border border-[#5c4716]">
           <div className="text-2xl font-bold text-blue-400">
             {vehicles.filter((v) => v.status === "w_trakcie").length}
           </div>
-          <div className="text-sm text-[#c3b9a7]">W trasie</div>
+          <div className="text-sm text-[#e8dfcc]">W trasie</div>
         </div>
-        <div className="bg-[#141210] p-4 rounded-xl border border-[#352c1d]">
+        <div className="bg-[#0a0a0a] p-4 rounded-xl border border-[#5c4716]">
           <div className="text-2xl font-bold text-yellow-400">
             {vehicles.filter((v) => v.status === "przeglad").length}
           </div>
-          <div className="text-sm text-[#c3b9a7]">Na przeglądzie</div>
+          <div className="text-sm text-[#e8dfcc]">Na przeglądzie</div>
         </div>
-        <div className="bg-[#141210] p-4 rounded-xl border border-[#352c1d]">
-          <div className="text-2xl font-bold text-[#d4a24a]">{vehicles.length}</div>
-          <div className="text-sm text-[#c3b9a7]">Razem</div>
+        <div className="bg-[#0a0a0a] p-4 rounded-xl border border-[#5c4716]">
+          <div className="text-2xl font-bold text-[#f5b52c]">{vehicles.length}</div>
+          <div className="text-sm text-[#e8dfcc]">Razem</div>
         </div>
       </div>
 
       {loading ? (
-        <div className="bg-[#141210] p-12 rounded-xl border border-[#352c1d] text-center text-[#c3b9a7] flex items-center justify-center gap-3">
+        <div className="bg-[#0a0a0a] p-12 rounded-xl border border-[#5c4716] text-center text-[#e8dfcc] flex items-center justify-center gap-3">
           <Loader2 className="animate-spin" size={18} /> Wczytywanie...
         </div>
       ) : vehicles.length === 0 ? (
-        <div className="bg-[#141210] p-12 rounded-xl border border-[#352c1d] text-center text-[#c3b9a7]">
+        <div className="bg-[#0a0a0a] p-12 rounded-xl border border-[#5c4716] text-center text-[#e8dfcc]">
           Brak pojazdów. Dodaj pierwszy powyżej.
         </div>
       ) : (
@@ -190,12 +190,12 @@ export default function FlotaPage() {
             return (
               <div
                 key={vehicle.id}
-                className="bg-[#141210] p-6 rounded-xl border border-[#352c1d] hover:border-[#d4a24a]/30 transition-colors"
+                className="bg-[#0a0a0a] p-6 rounded-xl border border-[#5c4716] hover:border-[#f5b52c]/30 transition-colors"
               >
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                   <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 rounded-xl bg-[#352c1d] flex items-center justify-center shrink-0">
-                      <Truck className="text-[#d4a24a] size-8" />
+                    <div className="w-16 h-16 rounded-xl bg-[#5c4716] flex items-center justify-center shrink-0">
+                      <Truck className="text-[#f5b52c] size-8" />
                     </div>
                     <div>
                       <div className="flex items-center gap-3 mb-1 flex-wrap">
@@ -205,10 +205,10 @@ export default function FlotaPage() {
                           {statusInfo.label}
                         </span>
                       </div>
-                      <p className="text-sm text-[#c3b9a7] mb-2">
+                      <p className="text-sm text-[#e8dfcc] mb-2">
                         {vehicle.marka} {vehicle.model} • {vehicle.rejestracja}
                       </p>
-                      <div className="flex flex-wrap gap-4 text-sm text-[#c3b9a7]">
+                      <div className="flex flex-wrap gap-4 text-sm text-[#e8dfcc]">
                         <span>Typ: {TYPE_LABELS[vehicle.typ]}</span>
                         <span>Ładowność: {vehicle.ladownosc} t</span>
                         {vehicle.wymiary && <span>Wymiary: {vehicle.wymiary}</span>}
@@ -219,7 +219,7 @@ export default function FlotaPage() {
                   <div className="flex items-center gap-6">
                     {vehicle.przeglad && (
                       <div className="text-right">
-                        <div className="text-xs text-[#c3b9a7] mb-1">Przegląd</div>
+                        <div className="text-xs text-[#e8dfcc] mb-1">Przegląd</div>
                         <div
                           className={`text-sm font-semibold ${
                             inspectionDays !== null && inspectionDays <= 0
@@ -239,20 +239,20 @@ export default function FlotaPage() {
                     )}
                     {vehicle.oc && (
                       <div className="text-right">
-                        <div className="text-xs text-[#c3b9a7] mb-1">OC</div>
+                        <div className="text-xs text-[#e8dfcc] mb-1">OC</div>
                         <div className="text-sm font-semibold text-white">{vehicle.oc}</div>
                       </div>
                     )}
                     <button
                       onClick={() => openEditModal(vehicle)}
-                      className="p-2 rounded-lg hover:bg-[#352c1d] transition-colors"
+                      className="p-2 rounded-lg hover:bg-[#5c4716] transition-colors"
                       title="Edytuj"
                     >
-                      <Edit size={16} className="text-[#c3b9a7]" />
+                      <Edit size={16} className="text-[#e8dfcc]" />
                     </button>
                     <button
                       onClick={() => handleDelete(vehicle.id)}
-                      className="p-2 rounded-lg hover:bg-[#352c1d] transition-colors"
+                      className="p-2 rounded-lg hover:bg-[#5c4716] transition-colors"
                       title="Usuń"
                     >
                       <Trash2 size={16} className="text-red-400" />
@@ -267,31 +267,31 @@ export default function FlotaPage() {
 
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70">
-          <div className="bg-[#141210] border border-[#352c1d] rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-6 border-b border-[#352c1d] sticky top-0 bg-[#141210]">
+          <div className="bg-[#0a0a0a] border border-[#5c4716] rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-[#5c4716] sticky top-0 bg-[#0a0a0a]">
               <h2 className="text-xl font-montserrat font-bold">{editingId ? "Edytuj pojazd" : "Nowy pojazd"}</h2>
-              <button onClick={() => setModalOpen(false)} className="text-[#c3b9a7] hover:text-white">
+              <button onClick={() => setModalOpen(false)} className="text-[#e8dfcc] hover:text-white">
                 <X size={22} />
               </button>
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div>
-                <label className="block text-sm text-[#c3b9a7] mb-1">Nazwa *</label>
+                <label className="block text-sm text-[#e8dfcc] mb-1">Nazwa *</label>
                 <input
                   required
                   value={form.nazwa}
                   onChange={(e) => setForm({ ...form, nazwa: e.target.value })}
                   placeholder="np. Bus 1"
-                  className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
+                  className="w-full bg-[#000000] border border-[#5c4716] rounded-lg px-4 py-2 text-sm text-white"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-[#c3b9a7] mb-1">Typ</label>
+                  <label className="block text-sm text-[#e8dfcc] mb-1">Typ</label>
                   <select
                     value={form.typ}
                     onChange={(e) => setForm({ ...form, typ: e.target.value as Pojazd["typ"] })}
-                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
+                    className="w-full bg-[#000000] border border-[#5c4716] rounded-lg px-4 py-2 text-sm text-white"
                   >
                     {Object.entries(TYPE_LABELS).map(([value, label]) => (
                       <option key={value} value={value}>
@@ -301,11 +301,11 @@ export default function FlotaPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm text-[#c3b9a7] mb-1">Status</label>
+                  <label className="block text-sm text-[#e8dfcc] mb-1">Status</label>
                   <select
                     value={form.status}
                     onChange={(e) => setForm({ ...form, status: e.target.value as Pojazd["status"] })}
-                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
+                    className="w-full bg-[#000000] border border-[#5c4716] rounded-lg px-4 py-2 text-sm text-white"
                   >
                     {Object.entries(statusConfig).map(([value, info]) => (
                       <option key={value} value={value}>
@@ -317,77 +317,77 @@ export default function FlotaPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-[#c3b9a7] mb-1">Marka</label>
+                  <label className="block text-sm text-[#e8dfcc] mb-1">Marka</label>
                   <input
                     value={form.marka}
                     onChange={(e) => setForm({ ...form, marka: e.target.value })}
-                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
+                    className="w-full bg-[#000000] border border-[#5c4716] rounded-lg px-4 py-2 text-sm text-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-[#c3b9a7] mb-1">Model</label>
+                  <label className="block text-sm text-[#e8dfcc] mb-1">Model</label>
                   <input
                     value={form.model}
                     onChange={(e) => setForm({ ...form, model: e.target.value })}
-                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
+                    className="w-full bg-[#000000] border border-[#5c4716] rounded-lg px-4 py-2 text-sm text-white"
                   />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-[#c3b9a7] mb-1">Rejestracja</label>
+                  <label className="block text-sm text-[#e8dfcc] mb-1">Rejestracja</label>
                   <input
                     value={form.rejestracja}
                     onChange={(e) => setForm({ ...form, rejestracja: e.target.value })}
-                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
+                    className="w-full bg-[#000000] border border-[#5c4716] rounded-lg px-4 py-2 text-sm text-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-[#c3b9a7] mb-1">Ładowność (t)</label>
+                  <label className="block text-sm text-[#e8dfcc] mb-1">Ładowność (t)</label>
                   <input
                     type="number"
                     step="0.1"
                     value={form.ladownosc}
                     onChange={(e) => setForm({ ...form, ladownosc: Number(e.target.value) })}
-                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
+                    className="w-full bg-[#000000] border border-[#5c4716] rounded-lg px-4 py-2 text-sm text-white"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm text-[#c3b9a7] mb-1">Wymiary</label>
+                <label className="block text-sm text-[#e8dfcc] mb-1">Wymiary</label>
                 <input
                   value={form.wymiary}
                   onChange={(e) => setForm({ ...form, wymiary: e.target.value })}
                   placeholder="np. 4.5m x 2.0m x 2.0m"
-                  className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
+                  className="w-full bg-[#000000] border border-[#5c4716] rounded-lg px-4 py-2 text-sm text-white"
                 />
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm text-[#c3b9a7] mb-1">Przegląd do</label>
+                  <label className="block text-sm text-[#e8dfcc] mb-1">Przegląd do</label>
                   <input
                     type="date"
                     value={form.przeglad}
                     onChange={(e) => setForm({ ...form, przeglad: e.target.value })}
-                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
+                    className="w-full bg-[#000000] border border-[#5c4716] rounded-lg px-4 py-2 text-sm text-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-[#c3b9a7] mb-1">OC do</label>
+                  <label className="block text-sm text-[#e8dfcc] mb-1">OC do</label>
                   <input
                     type="date"
                     value={form.oc}
                     onChange={(e) => setForm({ ...form, oc: e.target.value })}
-                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
+                    className="w-full bg-[#000000] border border-[#5c4716] rounded-lg px-4 py-2 text-sm text-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-[#c3b9a7] mb-1">Serwis do</label>
+                  <label className="block text-sm text-[#e8dfcc] mb-1">Serwis do</label>
                   <input
                     type="date"
                     value={form.serwis}
                     onChange={(e) => setForm({ ...form, serwis: e.target.value })}
-                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
+                    className="w-full bg-[#000000] border border-[#5c4716] rounded-lg px-4 py-2 text-sm text-white"
                   />
                 </div>
               </div>
@@ -395,7 +395,7 @@ export default function FlotaPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="btn-primary flex-1 px-6 py-3 rounded-lg font-semibold text-[#0b0b0a] disabled:opacity-60 flex items-center justify-center gap-2"
+                  className="btn-primary flex-1 px-6 py-3 rounded-lg font-semibold text-[#000000] disabled:opacity-60 flex items-center justify-center gap-2"
                 >
                   {saving && <Loader2 size={16} className="animate-spin" />}
                   {editingId ? "Zapisz zmiany" : "Dodaj pojazd"}
@@ -403,7 +403,7 @@ export default function FlotaPage() {
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-6 py-3 rounded-lg font-semibold border border-[#352c1d] text-[#c3b9a7] hover:text-white"
+                  className="px-6 py-3 rounded-lg font-semibold border border-[#5c4716] text-[#e8dfcc] hover:text-white"
                 >
                   Anuluj
                 </button>

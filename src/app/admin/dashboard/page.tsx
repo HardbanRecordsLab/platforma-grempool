@@ -75,12 +75,12 @@ function DashboardCalendar() {
   const selectedHoliday = holidaysMap.get(selectedDate);
 
   return (
-    <div className="bg-[#141210] rounded-xl border border-[#352c1d] p-6">
+    <div className="bg-[#0a0a0a] rounded-xl border border-[#5c4716] p-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-montserrat font-bold flex items-center gap-2">
-          <CalendarDays size={18} className="text-[#d4a24a]" /> Kalendarz
+          <CalendarDays size={18} className="text-[#f5b52c]" /> Kalendarz
         </h3>
-        <Link href="/admin/kalendarz" className="text-xs text-[#d4a24a] font-semibold hover:underline">
+        <Link href="/admin/kalendarz" className="text-xs text-[#f5b52c] font-semibold hover:underline">
           Pełny widok →
         </Link>
       </div>
@@ -88,17 +88,17 @@ function DashboardCalendar() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
           <div className="flex items-center justify-between mb-3">
-            <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))} className="p-1 hover:bg-[#352c1d] rounded transition-colors">
+            <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))} className="p-1 hover:bg-[#5c4716] rounded transition-colors">
               <ChevronLeft size={16} />
             </button>
             <span className="text-sm font-semibold">{months[currentDate.getMonth()]} {currentDate.getFullYear()}</span>
-            <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))} className="p-1 hover:bg-[#352c1d] rounded transition-colors">
+            <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))} className="p-1 hover:bg-[#5c4716] rounded transition-colors">
               <ChevronRight size={16} />
             </button>
           </div>
           <div className="grid grid-cols-7 gap-1 mb-1">
             {daysOfWeek.map((d) => (
-              <div key={d} className="text-center text-[10px] font-semibold text-[#c3b9a7] py-1">{d[0]}</div>
+              <div key={d} className="text-center text-[10px] font-semibold text-[#e8dfcc] py-1">{d[0]}</div>
             ))}
           </div>
           <div className="grid grid-cols-7 gap-1">
@@ -118,12 +118,12 @@ function DashboardCalendar() {
                   onClick={() => setSelectedDate(iso)}
                   title={holidayName}
                   className={`aspect-square rounded text-xs flex flex-col items-center justify-center transition-colors ${
-                    isSelected ? "bg-[#d4a24a] text-[#0b0b0a] font-semibold" : isToday ? "bg-[#d4a24a]/20 text-[#d4a24a]" : holidayName ? "text-red-400 hover:bg-[#352c1d]" : "hover:bg-[#352c1d]"
+                    isSelected ? "bg-[#f5b52c] text-[#000000] font-semibold" : isToday ? "bg-[#f5b52c]/20 text-[#f5b52c]" : holidayName ? "text-red-400 hover:bg-[#5c4716]" : "hover:bg-[#5c4716]"
                   }`}
                 >
                   {day}
                   {(hasEvents || holidayName) && (
-                    <div className={`w-1 h-1 rounded-full mt-0.5 ${isSelected ? "bg-[#0b0b0a]" : holidayName ? "bg-red-500" : "bg-[#d4a24a]"}`} />
+                    <div className={`w-1 h-1 rounded-full mt-0.5 ${isSelected ? "bg-[#000000]" : holidayName ? "bg-red-500" : "bg-[#f5b52c]"}`} />
                   )}
                 </button>
               );
@@ -140,25 +140,25 @@ function DashboardCalendar() {
           )}
           <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
             {loading ? (
-              <p className="text-xs text-[#c3b9a7]">Wczytywanie...</p>
+              <p className="text-xs text-[#e8dfcc]">Wczytywanie...</p>
             ) : selectedEvents.orders.length + selectedEvents.leads.length + selectedEvents.tasks.length === 0 ? (
-              <p className="text-xs text-[#c3b9a7]">Brak wydarzeń.</p>
+              <p className="text-xs text-[#e8dfcc]">Brak wydarzeń.</p>
             ) : (
               <>
                 {selectedEvents.orders.map((o) => (
                   <div key={o.id} className="p-2 rounded-lg border-l-2 border-l-green-500 bg-green-500/10 text-xs">
                     <div className="font-semibold">{SERVICE_LABELS[o.usluga] ?? o.usluga}</div>
-                    <div className="text-[#c3b9a7] flex items-center gap-1"><MapPin size={10} /> {o.lokalizacja}</div>
+                    <div className="text-[#e8dfcc] flex items-center gap-1"><MapPin size={10} /> {o.lokalizacja}</div>
                   </div>
                 ))}
                 {selectedEvents.leads.map((l) => (
                   <div key={l.id} className="p-2 rounded-lg border-l-2 border-l-blue-500 bg-blue-500/10 text-xs">
                     <div className="font-semibold">{SERVICE_LABELS[l.usluga] ?? l.usluga} — {l.klient_imie}</div>
-                    <div className="text-[#c3b9a7] flex items-center gap-1"><Phone size={10} /> {l.klient_telefon}</div>
+                    <div className="text-[#e8dfcc] flex items-center gap-1"><Phone size={10} /> {l.klient_telefon}</div>
                   </div>
                 ))}
                 {selectedEvents.tasks.map((t) => (
-                  <div key={t.id} className="p-2 rounded-lg border-l-2 border-l-[#d4a24a] bg-[#d4a24a]/10 text-xs">
+                  <div key={t.id} className="p-2 rounded-lg border-l-2 border-l-[#f5b52c] bg-[#f5b52c]/10 text-xs">
                     <div className="font-semibold flex items-center gap-1"><CheckSquare size={10} /> {t.tytul}</div>
                   </div>
                 ))}
@@ -221,14 +221,14 @@ export default function DashboardPage() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {stats.map((stat) => (
-          <div key={stat.label} className="bg-[#141210] p-6 rounded-xl border border-[#352c1d]">
+          <div key={stat.label} className="bg-[#0a0a0a] p-6 rounded-xl border border-[#5c4716]">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-10 h-10 rounded-lg bg-[#d4a24a]/10 flex items-center justify-center">
-                <stat.icon className="text-[#d4a24a] size-5" />
+              <div className="w-10 h-10 rounded-lg bg-[#f5b52c]/10 flex items-center justify-center">
+                <stat.icon className="text-[#f5b52c] size-5" />
               </div>
             </div>
             <div className="text-3xl font-bold mb-1">{loadingStats ? "—" : stat.value}</div>
-            <div className="text-sm text-[#c3b9a7]">{stat.label}</div>
+            <div className="text-sm text-[#e8dfcc]">{stat.label}</div>
           </div>
         ))}
       </div>
@@ -239,40 +239,40 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent Leads */}
-      <div className="bg-[#141210] rounded-xl border border-[#352c1d]">
-        <div className="p-6 border-b border-[#352c1d]">
+      <div className="bg-[#0a0a0a] rounded-xl border border-[#5c4716]">
+        <div className="p-6 border-b border-[#5c4716]">
           <h2 className="text-lg font-montserrat font-bold">Ostatnie zapytania</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#352c1d]">
-                <th className="text-left p-4 text-sm font-semibold text-[#c3b9a7]">Numer</th>
-                <th className="text-left p-4 text-sm font-semibold text-[#c3b9a7]">Klient</th>
-                <th className="text-left p-4 text-sm font-semibold text-[#c3b9a7]">Usługa</th>
-                <th className="text-left p-4 text-sm font-semibold text-[#c3b9a7]">Status</th>
-                <th className="text-left p-4 text-sm font-semibold text-[#c3b9a7]">Data</th>
+              <tr className="border-b border-[#5c4716]">
+                <th className="text-left p-4 text-sm font-semibold text-[#e8dfcc]">Numer</th>
+                <th className="text-left p-4 text-sm font-semibold text-[#e8dfcc]">Klient</th>
+                <th className="text-left p-4 text-sm font-semibold text-[#e8dfcc]">Usługa</th>
+                <th className="text-left p-4 text-sm font-semibold text-[#e8dfcc]">Status</th>
+                <th className="text-left p-4 text-sm font-semibold text-[#e8dfcc]">Data</th>
               </tr>
             </thead>
             <tbody>
               {!loadingStats && recentLeads.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="p-8 text-center text-sm text-[#c3b9a7]">
+                  <td colSpan={5} className="p-8 text-center text-sm text-[#e8dfcc]">
                     Brak zapytań. Nowe pojawią się tu automatycznie po wysłaniu formularza wyceny.
                   </td>
                 </tr>
               )}
               {recentLeads.map((lead) => (
-                <tr key={lead.id} className="border-b border-[#352c1d] hover:bg-[#0b0b0a] transition-colors">
-                  <td className="p-4 text-sm font-mono text-[#d4a24a]">{lead.numer}</td>
+                <tr key={lead.id} className="border-b border-[#5c4716] hover:bg-[#000000] transition-colors">
+                  <td className="p-4 text-sm font-mono text-[#f5b52c]">{lead.numer}</td>
                   <td className="p-4 text-sm">{lead.klient_imie} {lead.klient_nazwisko}</td>
-                  <td className="p-4 text-sm text-[#c3b9a7]">{SERVICE_LABELS[lead.usluga] ?? lead.usluga}</td>
+                  <td className="p-4 text-sm text-[#e8dfcc]">{SERVICE_LABELS[lead.usluga] ?? lead.usluga}</td>
                   <td className="p-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColors[lead.status] || 'bg-gray-500/20 text-gray-400'}`}>
                       {STATUS_LABELS[lead.status] ?? lead.status}
                     </span>
                   </td>
-                  <td className="p-4 text-sm text-[#c3b9a7]">{new Date(lead.data_kontaktu).toLocaleDateString("pl-PL")}</td>
+                  <td className="p-4 text-sm text-[#e8dfcc]">{new Date(lead.data_kontaktu).toLocaleDateString("pl-PL")}</td>
                 </tr>
               ))}
             </tbody>
@@ -282,51 +282,51 @@ export default function DashboardPage() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-        <div className="bg-[#141210] p-6 rounded-xl border border-[#352c1d]">
+        <div className="bg-[#0a0a0a] p-6 rounded-xl border border-[#5c4716]">
           <h3 className="font-montserrat font-bold mb-4">Szybkie akcje</h3>
           <div className="space-y-2">
-            <Link href="/admin/kalendarz" className="block w-full text-left px-4 py-2 rounded-lg hover:bg-[#352c1d] transition-colors text-sm">
+            <Link href="/admin/kalendarz" className="block w-full text-left px-4 py-2 rounded-lg hover:bg-[#5c4716] transition-colors text-sm">
               + Dodaj zadanie
             </Link>
-            <Link href="/admin/zlecenia" className="block w-full text-left px-4 py-2 rounded-lg hover:bg-[#352c1d] transition-colors text-sm">
+            <Link href="/admin/zlecenia" className="block w-full text-left px-4 py-2 rounded-lg hover:bg-[#5c4716] transition-colors text-sm">
               + Nowe zlecenie
             </Link>
-            <Link href="/admin/materialy" className="block w-full text-left px-4 py-2 rounded-lg hover:bg-[#352c1d] transition-colors text-sm">
+            <Link href="/admin/materialy" className="block w-full text-left px-4 py-2 rounded-lg hover:bg-[#5c4716] transition-colors text-sm">
               + Dodaj materiał
             </Link>
           </div>
         </div>
 
-        <div className="bg-[#141210] p-6 rounded-xl border border-[#352c1d]">
+        <div className="bg-[#0a0a0a] p-6 rounded-xl border border-[#5c4716]">
           <h3 className="font-montserrat font-bold mb-4">Flota dziś</h3>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-[#c3b9a7]">Bus 1</span>
+              <span className="text-sm text-[#e8dfcc]">Bus 1</span>
               <span className="text-xs px-2 py-1 rounded bg-green-500/20 text-green-400">W trasie</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-[#c3b9a7]">Wywrotka</span>
+              <span className="text-sm text-[#e8dfcc]">Wywrotka</span>
               <span className="text-xs px-2 py-1 rounded bg-yellow-500/20 text-yellow-400">Dostępna</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-[#c3b9a7]">Ciężarówka</span>
+              <span className="text-sm text-[#e8dfcc]">Ciężarówka</span>
               <span className="text-xs px-2 py-1 rounded bg-green-500/20 text-green-400">W trasie</span>
             </div>
           </div>
         </div>
 
-        <div className="bg-[#141210] p-6 rounded-xl border border-[#352c1d]">
+        <div className="bg-[#0a0a0a] p-6 rounded-xl border border-[#5c4716]">
           <h3 className="font-montserrat font-bold mb-4">Magazyn materiałów</h3>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-[#d4a24a]/10 flex items-center justify-center">
-              <Package className="text-[#d4a24a] size-5" />
+            <div className="w-10 h-10 rounded-lg bg-[#f5b52c]/10 flex items-center justify-center">
+              <Package className="text-[#f5b52c] size-5" />
             </div>
             <div>
               <div className="text-2xl font-bold">{materialsCount ?? "—"}</div>
-              <div className="text-xs text-[#c3b9a7]">pozycji w katalogu</div>
+              <div className="text-xs text-[#e8dfcc]">pozycji w katalogu</div>
             </div>
           </div>
-          <Link href="/admin/materialy" className="block mt-4 text-xs text-[#d4a24a] font-semibold hover:underline">
+          <Link href="/admin/materialy" className="block mt-4 text-xs text-[#f5b52c] font-semibold hover:underline">
             Zarządzaj katalogiem →
           </Link>
         </div>

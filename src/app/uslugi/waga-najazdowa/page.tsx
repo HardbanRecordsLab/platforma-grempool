@@ -48,21 +48,21 @@ export default function WagaNajazdowaPage() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-2xl">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-lg bg-[#d4a24a]/10 flex items-center justify-center">
-                <Scale className="text-[#d4a24a] size-6" />
+              <div className="w-12 h-12 rounded-lg bg-[#f5b52c]/10 flex items-center justify-center">
+                <Scale className="text-[#f5b52c] size-6" />
               </div>
-              <span className="text-[#d4a24a] font-semibold">USŁUGA</span>
+              <span className="text-[#f5b52c] font-semibold">USŁUGA</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-montserrat font-bold mb-6">
-              WAGA NAJAZDOWA <span className="text-[#d4a24a] whitespace-nowrap">50 TON</span>
+              WAGA NAJAZDOWA <span className="text-[#f5b52c] whitespace-nowrap">50 TON</span>
             </h1>
-            <p className="text-[#c3b9a7] text-lg mb-8">
+            <p className="text-[#e8dfcc] text-lg mb-8">
               Na naszym placu przy ul. Kolejowej 5a w Raszówce stoi waga najazdowa o nośności 50 ton.
               Każdą dostawę ważymy na miejscu, przy kliencie - dzięki temu rozliczenie opiera się na
               rzeczywistej masie ładunku, a nie na szacunkach.
             </p>
             <div className="flex flex-wrap gap-4">
-              <a href={`tel:${BUSINESS.phone}`} className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#0b0b0a] flex items-center gap-2">
+              <a href={`tel:${BUSINESS.phone}`} className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#000000] flex items-center gap-2">
                 <Phone size={20} /> ZADZWOŃ
               </a>
               <Link href="/wycena" className="btn-outline-gold px-6 py-3 rounded-lg font-semibold">
@@ -74,38 +74,38 @@ export default function WagaNajazdowaPage() {
       </section>
 
       {/* Parameters */}
-      <section className="py-16 bg-[#141210]">
+      <section className="py-16 bg-[#0a0a0a]">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-[#0b0b0a] p-8 rounded-xl gold-frame text-center">
-              <div className="text-4xl font-montserrat font-bold text-[#d4a24a] mb-2">50 t</div>
-              <p className="text-[#c3b9a7] text-sm">Nośność wagi - obsłużymy zestaw z pełnym ładunkiem</p>
+            <div className="bg-[#000000] p-8 rounded-xl gold-frame text-center">
+              <div className="text-4xl font-montserrat font-bold text-[#f5b52c] mb-2">50 t</div>
+              <p className="text-[#e8dfcc] text-sm">Nośność wagi - obsłużymy zestaw z pełnym ładunkiem</p>
             </div>
-            <div className="bg-[#0b0b0a] p-8 rounded-xl gold-frame text-center">
-              <div className="text-4xl font-montserrat font-bold text-[#d4a24a] mb-2">Na miejscu</div>
-              <p className="text-[#c3b9a7] text-sm">Ważenie na naszym placu w Raszówce, bez szukania obcej wagi</p>
+            <div className="bg-[#000000] p-8 rounded-xl gold-frame text-center">
+              <div className="text-4xl font-montserrat font-bold text-[#f5b52c] mb-2">Na miejscu</div>
+              <p className="text-[#e8dfcc] text-sm">Ważenie na naszym placu w Raszówce, bez szukania obcej wagi</p>
             </div>
-            <div className="bg-[#0b0b0a] p-8 rounded-xl gold-frame text-center">
-              <div className="text-4xl font-montserrat font-bold text-[#d4a24a] mb-2">Przy kliencie</div>
-              <p className="text-[#c3b9a7] text-sm">Odczyt masy widzisz razem z nami - bez niedomówień</p>
+            <div className="bg-[#000000] p-8 rounded-xl gold-frame text-center">
+              <div className="text-4xl font-montserrat font-bold text-[#f5b52c] mb-2">Przy kliencie</div>
+              <p className="text-[#e8dfcc] text-sm">Odczyt masy widzisz razem z nami - bez niedomówień</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* What we weigh */}
-      <section className="py-16 bg-[#0b0b0a]">
+      <section className="py-16 bg-[#000000]">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-montserrat font-bold text-center mb-12">
-            CO <span className="text-[#d4a24a]">WAŻYMY</span>
+            CO <span className="text-[#f5b52c]">WAŻYMY</span>
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {weighed.map((item) => (
-              <div key={item.title} className="bg-[#1a1613] p-6 rounded-xl border border-[#352c1d] flex items-start gap-4">
-                <CheckCircle2 className="text-[#d4a24a] size-6 shrink-0 mt-1" />
+              <div key={item.title} className="bg-[#1a1613] p-6 rounded-xl border border-[#5c4716] flex items-start gap-4">
+                <CheckCircle2 className="text-[#f5b52c] size-6 shrink-0 mt-1" />
                 <div>
                   <h3 className="font-montserrat font-bold mb-1">{item.title}</h3>
-                  <p className="text-[#c3b9a7] text-sm">{item.desc}</p>
+                  <p className="text-[#e8dfcc] text-sm">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -114,19 +114,19 @@ export default function WagaNajazdowaPage() {
       </section>
 
       {/* How it works */}
-      <section className="py-16 bg-[#141210]">
+      <section className="py-16 bg-[#0a0a0a]">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-montserrat font-bold text-center mb-12">
-            JAK WYGLĄDA <span className="text-[#d4a24a]">WAŻENIE</span>?
+            JAK WYGLĄDA <span className="text-[#f5b52c]">WAŻENIE</span>?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {steps.map((step) => (
               <div key={step.n} className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#d4a24a] text-[#0b0b0a] flex items-center justify-center text-2xl font-bold">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#f5b52c] text-[#000000] flex items-center justify-center text-2xl font-bold">
                   {step.n}
                 </div>
                 <h3 className="font-montserrat font-bold mb-2">{step.title}</h3>
-                <p className="text-sm text-[#c3b9a7]">{step.desc}</p>
+                <p className="text-sm text-[#e8dfcc]">{step.desc}</p>
               </div>
             ))}
           </div>
@@ -134,14 +134,14 @@ export default function WagaNajazdowaPage() {
       </section>
 
       {/* Gallery */}
-      <section className="py-16 bg-[#0b0b0a]">
+      <section className="py-16 bg-[#000000]">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-montserrat font-bold text-center mb-12">
-            NASZ <span className="text-[#d4a24a]">PLAC</span>
+            NASZ <span className="text-[#f5b52c]">PLAC</span>
           </h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {gallery.map((src, i) => (
-              <div key={i} className="group aspect-square rounded-xl overflow-hidden border border-[#352c1d]">
+              <div key={i} className="group aspect-square rounded-xl overflow-hidden border border-[#5c4716]">
                 <img
                   src={src}
                   alt="Waga najazdowa - plac GREMPOOL"
@@ -154,19 +154,19 @@ export default function WagaNajazdowaPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-gradient-to-r from-[#d4a24a] to-[#a97c2b]">
+      <section className="py-16 bg-gradient-to-r from-[#f5b52c] to-[#c98f12]">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-montserrat font-bold text-[#0b0b0a] mb-4">
+          <h2 className="text-3xl font-montserrat font-bold text-[#000000] mb-4">
             PRZYJEDŹ Z ŁADUNKIEM - ZWAŻYMY I ROZLICZYMY
           </h2>
-          <p className="text-[#0b0b0a]/80 mb-8">
+          <p className="text-[#000000]/80 mb-8">
             {BUSINESS.streetAddress}, {BUSINESS.postalCode} {BUSINESS.addressLocality}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href={`tel:${BUSINESS.phone}`} className="bg-[#0b0b0a] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#141210] transition-colors flex items-center gap-2">
+            <a href={`tel:${BUSINESS.phone}`} className="bg-[#000000] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#0a0a0a] transition-colors flex items-center gap-2">
               <Phone size={20} /> {BUSINESS.phoneDisplay}
             </a>
-            <Link href="/uslugi/skup-zlomu" className="border-2 border-[#0b0b0a] text-[#0b0b0a] px-8 py-4 rounded-lg font-semibold hover:bg-[#0b0b0a] hover:text-[#d4a24a] transition-colors flex items-center gap-2">
+            <Link href="/uslugi/skup-zlomu" className="border-2 border-[#000000] text-[#000000] px-8 py-4 rounded-lg font-semibold hover:bg-[#000000] hover:text-[#f5b52c] transition-colors flex items-center gap-2">
               SKUP ZŁOMU <ArrowRight size={20} />
             </Link>
           </div>

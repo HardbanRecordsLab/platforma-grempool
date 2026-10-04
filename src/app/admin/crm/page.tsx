@@ -113,7 +113,7 @@ export default function CRMPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-montserrat font-bold">CRM / Leady</h1>
-        {loading && <Loader2 size={18} className="animate-spin text-[#d4a24a]" />}
+        {loading && <Loader2 size={18} className="animate-spin text-[#f5b52c]" />}
       </div>
 
       {error && (
@@ -138,28 +138,28 @@ export default function CRMPage() {
                   {stageLeads.map((lead) => (
                     <div
                       key={lead.id}
-                      className={`bg-[#141210] p-4 rounded-xl border border-[#352c1d] cursor-pointer hover:border-[#d4a24a]/50 transition-colors ${
-                        selected?.id === lead.id ? "border-[#d4a24a]" : ""
+                      className={`bg-[#0a0a0a] p-4 rounded-xl border border-[#5c4716] cursor-pointer hover:border-[#f5b52c]/50 transition-colors ${
+                        selected?.id === lead.id ? "border-[#f5b52c]" : ""
                       }`}
                       onClick={() => setSelected(lead)}
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs font-mono text-[#d4a24a]">{lead.numer}</span>
+                        <span className="text-xs font-mono text-[#f5b52c]">{lead.numer}</span>
                       </div>
                       <h4 className="font-semibold text-sm mb-1">
                         {lead.klient_imie} {lead.klient_nazwisko}
                       </h4>
-                      <p className="text-xs text-[#c3b9a7] mb-2">{SERVICE_LABELS[lead.usluga] ?? lead.usluga}</p>
+                      <p className="text-xs text-[#e8dfcc] mb-2">{SERVICE_LABELS[lead.usluga] ?? lead.usluga}</p>
                       {lead.wartosc_wyceny ? (
-                        <p className="text-sm font-semibold text-[#d4a24a]">{lead.wartosc_wyceny.toLocaleString()} zł</p>
+                        <p className="text-sm font-semibold text-[#f5b52c]">{lead.wartosc_wyceny.toLocaleString()} zł</p>
                       ) : null}
-                      <div className="flex items-center gap-2 mt-3 pt-3 border-t border-[#352c1d] text-xs text-[#c3b9a7]">
+                      <div className="flex items-center gap-2 mt-3 pt-3 border-t border-[#5c4716] text-xs text-[#e8dfcc]">
                         <Clock size={12} /> {new Date(lead.data_kontaktu).toLocaleDateString("pl-PL")}
                       </div>
                     </div>
                   ))}
                   {stageLeads.length === 0 && (
-                    <div className="text-xs text-[#c3b9a7]/60 text-center py-4">Brak</div>
+                    <div className="text-xs text-[#e8dfcc]/60 text-center py-4">Brak</div>
                   )}
                 </div>
               </div>
@@ -169,16 +169,16 @@ export default function CRMPage() {
       </div>
 
       {/* Table View */}
-      <div className="bg-[#141210] rounded-xl border border-[#352c1d]">
-        <div className="p-4 border-b border-[#352c1d] flex items-center gap-4">
+      <div className="bg-[#0a0a0a] rounded-xl border border-[#5c4716]">
+        <div className="p-4 border-b border-[#5c4716] flex items-center gap-4">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#c3b9a7] size-4" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#e8dfcc] size-4" />
             <input
               type="text"
               placeholder="Szukaj zapytań..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg pl-10 pr-4 py-2 text-sm text-white"
+              className="w-full bg-[#000000] border border-[#5c4716] rounded-lg pl-10 pr-4 py-2 text-sm text-white"
             />
           </div>
         </div>
@@ -186,18 +186,18 @@ export default function CRMPage() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-[#352c1d]">
-                <th className="text-left p-4 text-sm font-semibold text-[#c3b9a7]">Numer</th>
-                <th className="text-left p-4 text-sm font-semibold text-[#c3b9a7]">Klient</th>
-                <th className="text-left p-4 text-sm font-semibold text-[#c3b9a7]">Usługa</th>
-                <th className="text-left p-4 text-sm font-semibold text-[#c3b9a7]">Status</th>
-                <th className="text-left p-4 text-sm font-semibold text-[#c3b9a7]">Data</th>
+              <tr className="border-b border-[#5c4716]">
+                <th className="text-left p-4 text-sm font-semibold text-[#e8dfcc]">Numer</th>
+                <th className="text-left p-4 text-sm font-semibold text-[#e8dfcc]">Klient</th>
+                <th className="text-left p-4 text-sm font-semibold text-[#e8dfcc]">Usługa</th>
+                <th className="text-left p-4 text-sm font-semibold text-[#e8dfcc]">Status</th>
+                <th className="text-left p-4 text-sm font-semibold text-[#e8dfcc]">Data</th>
               </tr>
             </thead>
             <tbody>
               {!loading && filteredLeads.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="p-8 text-center text-sm text-[#c3b9a7]">
+                  <td colSpan={5} className="p-8 text-center text-sm text-[#e8dfcc]">
                     Brak zapytań. Nowe pojawią się tu automatycznie po wysłaniu formularza wyceny.
                   </td>
                 </tr>
@@ -206,20 +206,20 @@ export default function CRMPage() {
                 <tr
                   key={lead.id}
                   onClick={() => setSelected(lead)}
-                  className="border-b border-[#352c1d] hover:bg-[#0b0b0a] transition-colors cursor-pointer"
+                  className="border-b border-[#5c4716] hover:bg-[#000000] transition-colors cursor-pointer"
                 >
-                  <td className="p-4 text-sm font-mono text-[#d4a24a]">{lead.numer}</td>
+                  <td className="p-4 text-sm font-mono text-[#f5b52c]">{lead.numer}</td>
                   <td className="p-4">
                     <div className="text-sm font-semibold">{lead.klient_imie} {lead.klient_nazwisko}</div>
-                    <div className="text-xs text-[#c3b9a7]">{lead.klient_telefon}</div>
+                    <div className="text-xs text-[#e8dfcc]">{lead.klient_telefon}</div>
                   </td>
-                  <td className="p-4 text-sm text-[#c3b9a7]">{SERVICE_LABELS[lead.usluga] ?? lead.usluga}</td>
+                  <td className="p-4 text-sm text-[#e8dfcc]">{SERVICE_LABELS[lead.usluga] ?? lead.usluga}</td>
                   <td className="p-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${stageColor(lead.status)}/20`}>
                       {stageLabel(lead.status)}
                     </span>
                   </td>
-                  <td className="p-4 text-sm text-[#c3b9a7]">{new Date(lead.data_kontaktu).toLocaleDateString("pl-PL")}</td>
+                  <td className="p-4 text-sm text-[#e8dfcc]">{new Date(lead.data_kontaktu).toLocaleDateString("pl-PL")}</td>
                 </tr>
               ))}
             </tbody>
@@ -230,65 +230,65 @@ export default function CRMPage() {
       {/* Detail Panel */}
       {selected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70">
-          <div className="bg-[#141210] border border-[#352c1d] rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-6 border-b border-[#352c1d] sticky top-0 bg-[#141210]">
+          <div className="bg-[#0a0a0a] border border-[#5c4716] rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-[#5c4716] sticky top-0 bg-[#0a0a0a]">
               <div>
-                <span className="text-xs font-mono text-[#d4a24a]">{selected.numer}</span>
+                <span className="text-xs font-mono text-[#f5b52c]">{selected.numer}</span>
                 <h2 className="text-xl font-montserrat font-bold">
                   {selected.klient_imie} {selected.klient_nazwisko}
                 </h2>
               </div>
-              <button onClick={() => setSelected(null)} className="text-[#c3b9a7] hover:text-white">
+              <button onClick={() => setSelected(null)} className="text-[#e8dfcc] hover:text-white">
                 <X size={22} />
               </button>
             </div>
 
             <div className="p-6 space-y-4">
               <div className="flex flex-wrap gap-4 text-sm">
-                <a href={`tel:${selected.klient_telefon}`} className="flex items-center gap-2 text-[#c3b9a7] hover:text-[#d4a24a]">
+                <a href={`tel:${selected.klient_telefon}`} className="flex items-center gap-2 text-[#e8dfcc] hover:text-[#f5b52c]">
                   <Phone size={14} /> {selected.klient_telefon}
                 </a>
                 {selected.klient_email && (
-                  <a href={`mailto:${selected.klient_email}`} className="flex items-center gap-2 text-[#c3b9a7] hover:text-[#d4a24a]">
+                  <a href={`mailto:${selected.klient_email}`} className="flex items-center gap-2 text-[#e8dfcc] hover:text-[#f5b52c]">
                     <Mail size={14} /> {selected.klient_email}
                   </a>
                 )}
-                <span className="flex items-center gap-2 text-[#c3b9a7]">
+                <span className="flex items-center gap-2 text-[#e8dfcc]">
                   <MapPin size={14} /> {selected.lokalizacja}
                 </span>
               </div>
 
               <div>
-                <div className="text-xs text-[#c3b9a7] mb-1">Usługa</div>
+                <div className="text-xs text-[#e8dfcc] mb-1">Usługa</div>
                 <div className="text-sm font-semibold">{SERVICE_LABELS[selected.usluga] ?? selected.usluga}</div>
               </div>
 
               <div>
-                <div className="text-xs text-[#c3b9a7] mb-1">Opis zgłoszenia</div>
+                <div className="text-xs text-[#e8dfcc] mb-1">Opis zgłoszenia</div>
                 <div className="text-sm whitespace-pre-wrap">{selected.opis || "—"}</div>
               </div>
 
               {selected.notatki && (
                 <div>
-                  <div className="text-xs text-[#c3b9a7] mb-1">Szczegóły z formularza</div>
+                  <div className="text-xs text-[#e8dfcc] mb-1">Szczegóły z formularza</div>
                   <div className="text-sm whitespace-pre-wrap">{selected.notatki}</div>
                 </div>
               )}
 
               {selected.preferowany_termin && (
                 <div>
-                  <div className="text-xs text-[#c3b9a7] mb-1">Preferowany termin</div>
+                  <div className="text-xs text-[#e8dfcc] mb-1">Preferowany termin</div>
                   <div className="text-sm">{new Date(selected.preferowany_termin).toLocaleDateString("pl-PL")}</div>
                 </div>
               )}
 
               <div>
-                <label className="block text-xs text-[#c3b9a7] mb-1">Status</label>
+                <label className="block text-xs text-[#e8dfcc] mb-1">Status</label>
                 <select
                   value={selected.status}
                   onChange={(e) => handleStatusChange(selected, e.target.value as LeadStatus)}
                   disabled={saving}
-                  className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
+                  className="w-full bg-[#000000] border border-[#5c4716] rounded-lg px-4 py-2 text-sm text-white"
                 >
                   {pipelineStages.map((s) => (
                     <option key={s.id} value={s.id}>{s.label}</option>
@@ -300,14 +300,14 @@ export default function CRMPage() {
                 <button
                   onClick={() => handleConvertToOrder(selected)}
                   disabled={saving}
-                  className="btn-primary flex-1 px-4 py-3 rounded-lg font-semibold text-[#0b0b0a] disabled:opacity-60 flex items-center justify-center gap-2"
+                  className="btn-primary flex-1 px-4 py-3 rounded-lg font-semibold text-[#000000] disabled:opacity-60 flex items-center justify-center gap-2"
                 >
                   {saving ? <Loader2 size={16} className="animate-spin" /> : <ArrowRightCircle size={16} />}
                   Przekształć w zlecenie
                 </button>
                 <button
                   onClick={() => handleDelete(selected)}
-                  className="p-3 rounded-lg border border-[#352c1d] hover:bg-[#352c1d] transition-colors"
+                  className="p-3 rounded-lg border border-[#5c4716] hover:bg-[#5c4716] transition-colors"
                   title="Usuń"
                 >
                   <Trash2 size={16} className="text-red-400" />

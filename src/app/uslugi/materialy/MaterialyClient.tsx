@@ -55,23 +55,23 @@ export default function MaterialyClient() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-2xl">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-lg bg-[#d4a24a]/10 flex items-center justify-center">
-                <Package className="text-[#d4a24a] size-6" />
+              <div className="w-12 h-12 rounded-lg bg-[#f5b52c]/10 flex items-center justify-center">
+                <Package className="text-[#f5b52c] size-6" />
               </div>
-              <span className="text-[#d4a24a] font-semibold">SKLEP</span>
+              <span className="text-[#f5b52c] font-semibold">SKLEP</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-montserrat font-bold mb-6">
-              MATERIAŁY <span className="text-[#d4a24a]">Z ODZYSKU</span>
+              MATERIAŁY <span className="text-[#f5b52c]">Z ODZYSKU</span>
             </h1>
-            <p className="text-[#c3b9a7] text-lg mb-8">
+            <p className="text-[#e8dfcc] text-lg mb-8">
               Oferujemy szeroki wybór materiałów budowlanych z odzysku w atrakcyjnych cenach.
               Stal, cegła, okna, drzwi i wiele więcej. Poniżej aktualna dostępność z naszego placu.
             </p>
             <div className="flex gap-4">
-              <a href="tel:+48663288533" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#0b0b0a] flex items-center gap-2">
+              <a href="tel:+48663288533" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#000000] flex items-center gap-2">
                 <Phone size={20} /> ZADZWOŃ
               </a>
-              <Link href="/wycena" className="px-6 py-3 rounded-lg font-semibold border-2 border-[#d4a24a] text-[#d4a24a] hover:bg-[#d4a24a] hover:text-[#0b0b0a] transition-all">
+              <Link href="/wycena" className="px-6 py-3 rounded-lg font-semibold border-2 border-[#f5b52c] text-[#f5b52c] hover:bg-[#f5b52c] hover:text-[#000000] transition-all">
                 ZAPYTAJ O MATERIAŁ
               </Link>
             </div>
@@ -80,33 +80,33 @@ export default function MaterialyClient() {
       </section>
 
       {/* Categories */}
-      <section className="py-16 bg-[#141210]">
+      <section className="py-16 bg-[#0a0a0a]">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-montserrat font-bold text-center mb-12">
-            KATEGORIE <span className="text-[#d4a24a]">MATERIAŁÓW</span>
+            KATEGORIE <span className="text-[#f5b52c]">MATERIAŁÓW</span>
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             <button
               onClick={() => setActiveCategory("Wszystkie")}
-              className={`text-left bg-[#0b0b0a] p-6 rounded-xl border transition-colors ${
-                activeCategory === "Wszystkie" ? "border-[#d4a24a]" : "border-[#352c1d] hover:border-[#d4a24a]/50"
+              className={`text-left bg-[#000000] p-6 rounded-xl border transition-colors ${
+                activeCategory === "Wszystkie" ? "border-[#f5b52c]" : "border-[#5c4716] hover:border-[#f5b52c]/50"
               }`}
             >
-              <Package className="text-[#d4a24a] size-8 mb-3" />
+              <Package className="text-[#f5b52c] size-8 mb-3" />
               <h3 className="font-montserrat font-bold mb-1">Wszystkie</h3>
-              <p className="text-[#d4a24a] text-sm">{materials.length} pozycji</p>
+              <p className="text-[#f5b52c] text-sm">{materials.length} pozycji</p>
             </button>
             {categorySummary.map((cat) => (
               <button
                 key={cat.value}
                 onClick={() => setActiveCategory(cat.label)}
-                className={`text-left bg-[#0b0b0a] p-6 rounded-xl border transition-colors ${
-                  activeCategory === cat.label ? "border-[#d4a24a]" : "border-[#352c1d] hover:border-[#d4a24a]/50"
+                className={`text-left bg-[#000000] p-6 rounded-xl border transition-colors ${
+                  activeCategory === cat.label ? "border-[#f5b52c]" : "border-[#5c4716] hover:border-[#f5b52c]/50"
                 }`}
               >
-                <Package className="text-[#d4a24a] size-8 mb-3" />
+                <Package className="text-[#f5b52c] size-8 mb-3" />
                 <h3 className="font-montserrat font-bold mb-1">{cat.label}</h3>
-                <p className="text-[#d4a24a] text-sm">{cat.count} pozycji</p>
+                <p className="text-[#f5b52c] text-sm">{cat.count} pozycji</p>
               </button>
             ))}
           </div>
@@ -114,61 +114,61 @@ export default function MaterialyClient() {
       </section>
 
       {/* Available Items */}
-      <section className="py-16 bg-[#0b0b0a]">
+      <section className="py-16 bg-[#000000]">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <h2 className="text-3xl font-montserrat font-bold">
-              DOSTĘPNE <span className="text-[#d4a24a]">MATERIAŁY</span>
+              DOSTĘPNE <span className="text-[#f5b52c]">MATERIAŁY</span>
             </h2>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#c3b9a7] size-4" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#e8dfcc] size-4" />
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Szukaj materiałów..."
-                className="bg-[#141210] border border-[#352c1d] rounded-lg pl-10 pr-4 py-2 text-sm text-white w-64"
+                className="bg-[#0a0a0a] border border-[#5c4716] rounded-lg pl-10 pr-4 py-2 text-sm text-white w-64"
               />
             </div>
           </div>
 
           {loading ? (
-            <div className="bg-[#141210] p-12 rounded-xl border border-[#352c1d] text-center text-[#c3b9a7]">
+            <div className="bg-[#0a0a0a] p-12 rounded-xl border border-[#5c4716] text-center text-[#e8dfcc]">
               Wczytywanie katalogu...
             </div>
           ) : filtered.length === 0 ? (
-            <div className="bg-[#141210] p-12 rounded-xl border border-[#352c1d] text-center text-[#c3b9a7]">
+            <div className="bg-[#0a0a0a] p-12 rounded-xl border border-[#5c4716] text-center text-[#e8dfcc]">
               Brak materiałów spełniających kryteria. Zadzwoń — być może mamy coś, czego jeszcze nie dodaliśmy do katalogu.
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
               {filtered.map((item) => (
-                <div key={item.id} className="bg-[#141210] rounded-xl border border-[#352c1d] hover:border-[#d4a24a]/30 transition-colors overflow-hidden">
-                  <div className="aspect-video bg-[#0b0b0a] flex items-center justify-center overflow-hidden">
+                <div key={item.id} className="bg-[#0a0a0a] rounded-xl border border-[#5c4716] hover:border-[#f5b52c]/30 transition-colors overflow-hidden">
+                  <div className="aspect-video bg-[#000000] flex items-center justify-center overflow-hidden">
                     {item.zdjecia && item.zdjecia.length > 0 ? (
                       <img src={item.zdjecia[0]} alt={item.nazwa} className="w-full h-full object-cover" />
                     ) : (
-                      <Package className="text-[#352c1d] size-12" />
+                      <Package className="text-[#5c4716] size-12" />
                     )}
                   </div>
                   <div className="p-4">
                     <div className="flex items-start justify-between mb-2 gap-1">
-                      <span className="font-mono text-[#d4a24a] text-[10px] truncate">{item.id_materialu}</span>
+                      <span className="font-mono text-[#f5b52c] text-[10px] truncate">{item.id_materialu}</span>
                       <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-green-500/20 text-green-400 shrink-0">
                         Dostępny
                       </span>
                     </div>
                     <h3 className="font-semibold text-sm mb-2 line-clamp-2 min-h-[2.5rem]">{item.nazwa}</h3>
-                    <div className="space-y-0.5 text-xs text-[#c3b9a7] mb-3">
+                    <div className="space-y-0.5 text-xs text-[#e8dfcc] mb-3">
                       <div className="truncate">Wymiary: <span className="text-white">{item.wymiary}</span></div>
                       <div>Ilość: <span className="text-white">{item.ilosc} szt.</span></div>
                     </div>
-                    <div className="text-base font-bold text-[#d4a24a] mb-3">
+                    <div className="text-base font-bold text-[#f5b52c] mb-3">
                       {item.cena ? `${item.cena.toFixed(2)} zł` : "Zapytaj o cenę"}
                     </div>
                     <Link
                       href={`/wycena?material=${encodeURIComponent(item.id_materialu)}&nazwa=${encodeURIComponent(item.nazwa)}`}
-                      className="block w-full text-center py-2 rounded-lg bg-[#352c1d] text-xs font-semibold hover:bg-[#d4a24a] hover:text-[#0b0b0a] transition-colors"
+                      className="block w-full text-center py-2 rounded-lg bg-[#5c4716] text-xs font-semibold hover:bg-[#f5b52c] hover:text-[#000000] transition-colors"
                     >
                       Zapytaj
                     </Link>
@@ -181,17 +181,17 @@ export default function MaterialyClient() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-gradient-to-r from-[#d4a24a] to-[#a97c2b]">
+      <section className="py-16 bg-gradient-to-r from-[#f5b52c] to-[#c98f12]">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-montserrat font-bold text-[#0b0b0a] mb-4">
+          <h2 className="text-3xl font-montserrat font-bold text-[#000000] mb-4">
             SZUKASZ KONKRETNEGO MATERIAŁU?
           </h2>
-          <p className="text-[#0b0b0a]/80 mb-8">Zadzwoń lub napisz - pomożemy znaleźć to, czego potrzebujesz</p>
+          <p className="text-[#000000]/80 mb-8">Zadzwoń lub napisz - pomożemy znaleźć to, czego potrzebujesz</p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href="tel:+48663288533" className="bg-[#0b0b0a] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#141210] transition-colors flex items-center gap-2">
+            <a href="tel:+48663288533" className="bg-[#000000] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#0a0a0a] transition-colors flex items-center gap-2">
               <Phone size={20} /> +48 663 288 533
             </a>
-            <Link href="/wycena" className="border-2 border-[#0b0b0a] text-[#0b0b0a] px-8 py-4 rounded-lg font-semibold hover:bg-[#0b0b0a] hover:text-[#d4a24a] transition-colors flex items-center gap-2">
+            <Link href="/wycena" className="border-2 border-[#000000] text-[#000000] px-8 py-4 rounded-lg font-semibold hover:bg-[#000000] hover:text-[#f5b52c] transition-colors flex items-center gap-2">
               NAPISZ DO NAS <ArrowRight size={20} />
             </Link>
           </div>

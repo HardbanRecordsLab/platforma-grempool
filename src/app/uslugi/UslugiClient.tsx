@@ -73,9 +73,9 @@ export default function UslugiClient() {
         <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(11, 11, 10,0.85) 0%, rgba(11, 11, 10,0.92) 100%)" }} />
         <div className="container mx-auto px-4 relative z-10 text-center">
           <h1 className="text-4xl md:text-5xl font-montserrat font-bold mb-4">
-            NASZE <span className="text-[#d4a24a]">USŁUGI</span>
+            NASZE <span className="text-[#f5b52c]">USŁUGI</span>
           </h1>
-          <p className="text-[#c3b9a7] text-lg max-w-2xl mx-auto">
+          <p className="text-[#e8dfcc] text-lg max-w-2xl mx-auto">
             Kompleksowe rozwiązania w branży złomowej, transportowej i budowlanej.
             Wybierz interesującą Cię usługę i dowiedz się więcej.
           </p>
@@ -83,14 +83,14 @@ export default function UslugiClient() {
       </section>
 
       {/* Services Grid */}
-      <section className="py-16 bg-[#141210]">
+      <section className="py-16 bg-[#0a0a0a]">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service) => (
               <Link
                 key={service.title}
                 href={service.href}
-                className="card-hover bg-[#0b0b0a] rounded-2xl border border-[#352c1d] overflow-hidden group"
+                className="card-hover bg-[#000000] rounded-2xl border border-[#5c4716] overflow-hidden group"
               >
                 <div className="aspect-video overflow-hidden">
                   <img
@@ -103,18 +103,18 @@ export default function UslugiClient() {
                   <h2 className="text-xl font-montserrat font-bold mb-3">
                     {service.title}
                   </h2>
-                  <p className="text-[#c3b9a7] text-sm mb-6">
+                  <p className="text-[#e8dfcc] text-sm mb-6">
                     {service.description}
                   </p>
                   <ul className="space-y-2 mb-6">
                     {service.features.map((feature) => (
-                      <li key={feature} className="flex items-center gap-2 text-sm text-[#c3b9a7]">
-                        <div className="w-1.5 h-1.5 bg-[#d4a24a] rounded-full" />
+                      <li key={feature} className="flex items-center gap-2 text-sm text-[#e8dfcc]">
+                        <div className="w-1.5 h-1.5 bg-[#f5b52c] rounded-full" />
                         {feature}
                       </li>
                     ))}
                   </ul>
-                  <div className="flex items-center gap-2 text-[#d4a24a] font-semibold text-sm group-hover:gap-4 transition-all">
+                  <div className="flex items-center gap-2 text-[#f5b52c] font-semibold text-sm group-hover:gap-4 transition-all">
                     Dowiedz się więcej <ArrowRight size={16} />
                   </div>
                 </div>
@@ -125,7 +125,7 @@ export default function UslugiClient() {
               <Link
                 key={service.id}
                 href={service.href || "/wycena"}
-                className="card-hover bg-[#0b0b0a] rounded-2xl border border-[#352c1d] overflow-hidden group"
+                className="card-hover bg-[#000000] rounded-2xl border border-[#5c4716] overflow-hidden group"
               >
                 <div className="aspect-video overflow-hidden">
                   {service.zdjecie ? (
@@ -135,8 +135,8 @@ export default function UslugiClient() {
                       className="img-brand w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                   ) : (
-                    <div className="w-full h-full bg-[#141210] flex items-center justify-center">
-                      <Package className="text-[#352c1d] size-10" />
+                    <div className="w-full h-full bg-[#0a0a0a] flex items-center justify-center">
+                      <Package className="text-[#5c4716] size-10" />
                     </div>
                   )}
                 </div>
@@ -145,11 +145,11 @@ export default function UslugiClient() {
                     {service.nazwa.toUpperCase()}
                   </h2>
                   {service.opis && (
-                    <p className="text-[#c3b9a7] text-sm mb-6">
+                    <p className="text-[#e8dfcc] text-sm mb-6">
                       {service.opis}
                     </p>
                   )}
-                  <div className="flex items-center gap-2 text-[#d4a24a] font-semibold text-sm group-hover:gap-4 transition-all">
+                  <div className="flex items-center gap-2 text-[#f5b52c] font-semibold text-sm group-hover:gap-4 transition-all">
                     Dowiedz się więcej <ArrowRight size={16} />
                   </div>
                 </div>
@@ -160,19 +160,19 @@ export default function UslugiClient() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-gradient-to-r from-[#d4a24a] to-[#a97c2b]">
+      <section className="py-16 bg-gradient-to-r from-[#f5b52c] to-[#c98f12]">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-montserrat font-bold text-[#0b0b0a] mb-4">
+          <h2 className="text-3xl font-montserrat font-bold text-[#000000] mb-4">
             POTRZEBUJESZ WYCENY?
           </h2>
-          <p className="text-[#0b0b0a]/80 mb-8">
+          <p className="text-[#000000]/80 mb-8">
             Skontaktuj się z nami lub wypełnij formularz szybkiej wyceny
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href="tel:+48663288533" className="bg-[#0b0b0a] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#141210] transition-colors flex items-center gap-2">
+            <a href="tel:+48663288533" className="bg-[#000000] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#0a0a0a] transition-colors flex items-center gap-2">
               <Phone size={20} /> +48 663 288 533
             </a>
-            <Link href="/wycena" className="border-2 border-[#0b0b0a] text-[#0b0b0a] px-8 py-4 rounded-lg font-semibold hover:bg-[#0b0b0a] hover:text-[#d4a24a] transition-colors">
+            <Link href="/wycena" className="border-2 border-[#000000] text-[#000000] px-8 py-4 rounded-lg font-semibold hover:bg-[#000000] hover:text-[#f5b52c] transition-colors">
               SZYBKA WYCENA
             </Link>
           </div>

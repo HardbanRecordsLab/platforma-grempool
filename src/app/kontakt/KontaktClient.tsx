@@ -63,66 +63,66 @@ export default function KontaktClient() {
         <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(11, 11, 10,0.85) 0%, rgba(11, 11, 10,0.92) 100%)" }} />
         <div className="container mx-auto px-4 relative z-10 text-center">
           <h1 className="text-4xl md:text-5xl font-montserrat font-bold mb-4">
-            <span className="text-[#d4a24a]">KONTAKT</span>
+            <span className="text-[#f5b52c]">KONTAKT</span>
           </h1>
-          <p className="text-[#c3b9a7] text-lg max-w-2xl mx-auto">
+          <p className="text-[#e8dfcc] text-lg max-w-2xl mx-auto">
             Masz pytanie? Zadzwoń lub napisz do nas. Jesteśmy do Twojej dyspozycji.
           </p>
         </div>
       </section>
 
       {/* Contact Info */}
-      <section className="py-16 bg-[#141210]">
+      <section className="py-16 bg-[#0a0a0a]">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Details */}
             <div>
               <h2 className="text-3xl font-montserrat font-bold mb-8">
-                DANE <span className="text-[#d4a24a]">KONTAKTOWE</span>
+                DANE <span className="text-[#f5b52c]">KONTAKTOWE</span>
               </h2>
 
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-[#d4a24a]/10 flex items-center justify-center shrink-0">
-                    <MapPin className="text-[#d4a24a] size-6" />
+                  <div className="w-12 h-12 rounded-lg bg-[#f5b52c]/10 flex items-center justify-center shrink-0">
+                    <MapPin className="text-[#f5b52c] size-6" />
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Adres</h3>
-                    <p className="text-[#c3b9a7]">ul. Kolejowa 5a<br />59-307 Raszówka</p>
+                    <p className="text-[#e8dfcc]">ul. Kolejowa 5a<br />59-307 Raszówka</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-[#d4a24a]/10 flex items-center justify-center shrink-0">
-                    <Phone className="text-[#d4a24a] size-6" />
+                  <div className="w-12 h-12 rounded-lg bg-[#f5b52c]/10 flex items-center justify-center shrink-0">
+                    <Phone className="text-[#f5b52c] size-6" />
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Telefon</h3>
-                    <a href="tel:+48663288533" className="text-[#c3b9a7] hover:text-[#d4a24a] transition-colors">
+                    <a href="tel:+48663288533" className="text-[#e8dfcc] hover:text-[#f5b52c] transition-colors">
                       +48 663 288 533
                     </a>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-[#d4a24a]/10 flex items-center justify-center shrink-0">
-                    <Mail className="text-[#d4a24a] size-6" />
+                  <div className="w-12 h-12 rounded-lg bg-[#f5b52c]/10 flex items-center justify-center shrink-0">
+                    <Mail className="text-[#f5b52c] size-6" />
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Email</h3>
-                    <a href={`mailto:${BUSINESS.email}`} className="text-[#c3b9a7] hover:text-[#d4a24a] transition-colors">
+                    <a href={`mailto:${BUSINESS.email}`} className="text-[#e8dfcc] hover:text-[#f5b52c] transition-colors">
                       {BUSINESS.email}
                     </a>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-[#d4a24a]/10 flex items-center justify-center shrink-0">
-                    <Clock className="text-[#d4a24a] size-6" />
+                  <div className="w-12 h-12 rounded-lg bg-[#f5b52c]/10 flex items-center justify-center shrink-0">
+                    <Clock className="text-[#f5b52c] size-6" />
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Godziny otwarcia</h3>
-                    <p className="text-[#c3b9a7]">
+                    <p className="text-[#e8dfcc]">
                       Poniedziałek - Piątek: 7:00 - 17:00<br />
                       Sobota: 8:00 - 14:00<br />
                       Niedziela: zamknięte
@@ -133,16 +133,16 @@ export default function KontaktClient() {
             </div>
 
             {/* Contact Form */}
-            <div className="bg-[#0b0b0a] p-8 rounded-2xl border border-[#352c1d]">
+            <div className="bg-[#000000] p-8 rounded-2xl border border-[#5c4716]">
               <h2 className="text-2xl font-montserrat font-bold mb-6">
-                NAPISZ DO <span className="text-[#d4a24a]">NAS</span>
+                NAPISZ DO <span className="text-[#f5b52c]">NAS</span>
               </h2>
               {sent ? (
                 <div className="bg-green-500/10 border border-green-500/30 text-green-400 p-6 rounded-xl text-center flex flex-col items-center gap-3">
                   <CheckCircle2 size={32} />
                   <p className="font-semibold">Wiadomość wysłana!</p>
-                  <p className="text-sm text-[#c3b9a7]">Odezwiemy się do Ciebie najszybciej jak to możliwe.</p>
-                  <button onClick={() => setSent(false)} className="text-sm text-[#d4a24a] hover:underline">
+                  <p className="text-sm text-[#e8dfcc]">Odezwiemy się do Ciebie najszybciej jak to możliwe.</p>
+                  <button onClick={() => setSent(false)} className="text-sm text-[#f5b52c] hover:underline">
                     Wyślij kolejną wiadomość
                   </button>
                 </div>
@@ -153,56 +153,56 @@ export default function KontaktClient() {
                   )}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm text-[#c3b9a7] mb-2">Imię *</label>
+                      <label className="block text-sm text-[#e8dfcc] mb-2">Imię *</label>
                       <input
                         type="text"
                         required
                         value={form.imie}
                         onChange={(e) => setForm({ ...form, imie: e.target.value })}
-                        className="w-full bg-[#141210] border border-[#352c1d] rounded-lg p-3 text-white"
+                        className="w-full bg-[#0a0a0a] border border-[#5c4716] rounded-lg p-3 text-white"
                         placeholder="Jan"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm text-[#c3b9a7] mb-2">Nazwisko *</label>
+                      <label className="block text-sm text-[#e8dfcc] mb-2">Nazwisko *</label>
                       <input
                         type="text"
                         required
                         value={form.nazwisko}
                         onChange={(e) => setForm({ ...form, nazwisko: e.target.value })}
-                        className="w-full bg-[#141210] border border-[#352c1d] rounded-lg p-3 text-white"
+                        className="w-full bg-[#0a0a0a] border border-[#5c4716] rounded-lg p-3 text-white"
                         placeholder="Kowalski"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm text-[#c3b9a7] mb-2">Email *</label>
+                    <label className="block text-sm text-[#e8dfcc] mb-2">Email *</label>
                     <input
                       type="email"
                       required
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      className="w-full bg-[#141210] border border-[#352c1d] rounded-lg p-3 text-white"
+                      className="w-full bg-[#0a0a0a] border border-[#5c4716] rounded-lg p-3 text-white"
                       placeholder="jan@example.com"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#c3b9a7] mb-2">Telefon</label>
+                    <label className="block text-sm text-[#e8dfcc] mb-2">Telefon</label>
                     <input
                       type="tel"
                       value={form.telefon}
                       onChange={(e) => setForm({ ...form, telefon: e.target.value })}
-                      className="w-full bg-[#141210] border border-[#352c1d] rounded-lg p-3 text-white"
+                      className="w-full bg-[#0a0a0a] border border-[#5c4716] rounded-lg p-3 text-white"
                       placeholder="+48 663 288 533"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#c3b9a7] mb-2">Temat *</label>
+                    <label className="block text-sm text-[#e8dfcc] mb-2">Temat *</label>
                     <select
                       required
                       value={form.temat}
                       onChange={(e) => setForm({ ...form, temat: e.target.value })}
-                      className="w-full bg-[#141210] border border-[#352c1d] rounded-lg p-3 text-white"
+                      className="w-full bg-[#0a0a0a] border border-[#5c4716] rounded-lg p-3 text-white"
                     >
                       <option value="">Wybierz temat...</option>
                       <option value="skup">Skup złomu</option>
@@ -213,20 +213,20 @@ export default function KontaktClient() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm text-[#c3b9a7] mb-2">Wiadomość *</label>
+                    <label className="block text-sm text-[#e8dfcc] mb-2">Wiadomość *</label>
                     <textarea
                       required
                       rows={4}
                       value={form.wiadomosc}
                       onChange={(e) => setForm({ ...form, wiadomosc: e.target.value })}
-                      className="w-full bg-[#141210] border border-[#352c1d] rounded-lg p-3 text-white"
+                      className="w-full bg-[#0a0a0a] border border-[#5c4716] rounded-lg p-3 text-white"
                       placeholder="Treść wiadomości..."
                     />
                   </div>
                   <button
                     type="submit"
                     disabled={sending}
-                    className="w-full btn-primary py-4 rounded-lg font-semibold text-[#0b0b0a] flex items-center justify-center gap-2 disabled:opacity-60"
+                    className="w-full btn-primary py-4 rounded-lg font-semibold text-[#000000] flex items-center justify-center gap-2 disabled:opacity-60"
                   >
                     {sending ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
                     WYŚLIJ WIADOMOŚĆ
@@ -239,10 +239,10 @@ export default function KontaktClient() {
       </section>
 
       {/* Map */}
-      <section className="h-96 bg-[#141210] border-y border-[#352c1d]">
-        <div className="w-full h-full flex items-center justify-center text-[#c3b9a7]">
+      <section className="h-96 bg-[#0a0a0a] border-y border-[#5c4716]">
+        <div className="w-full h-full flex items-center justify-center text-[#e8dfcc]">
           <div className="text-center">
-            <MapPin className="text-[#d4a24a] size-12 mx-auto mb-4" />
+            <MapPin className="text-[#f5b52c] size-12 mx-auto mb-4" />
             <p className="text-lg font-semibold">Mapa dojazdu</p>
             <p className="text-sm">ul. Kolejowa 5a, 59-307 Raszówka</p>
           </div>
