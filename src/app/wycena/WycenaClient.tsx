@@ -6,7 +6,7 @@ import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
 import { Send, Upload, CheckCircle2 } from "lucide-react";
 
-type ServiceType = "skup_zlomu" | "transport" | "koparki" | "rozbiorki" | "materialy" | "klimatyzacja";
+type ServiceType = "skup_zlomu" | "transport" | "koparki" | "rozbiorki" | "materialy";
 
 const serviceFields: Record<ServiceType, { label: string; fields: string[]; placeholder?: string }[]> = {
   skup_zlomu: [
@@ -31,10 +31,6 @@ const serviceFields: Record<ServiceType, { label: string; fields: string[]; plac
   materialy: [
     { label: "Rodzaj materiału", fields: ["stal", "cegła", "okna", "drzwi", "inne"] },
     { label: "Potrzeba transportu", fields: ["tak", "nie"] },
-  ],
-  klimatyzacja: [
-    { label: "Typ pojazdu", fields: ["osobowy", "dostawczy", "ciężarowy"] },
-    { label: "Usługa", fields: ["napełnianie", "czyszczenie", "diagnostyka"] },
   ],
 };
 
@@ -121,46 +117,46 @@ function WycenaForm() {
     <main className="min-h-screen">
       <Navbar />
 
-      <section className="py-20 bg-[#0f1419]">
+      <section className="py-20 bg-[#0b0b0a]">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-montserrat font-bold mb-4">
-              CENTRUM SZYBKIEJ <span className="text-[#f0a500]">WYCENY</span>
+              CENTRUM SZYBKIEJ <span className="text-[#d4a24a]">WYCENY</span>
             </h1>
-            <p className="text-[#b8c5d6] text-lg">
+            <p className="text-[#c3b9a7] text-lg">
               Wybierz usługę i wypełnij formularz. Przygotujemy wycenę w ciągu 24 godzin.
             </p>
           </div>
 
           {submitted ? (
-            <div className="bg-[#1a2332] p-12 rounded-2xl border border-[#2a3a4a] text-center">
-              <CheckCircle2 className="text-[#f0a500] size-16 mx-auto mb-6" />
+            <div className="bg-[#141210] p-12 rounded-2xl border border-[#352c1d] text-center">
+              <CheckCircle2 className="text-[#d4a24a] size-16 mx-auto mb-6" />
               <h2 className="text-2xl font-montserrat font-bold mb-4">
                 Zapytanie wysłane!
               </h2>
-              <p className="text-[#b8c5d6] mb-6">
+              <p className="text-[#c3b9a7] mb-6">
                 Dziękujemy za zapytanie. Nasz konsultant skontaktuje się z Tobą w ciągu 24 godzin.
               </p>
-              <p className="text-[#f0a500] font-semibold">
+              <p className="text-[#d4a24a] font-semibold">
                 Numer zapytania: {leadNumer}
               </p>
             </div>
           ) : (
-            <div className="bg-[#1a2332] p-8 rounded-2xl border border-[#2a3a4a]">
+            <div className="bg-[#141210] p-8 rounded-2xl border border-[#352c1d]">
               {/* Service Selection */}
               <div className="mb-8">
-                <label className="block text-sm font-semibold mb-4 text-[#b8c5d6]">
+                <label className="block text-sm font-semibold mb-4 text-[#c3b9a7]">
                   WYBIERZ USŁUGĘ *
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {(["skup_zlomu", "transport", "koparki", "rozbiorki", "materialy", "klimatyzacja"] as ServiceType[]).map((service) => (
+                  {(["skup_zlomu", "transport", "koparki", "rozbiorki", "materialy"] as ServiceType[]).map((service) => (
                     <button
                       key={service}
                       onClick={() => selectService(service)}
                       className={`p-4 rounded-lg border-2 transition-all text-sm font-semibold ${
                         selectedService === service
-                          ? "border-[#f0a500] bg-[#f0a500]/10 text-[#f0a500]"
-                          : "border-[#2a3a4a] text-[#b8c5d6] hover:border-[#f0a500]/50"
+                          ? "border-[#d4a24a] bg-[#d4a24a]/10 text-[#d4a24a]"
+                          : "border-[#352c1d] text-[#c3b9a7] hover:border-[#d4a24a]/50"
                       }`}
                     >
                       {service === "skup_zlomu" && "SKUP ZŁOMU"}
@@ -168,7 +164,6 @@ function WycenaForm() {
                       {service === "koparki" && "KOPARKA"}
                       {service === "rozbiorki" && "ROZBIÓRKA"}
                       {service === "materialy" && "MATERIAŁY"}
-                      {service === "klimatyzacja" && "KLIMATYZACJA"}
                     </button>
                   ))}
                 </div>
@@ -176,21 +171,21 @@ function WycenaForm() {
 
               {/* Dynamic Fields */}
               {selectedService && (
-                <div className="mb-8 p-6 bg-[#0f1419] rounded-xl">
-                  <h3 className="text-lg font-montserrat font-semibold mb-4 text-[#f0a500]">
+                <div className="mb-8 p-6 bg-[#0b0b0a] rounded-xl">
+                  <h3 className="text-lg font-montserrat font-semibold mb-4 text-[#d4a24a]">
                     SZCZEGÓŁY USŁUGI
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {serviceFields[selectedService].map((field) => (
                       <div key={field.label}>
-                        <label className="block text-sm text-[#b8c5d6] mb-2">
+                        <label className="block text-sm text-[#c3b9a7] mb-2">
                           {field.label}
                         </label>
                         {field.fields.length > 0 ? (
                           <select
                             value={dynamicFields[field.label] ?? ""}
                             onChange={(e) => setDynamicFields((prev) => ({ ...prev, [field.label]: e.target.value }))}
-                            className="w-full bg-[#1a2332] border border-[#2a3a4a] rounded-lg p-3 text-white"
+                            className="w-full bg-[#141210] border border-[#352c1d] rounded-lg p-3 text-white"
                           >
                             <option value="">Wybierz...</option>
                             {field.fields.map((opt) => (
@@ -203,7 +198,7 @@ function WycenaForm() {
                             value={dynamicFields[field.label] ?? ""}
                             onChange={(e) => setDynamicFields((prev) => ({ ...prev, [field.label]: e.target.value }))}
                             placeholder={field.placeholder}
-                            className="w-full bg-[#1a2332] border border-[#2a3a4a] rounded-lg p-3 text-white"
+                            className="w-full bg-[#141210] border border-[#352c1d] rounded-lg p-3 text-white"
                           />
                         )}
                       </div>
@@ -216,77 +211,77 @@ function WycenaForm() {
               <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <div>
-                    <label className="block text-sm text-[#b8c5d6] mb-2">IMIĘ *</label>
+                    <label className="block text-sm text-[#c3b9a7] mb-2">IMIĘ *</label>
                     <input
                       type="text"
                       required
                       value={formData.imie}
                       onChange={(e) => setFormData({ ...formData, imie: e.target.value })}
-                      className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg p-3 text-white"
+                      className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg p-3 text-white"
                       placeholder="Jan Kowalski"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#b8c5d6] mb-2">TELEFON *</label>
+                    <label className="block text-sm text-[#c3b9a7] mb-2">TELEFON *</label>
                     <input
                       type="tel"
                       required
                       value={formData.telefon}
                       onChange={(e) => setFormData({ ...formData, telefon: e.target.value })}
-                      className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg p-3 text-white"
+                      className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg p-3 text-white"
                       placeholder="+48 663 288 533"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#b8c5d6] mb-2">EMAIL</label>
+                    <label className="block text-sm text-[#c3b9a7] mb-2">EMAIL</label>
                     <input
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg p-3 text-white"
+                      className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg p-3 text-white"
                       placeholder="jan@example.com"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-[#b8c5d6] mb-2">LOKALIZACJA *</label>
+                    <label className="block text-sm text-[#c3b9a7] mb-2">LOKALIZACJA *</label>
                     <input
                       type="text"
                       required
                       value={formData.lokalizacja}
                       onChange={(e) => setFormData({ ...formData, lokalizacja: e.target.value })}
-                      className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg p-3 text-white"
+                      className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg p-3 text-white"
                       placeholder="Raszówka"
                     />
                   </div>
                 </div>
 
                 <div className="mb-6">
-                  <label className="block text-sm text-[#b8c5d6] mb-2">OPIS ZLECENIA *</label>
+                  <label className="block text-sm text-[#c3b9a7] mb-2">OPIS ZLECENIA *</label>
                   <textarea
                     required
                     rows={4}
                     value={formData.opis}
                     onChange={(e) => setFormData({ ...formData, opis: e.target.value })}
-                    className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg p-3 text-white"
+                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg p-3 text-white"
                     placeholder="Opisz swoje zlecenie..."
                   />
                 </div>
 
                 <div className="mb-6">
-                  <label className="block text-sm text-[#b8c5d6] mb-2">PREFEROWANY TERMIN</label>
+                  <label className="block text-sm text-[#c3b9a7] mb-2">PREFEROWANY TERMIN</label>
                   <input
                     type="date"
                     value={formData.termin}
                     onChange={(e) => setFormData({ ...formData, termin: e.target.value })}
-                    className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg p-3 text-white"
+                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg p-3 text-white"
                   />
                 </div>
 
                 <div className="mb-8">
-                  <label className="block text-sm text-[#b8c5d6] mb-2">ZDJĘCIA (opcjonalnie)</label>
-                  <div className="border-2 border-dashed border-[#2a3a4a] rounded-lg p-8 text-center hover:border-[#f0a500]/50 transition-colors cursor-pointer">
-                    <Upload className="text-[#b8c5d6] size-8 mx-auto mb-2" />
-                    <p className="text-[#b8c5d6] text-sm">
+                  <label className="block text-sm text-[#c3b9a7] mb-2">ZDJĘCIA (opcjonalnie)</label>
+                  <div className="border-2 border-dashed border-[#352c1d] rounded-lg p-8 text-center hover:border-[#d4a24a]/50 transition-colors cursor-pointer">
+                    <Upload className="text-[#c3b9a7] size-8 mx-auto mb-2" />
+                    <p className="text-[#c3b9a7] text-sm">
                       Przeciągnij zdjęcia lub kliknij, aby dodać
                     </p>
                   </div>
@@ -301,7 +296,7 @@ function WycenaForm() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full btn-primary py-4 rounded-lg font-semibold text-[#0f1419] text-lg flex items-center justify-center gap-2 disabled:opacity-60"
+                  className="w-full btn-primary py-4 rounded-lg font-semibold text-[#0b0b0a] text-lg flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   <Send size={20} />
                   {submitting ? "WYSYŁANIE..." : "WYŚLIJ ZAPYTANIE"}

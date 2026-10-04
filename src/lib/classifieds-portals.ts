@@ -36,7 +36,7 @@ export function buildListingText(params: {
     params.cena ? `Cena: ${params.cena.toFixed(2)} zł` : "Cena: do uzgodnienia",
     "Lokalizacja: Raszówka, woj. dolnośląskie",
     "",
-    "Kontakt: +48 663 288 533 / grempool@proton.me",
+    "Kontakt: +48 663 288 533 / grempoolx@o2.pl",
     "GREMPOOL Maria Muczyńska - www.grempool.pl",
   ].filter((l) => l !== null);
   return lines.join("\n");

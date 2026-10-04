@@ -14,7 +14,7 @@ CREATE TYPE lead_status AS ENUM (
 );
 
 CREATE TYPE service_type AS ENUM (
-  'skup_zlomu', 'transport', 'koparki', 'rozbiorki', 'materialy', 'klimatyzacja'
+  'skup_zlomu', 'transport', 'koparki', 'rozbiorki', 'materialy'
 );
 
 CREATE TYPE material_status AS ENUM (

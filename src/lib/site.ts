@@ -13,10 +13,10 @@ export const BUSINESS = {
   regon: "022118090",
   foundingDate: "2013-04-19",
   description:
-    "Skup złomu, transport, usługi koparką, rozbiórki, materiały budowlane z odzysku i klimatyzacja aut w regionie legnicko-głogowskim.",
+    "Skup złomu, transport, usługi koparką, rozbiórki, waga najazdowa 50 ton i materiały budowlane z odzysku w regionie legnicko-głogowskim.",
   phone: "+48663288533",
   phoneDisplay: "+48 663 288 533",
-  email: "grempool@proton.me",
+  email: "grempoolx@o2.pl",
   streetAddress: "ul. Kolejowa 5a",
   postalCode: "59-307",
   addressLocality: "Raszówka",

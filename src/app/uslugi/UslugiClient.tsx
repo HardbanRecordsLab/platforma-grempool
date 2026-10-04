@@ -38,18 +38,18 @@ const services = [
     href: "/uslugi/rozbiorki",
   },
   {
+    image: "https://images.unsplash.com/photo-1746349086423-06ea6b4d73f7?auto=format&fit=crop&w=800&q=80",
+    title: "WAGA NAJAZDOWA 50 TON",
+    description: "Waga najazdowa na naszym placu w Raszówce - ważymy złom, kruszywa i materiały z rozbiórek.",
+    features: ["Nośność 50 ton", "Ważenie przy kliencie", "Rozliczenie od masy", "Bez dojazdu do obcej wagi"],
+    href: "/uslugi/waga-najazdowa",
+  },
+  {
     image: "https://images.unsplash.com/photo-1711989691538-4c1aac2c4279?auto=format&fit=crop&w=800&q=80",
     title: "MATERIAŁY BUDOWLANE",
     description: "Sprzedaż materiałów z odzysku - stal, cegła, okna, drzwi i więcej.",
     features: ["Stal użytkowa", "Cegła", "Okna i drzwi", "Kostka brukowa"],
     href: "/uslugi/materialy",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1625047509248-ec889cbff17f?auto=format&fit=crop&w=800&q=80",
-    title: "KLIMATYZACJA AUT",
-    description: "Napełnianie, czyszczenie i diagnostyka klimatyzacji w samochodach.",
-    features: ["Napełnianie", "Czyszczenie", "Diagnostyka", "Wszystkie typy aut"],
-    href: "/uslugi/klimatyzacja",
   },
 ];
 
@@ -70,12 +70,12 @@ export default function UslugiClient() {
           className="absolute inset-0 hero-bg"
           style={{ backgroundImage: "url('https://images.unsplash.com/photo-1722695694560-f452b0919d3a?auto=format&fit=crop&w=1600&q=80')" }}
         />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(15,20,25,0.85) 0%, rgba(15,20,25,0.92) 100%)" }} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(11, 11, 10,0.85) 0%, rgba(11, 11, 10,0.92) 100%)" }} />
         <div className="container mx-auto px-4 relative z-10 text-center">
           <h1 className="text-4xl md:text-5xl font-montserrat font-bold mb-4">
-            NASZE <span className="text-[#f0a500]">USŁUGI</span>
+            NASZE <span className="text-[#d4a24a]">USŁUGI</span>
           </h1>
-          <p className="text-[#b8c5d6] text-lg max-w-2xl mx-auto">
+          <p className="text-[#c3b9a7] text-lg max-w-2xl mx-auto">
             Kompleksowe rozwiązania w branży złomowej, transportowej i budowlanej.
             Wybierz interesującą Cię usługę i dowiedz się więcej.
           </p>
@@ -83,38 +83,38 @@ export default function UslugiClient() {
       </section>
 
       {/* Services Grid */}
-      <section className="py-16 bg-[#1a2332]">
+      <section className="py-16 bg-[#141210]">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service) => (
               <Link
                 key={service.title}
                 href={service.href}
-                className="card-hover bg-[#0f1419] rounded-2xl border border-[#2a3a4a] overflow-hidden group"
+                className="card-hover bg-[#0b0b0a] rounded-2xl border border-[#352c1d] overflow-hidden group"
               >
                 <div className="aspect-video overflow-hidden">
                   <img
                     src={service.image}
                     alt={service.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="img-brand w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
                 <div className="p-8">
                   <h2 className="text-xl font-montserrat font-bold mb-3">
                     {service.title}
                   </h2>
-                  <p className="text-[#b8c5d6] text-sm mb-6">
+                  <p className="text-[#c3b9a7] text-sm mb-6">
                     {service.description}
                   </p>
                   <ul className="space-y-2 mb-6">
                     {service.features.map((feature) => (
-                      <li key={feature} className="flex items-center gap-2 text-sm text-[#b8c5d6]">
-                        <div className="w-1.5 h-1.5 bg-[#f0a500] rounded-full" />
+                      <li key={feature} className="flex items-center gap-2 text-sm text-[#c3b9a7]">
+                        <div className="w-1.5 h-1.5 bg-[#d4a24a] rounded-full" />
                         {feature}
                       </li>
                     ))}
                   </ul>
-                  <div className="flex items-center gap-2 text-[#f0a500] font-semibold text-sm group-hover:gap-4 transition-all">
+                  <div className="flex items-center gap-2 text-[#d4a24a] font-semibold text-sm group-hover:gap-4 transition-all">
                     Dowiedz się więcej <ArrowRight size={16} />
                   </div>
                 </div>
@@ -125,18 +125,18 @@ export default function UslugiClient() {
               <Link
                 key={service.id}
                 href={service.href || "/wycena"}
-                className="card-hover bg-[#0f1419] rounded-2xl border border-[#2a3a4a] overflow-hidden group"
+                className="card-hover bg-[#0b0b0a] rounded-2xl border border-[#352c1d] overflow-hidden group"
               >
                 <div className="aspect-video overflow-hidden">
                   {service.zdjecie ? (
                     <img
                       src={service.zdjecie}
                       alt={service.nazwa}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      className="img-brand w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                   ) : (
-                    <div className="w-full h-full bg-[#1a2332] flex items-center justify-center">
-                      <Package className="text-[#2a3a4a] size-10" />
+                    <div className="w-full h-full bg-[#141210] flex items-center justify-center">
+                      <Package className="text-[#352c1d] size-10" />
                     </div>
                   )}
                 </div>
@@ -145,11 +145,11 @@ export default function UslugiClient() {
                     {service.nazwa.toUpperCase()}
                   </h2>
                   {service.opis && (
-                    <p className="text-[#b8c5d6] text-sm mb-6">
+                    <p className="text-[#c3b9a7] text-sm mb-6">
                       {service.opis}
                     </p>
                   )}
-                  <div className="flex items-center gap-2 text-[#f0a500] font-semibold text-sm group-hover:gap-4 transition-all">
+                  <div className="flex items-center gap-2 text-[#d4a24a] font-semibold text-sm group-hover:gap-4 transition-all">
                     Dowiedz się więcej <ArrowRight size={16} />
                   </div>
                 </div>
@@ -160,19 +160,19 @@ export default function UslugiClient() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-gradient-to-r from-[#f0a500] to-[#d4940a]">
+      <section className="py-16 bg-gradient-to-r from-[#d4a24a] to-[#a97c2b]">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-montserrat font-bold text-[#0f1419] mb-4">
+          <h2 className="text-3xl font-montserrat font-bold text-[#0b0b0a] mb-4">
             POTRZEBUJESZ WYCENY?
           </h2>
-          <p className="text-[#0f1419]/80 mb-8">
+          <p className="text-[#0b0b0a]/80 mb-8">
             Skontaktuj się z nami lub wypełnij formularz szybkiej wyceny
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href="tel:+48663288533" className="bg-[#0f1419] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#1a2332] transition-colors flex items-center gap-2">
+            <a href="tel:+48663288533" className="bg-[#0b0b0a] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#141210] transition-colors flex items-center gap-2">
               <Phone size={20} /> +48 663 288 533
             </a>
-            <Link href="/wycena" className="bg-white text-[#f0a500] px-8 py-4 rounded-lg font-semibold hover:bg-[#b8c5d6] transition-colors">
+            <Link href="/wycena" className="border-2 border-[#0b0b0a] text-[#0b0b0a] px-8 py-4 rounded-lg font-semibold hover:bg-[#0b0b0a] hover:text-[#d4a24a] transition-colors">
               SZYBKA WYCENA
             </Link>
           </div>

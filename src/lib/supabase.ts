@@ -10,8 +10,7 @@ export const SERVICE_LABELS: Record<string, string> = {
   transport: 'Transport',
   koparki: 'Usługi Koparką',
   rozbiorki: 'Rozbiórki',
-  materialy: 'Materiały Budowlane',
-  klimatyzacja: 'Klimatyzacja Aut'
+  materialy: 'Materiały Budowlane'
 };
 
 export const STATUS_LABELS: Record<string, string> = {

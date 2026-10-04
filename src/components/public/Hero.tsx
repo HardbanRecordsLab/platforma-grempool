@@ -7,7 +7,7 @@ export default function Hero() {
   const benefits = [
     "Atrakcyjne ceny",
     "Szybka wycena",
-    "Profesjonalna obsługa",
+    "Własna waga najazdowa 50 ton",
     "Własny transport",
   ];
 
@@ -29,17 +29,17 @@ export default function Hero() {
             <h1 className="text-5xl md:text-6xl font-montserrat font-bold mb-4">
               <span className="text-white">SKUP ZŁOMU</span>
               <br />
-              <span className="text-[#f0a500]">I METALI</span>
+              <span className="text-[#d4a24a]">I METALI</span>
             </h1>
 
-            <p className="text-xl text-[#b8c5d6] mb-8 tracking-wide">
+            <p className="text-xl text-[#c3b9a7] mb-8 tracking-wide">
               SOLIDNIE. TERMINOWO. NA LATA.
             </p>
 
             <ul className="space-y-3 mb-10">
               {benefits.map((benefit) => (
-                <li key={benefit} className="flex items-center gap-3 text-[#b8c5d6]">
-                  <CheckCircle2 className="text-[#f0a500] size-5" />
+                <li key={benefit} className="flex items-center gap-3 text-[#c3b9a7]">
+                  <CheckCircle2 className="text-[#d4a24a] size-5" />
                   <span>{benefit}</span>
                 </li>
               ))}
@@ -48,13 +48,13 @@ export default function Hero() {
             <div className="flex flex-wrap gap-4">
               <Link
                 href="/wycena"
-                className="btn-primary px-8 py-4 rounded-lg font-semibold text-[#0f1419] text-lg"
+                className="btn-primary px-8 py-4 rounded-lg font-semibold text-[#0b0b0a] text-lg"
               >
                 SKUP ZŁOMU
               </Link>
               <Link
                 href="/uslugi"
-                className="px-8 py-4 rounded-lg font-semibold border-2 border-[#f0a500] text-[#f0a500] hover:bg-[#f0a500] hover:text-[#0f1419] transition-all"
+                className="px-8 py-4 rounded-lg font-semibold border-2 border-[#d4a24a] text-[#d4a24a] hover:bg-[#d4a24a] hover:text-[#0b0b0a] transition-all"
               >
                 NASZE USŁUGI
               </Link>
@@ -62,16 +62,16 @@ export default function Hero() {
 
             <div className="mt-12 pt-10 border-t border-white/10">
               <h2 className="text-2xl md:text-3xl font-montserrat font-bold mb-5">
-                TWÓJ PARTNER W <span className="text-[#f0a500]">TRANSPORCIE</span>,<br />
-                ZŁOMIE I USŁUGACH
+                TWÓJ PARTNER W <span className="text-[#d4a24a]">TRANSPORCIE</span>,<br />
+                ROZBIÓRKACH I USŁUGACH
               </h2>
-              <p className="text-[#b8c5d6] mb-4">
+              <p className="text-[#c3b9a7] mb-4">
                 GREMPOOL Maria Muczyńska działa w Raszówce na Dolnym Śląsku od 2013 roku. Zaczynaliśmy od skupu
                 złomu, a z czasem rozszerzyliśmy działalność o transport, prace koparką, rozbiórki, sprzedaż
                 materiałów budowlanych z odzysku oraz usługi brukarsko-tynkarskie. Nasza firma jest zweryfikowana
                 w rejestrze GUS i figuruje w ewidencji działalności gospodarczej pod numerem NIP 692-11-91-050.
               </p>
-              <p className="text-[#b8c5d6] mb-8">
+              <p className="text-[#c3b9a7] mb-8">
                 Obsługujemy głównie okolice Lubina, Legnicy, Głogowa i Polkowic, ale dojeżdżamy też dalej na
                 terenie Dolnego Śląska. Mamy własny tabor pojazdów i sprzęt do prac ziemnych, więc odbiór,
                 transport i realizację zlecenia załatwiamy sami, bez pośredników. Materiały z rozbiórek segregujemy
@@ -80,14 +80,14 @@ export default function Hero() {
               </p>
               <div className="flex flex-wrap items-center gap-6">
                 <div className="flex gap-4">
-                  <a href="tel:+48663288533" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#0f1419]">
+                  <a href="tel:+48663288533" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#0b0b0a]">
                     ZADZWOŃ
                   </a>
-                  <Link href="/wycena" className="px-6 py-3 rounded-lg font-semibold border-2 border-[#f0a500] text-[#f0a500] hover:bg-[#f0a500] hover:text-[#0f1419] transition-all">
+                  <Link href="/wycena" className="px-6 py-3 rounded-lg font-semibold border-2 border-[#d4a24a] text-[#d4a24a] hover:bg-[#d4a24a] hover:text-[#0b0b0a] transition-all">
                     WYCENA ONLINE
                   </Link>
                 </div>
-                <div className="bg-[#f0a500] text-[#0f1419] px-5 py-3 rounded-xl font-montserrat font-bold leading-none">
+                <div className="bg-[#d4a24a] text-[#0b0b0a] px-5 py-3 rounded-xl font-montserrat font-bold leading-none">
                   <div className="text-2xl">10+</div>
                   <div className="text-xs whitespace-nowrap">LAT DOŚWIADCZENIA</div>
                 </div>

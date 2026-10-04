@@ -26,8 +26,8 @@ export const metadata: Metadata = {
     "transport",
     "usługi koparką",
     "rozbiórki",
+    "waga najazdowa 50 ton",
     "materiały budowlane z odzysku",
-    "klimatyzacja samochodowa",
     "Raszówka",
     "Głogów",
     "Legnica",
@@ -41,18 +41,15 @@ export const metadata: Metadata = {
     title: "GREMPOOL - Złom | Transport | Usługi",
     description: BUSINESS.description,
     url: SITE_URL,
-    images: [{ url: "/assets/logo.png", width: 1254, height: 1254, alt: SITE_NAME }],
+    images: [{ url: "/assets/og-image.png", width: 1200, height: 630, alt: SITE_NAME }],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "GREMPOOL - Złom | Transport | Usługi",
     description: BUSINESS.description,
+    images: ["/assets/og-image.png"],
   },
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/assets/logo.png",
-  },
+  // favicon.ico, icon.png and apple-icon.png in src/app/ are picked up automatically
   robots: {
     index: true,
     follow: true,
@@ -89,7 +86,13 @@ export default async function RootLayout({
     foundingDate: BUSINESS.foundingDate,
     description: BUSINESS.description,
     url: SITE_URL,
-    image: `${SITE_URL}/assets/logo.png`,
+    image: `${SITE_URL}/assets/og-image.png`,
+    logo: {
+      "@type": "ImageObject",
+      url: `${SITE_URL}/icon.png`,
+      width: 512,
+      height: 512,
+    },
     telephone: BUSINESS.phone,
     email: BUSINESS.email,
     priceRange: "$$",
@@ -113,7 +116,7 @@ export default async function RootLayout({
 
   return (
     <html lang="pl" className={`${inter.variable} ${montserrat.variable}`}>
-      <body className="min-h-screen bg-[#0f1419] text-white font-sans">
+      <body className="min-h-screen bg-[#0b0b0a] text-white font-sans">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

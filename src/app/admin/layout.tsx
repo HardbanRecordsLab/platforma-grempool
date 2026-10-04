@@ -54,21 +54,21 @@ export default function AdminLayout({
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#0f1419] flex">
+    <div className="min-h-screen bg-[#0b0b0a] flex">
       <link rel="manifest" href="/admin-manifest.json" />
       <link rel="apple-touch-icon" href="/icon-192.png" />
-      <meta name="theme-color" content="#0f1419" />
+      <meta name="theme-color" content="#0b0b0a" />
       <meta name="mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       <meta name="apple-mobile-web-app-title" content="GREMPOOL Panel" />
       {/* Sidebar */}
-      <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-[#1a2332] border-r border-[#2a3a4a] transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-        <div className="p-6 border-b border-[#2a3a4a]">
+      <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-[#141210] border-r border-[#352c1d] transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+        <div className="p-6 border-b border-[#352c1d]">
           <Link href="/admin/dashboard" className="flex items-center">
-            <img src="/assets/logo-mark.png" alt="GREMPOOL" className="h-9 w-auto" />
+            <img src="/assets/logo-grempool-wide.png" alt="GREMPOOL" className="h-9 w-auto" />
           </Link>
-          <p className="text-xs text-[#b8c5d6] mt-1">Panel Administracyjny</p>
+          <p className="text-xs text-[#c3b9a7] mt-1">Panel Administracyjny</p>
         </div>
 
         <nav className="p-4">
@@ -78,8 +78,8 @@ export default function AdminLayout({
               href={item.href}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg mb-2 transition-colors ${
                 pathname === item.href
-                  ? "bg-[#f0a500]/10 text-[#f0a500]"
-                  : "text-[#b8c5d6] hover:bg-[#2a3a4a]"
+                  ? "bg-[#d4a24a]/10 text-[#d4a24a]"
+                  : "text-[#c3b9a7] hover:bg-[#352c1d]"
               }`}
               onClick={() => setSidebarOpen(false)}
             >
@@ -89,8 +89,8 @@ export default function AdminLayout({
           ))}
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[#2a3a4a]">
-          <Link href="/" className="flex items-center gap-3 px-4 py-3 text-[#b8c5d6] hover:text-white transition-colors">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[#352c1d]">
+          <Link href="/" className="flex items-center gap-3 px-4 py-3 text-[#c3b9a7] hover:text-white transition-colors">
             <LogOut size={20} />
             <span className="text-sm">Strona publiczna</span>
           </Link>
@@ -103,10 +103,10 @@ export default function AdminLayout({
           className="fixed inset-0 lg:left-64 bg-cover bg-center"
           style={{ backgroundImage: "url('https://images.unsplash.com/photo-1722695694560-f452b0919d3a?auto=format&fit=crop&w=1600&q=60')" }}
         />
-        <div className="fixed inset-0 lg:left-64 bg-[#0f1419]/93" />
+        <div className="fixed inset-0 lg:left-64 bg-[#0b0b0a]/93" />
 
         {/* Top Bar */}
-        <header className="relative z-10 h-16 bg-[#1a2332] border-b border-[#2a3a4a] flex items-center justify-between px-6">
+        <header className="relative z-10 h-16 bg-[#141210] border-b border-[#352c1d] flex items-center justify-between px-6">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="lg:hidden text-white"
@@ -116,10 +116,10 @@ export default function AdminLayout({
 
           <div className="flex items-center gap-4">
             <NotificationBell />
-            <div className="text-sm text-[#b8c5d6] hidden sm:block">
+            <div className="text-sm text-[#c3b9a7] hidden sm:block">
               Zalogowany jako: <span className="text-white font-semibold">Właściciel</span>
             </div>
-            <div className="w-8 h-8 rounded-full bg-[#f0a500] flex items-center justify-center text-[#0f1419] font-bold text-sm">
+            <div className="w-8 h-8 rounded-full bg-[#d4a24a] flex items-center justify-center text-[#0b0b0a] font-bold text-sm">
               W
             </div>
           </div>

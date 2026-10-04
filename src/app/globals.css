@@ -1,13 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --color-primary: #f0a500;
-  --color-primary-dark: #d4940a;
-  --color-dark: #0f1419;
-  --color-dark-secondary: #1a2332;
-  --color-dark-card: #1e2a3a;
-  --color-text-light: #b8c5d6;
-  --color-border: #2a3a4a;
+  --color-primary: #d4a24a;
+  --color-primary-light: #e8c98a;
+  --color-primary-dark: #a97c2b;
+  --color-dark: #0b0b0a;
+  --color-dark-secondary: #141210;
+  --color-dark-card: #1a1613;
+  --color-text-light: #c3b9a7;
+  --color-border: #352c1d;
+  --color-border-gold: #64522e;
 }
 
 body {
@@ -21,7 +23,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .gradient-overlay {
-  background: linear-gradient(90deg, rgba(15, 20, 25, 0.94) 0%, rgba(15, 20, 25, 0.75) 35%, rgba(15, 20, 25, 0.25) 70%, rgba(15, 20, 25, 0.05) 100%);
+  background:
+    linear-gradient(0deg, rgba(11, 11, 10, 0.85) 0%, rgba(11, 11, 10, 0) 45%),
+    linear-gradient(90deg, rgba(11, 11, 10, 0.97) 0%, rgba(11, 11, 10, 0.88) 35%, rgba(11, 11, 10, 0.55) 70%, rgba(11, 11, 10, 0.3) 100%);
+}
+
+/* Decorative photos, toned down to sit inside the black & gold palette */
+.img-brand {
+  filter: grayscale(0.4) sepia(0.18) brightness(0.92) contrast(1.05);
+  transition: filter 0.4s ease, transform 0.5s ease;
+}
+
+.group:hover .img-brand {
+  filter: grayscale(0) sepia(0) brightness(1) contrast(1);
 }
 
 .card-hover {
@@ -30,17 +44,43 @@ h1, h2, h3, h4, h5, h6 {
 
 .card-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 40px rgba(240, 165, 0, 0.15);
+  border-color: var(--color-border-gold);
+  box-shadow: 0 10px 40px rgba(212, 162, 74, 0.15);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 45%, var(--color-primary-dark) 100%);
   transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(240, 165, 0, 0.4);
+  box-shadow: 0 5px 20px rgba(212, 162, 74, 0.35);
+}
+
+/* Outlined gold button - the primary call to action style of the brand layout */
+.btn-outline-gold {
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  transition: all 0.3s ease;
+}
+
+.btn-outline-gold:hover {
+  background: var(--color-primary);
+  color: var(--color-dark);
+}
+
+/* Thin gold frame used around content panels */
+.gold-frame {
+  border: 1px solid var(--color-border-gold);
+}
+
+/* Metallic gold text, as used in the logo wordmark */
+.text-gold-metallic {
+  background: linear-gradient(180deg, #e8c98a 0%, #d4a24a 45%, #a97c2b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .nav-link {
@@ -66,6 +106,8 @@ h1, h2, h3, h4, h5, h6 {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  /* Warm, desaturated treatment so photos sit inside the black & gold palette */
+  filter: grayscale(0.65) sepia(0.35) brightness(0.65) contrast(1.05);
 }
 
 .scroll-smooth {

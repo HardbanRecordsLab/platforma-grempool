@@ -43,10 +43,10 @@ export default function PromoteMaterialModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70">
-      <div className="bg-[#1a2332] border border-[#2a3a4a] rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b border-[#2a3a4a] sticky top-0 bg-[#1a2332]">
+      <div className="bg-[#141210] border border-[#352c1d] rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-6 border-b border-[#352c1d] sticky top-0 bg-[#141210]">
           <h2 className="text-xl font-montserrat font-bold">Wystaw na innych portalach</h2>
-          <button onClick={onClose} className="text-[#b8c5d6] hover:text-white">
+          <button onClick={onClose} className="text-[#c3b9a7] hover:text-white">
             <X size={22} />
           </button>
         </div>
@@ -54,10 +54,10 @@ export default function PromoteMaterialModal({
         <div className="p-6 space-y-6">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-sm text-[#b8c5d6]">Gotowy tekst ogłoszenia</label>
+              <label className="text-sm text-[#c3b9a7]">Gotowy tekst ogłoszenia</label>
               <button
                 onClick={handleCopy}
-                className="flex items-center gap-2 text-xs font-semibold text-[#f0a500] hover:underline"
+                className="flex items-center gap-2 text-xs font-semibold text-[#d4a24a] hover:underline"
               >
                 {copied ? <Check size={14} /> : <Copy size={14} />}
                 {copied ? "Skopiowano" : "Kopiuj"}
@@ -67,12 +67,12 @@ export default function PromoteMaterialModal({
               readOnly
               value={text}
               rows={9}
-              className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg p-3 text-sm text-white font-mono"
+              className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg p-3 text-sm text-white font-mono"
               onFocus={(e) => e.target.select()}
             />
           </div>
 
-          <p className="text-xs text-[#b8c5d6]">
+          <p className="text-xs text-[#c3b9a7]">
             Kliknięcie portalu poniżej skopiuje tekst i otworzy stronę w nowej karcie — wklej treść w formularzu
             dodawania ogłoszenia. Żaden z tych portali nie udostępnia darmowego automatycznego publikowania, więc
             każde ogłoszenie trzeba wkleić i wysłać ręcznie.
@@ -80,13 +80,13 @@ export default function PromoteMaterialModal({
 
           {Object.entries(grouped).map(([scope, portals]) => (
             <div key={scope}>
-              <h3 className="text-xs font-semibold text-[#b8c5d6] uppercase tracking-wide mb-2">{scope}</h3>
+              <h3 className="text-xs font-semibold text-[#c3b9a7] uppercase tracking-wide mb-2">{scope}</h3>
               <div className="grid grid-cols-2 gap-2">
                 {portals.map((portal) => (
                   <button
                     key={portal.name}
                     onClick={() => openPortal(portal.url)}
-                    className="flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-[#0f1419] border border-[#2a3a4a] text-sm hover:border-[#f0a500] hover:text-[#f0a500] transition-colors text-left"
+                    className="flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-[#0b0b0a] border border-[#352c1d] text-sm hover:border-[#d4a24a] hover:text-[#d4a24a] transition-colors text-left"
                   >
                     <span className="truncate">{portal.name}</span>
                     <ExternalLink size={14} className="shrink-0" />

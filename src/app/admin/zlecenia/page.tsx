@@ -27,7 +27,7 @@ const statusConfig: Record<string, { label: string; color: string; icon: React.E
 };
 
 const statusOptions: LeadStatus[] = ["zaplanowane", "w_realizacji", "zakonczone", "utracone"];
-const serviceOptions: ServiceType[] = ["skup_zlomu", "transport", "koparki", "rozbiorki", "materialy", "klimatyzacja"];
+const serviceOptions: ServiceType[] = ["skup_zlomu", "transport", "koparki", "rozbiorki", "materialy"];
 
 const toLocalInput = (iso: string) => {
   const d = new Date(iso);
@@ -148,7 +148,7 @@ export default function ZleceniaPage() {
         <h1 className="text-2xl font-montserrat font-bold">Zlecenia</h1>
         <button
           onClick={openAddModal}
-          className="btn-primary px-4 py-2 rounded-lg text-sm font-semibold text-[#0f1419] flex items-center gap-2"
+          className="btn-primary px-4 py-2 rounded-lg text-sm font-semibold text-[#0b0b0a] flex items-center gap-2"
         >
           <Plus size={16} /> Nowe zlecenie
         </button>
@@ -162,40 +162,40 @@ export default function ZleceniaPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-[#1a2332] p-4 rounded-xl border border-[#2a3a4a]">
+        <div className="bg-[#141210] p-4 rounded-xl border border-[#352c1d]">
           <div className="text-2xl font-bold text-blue-400">{stats.zaplanowane}</div>
-          <div className="text-sm text-[#b8c5d6]">Zaplanowane</div>
+          <div className="text-sm text-[#c3b9a7]">Zaplanowane</div>
         </div>
-        <div className="bg-[#1a2332] p-4 rounded-xl border border-[#2a3a4a]">
+        <div className="bg-[#141210] p-4 rounded-xl border border-[#352c1d]">
           <div className="text-2xl font-bold text-orange-400">{stats.w_realizacji}</div>
-          <div className="text-sm text-[#b8c5d6]">W realizacji</div>
+          <div className="text-sm text-[#c3b9a7]">W realizacji</div>
         </div>
-        <div className="bg-[#1a2332] p-4 rounded-xl border border-[#2a3a4a]">
+        <div className="bg-[#141210] p-4 rounded-xl border border-[#352c1d]">
           <div className="text-2xl font-bold text-green-400">{stats.zakonczone}</div>
-          <div className="text-sm text-[#b8c5d6]">Zakończone</div>
+          <div className="text-sm text-[#c3b9a7]">Zakończone</div>
         </div>
-        <div className="bg-[#1a2332] p-4 rounded-xl border border-[#2a3a4a]">
-          <div className="text-2xl font-bold text-[#f0a500]">{stats.wartoscMiesiac.toLocaleString()} zł</div>
-          <div className="text-sm text-[#b8c5d6]">Wartość (miesiąc)</div>
+        <div className="bg-[#141210] p-4 rounded-xl border border-[#352c1d]">
+          <div className="text-2xl font-bold text-[#d4a24a]">{stats.wartoscMiesiac.toLocaleString()} zł</div>
+          <div className="text-sm text-[#c3b9a7]">Wartość (miesiąc)</div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-[#1a2332] p-4 rounded-xl border border-[#2a3a4a] mb-6 flex flex-wrap items-center gap-4">
+      <div className="bg-[#141210] p-4 rounded-xl border border-[#352c1d] mb-6 flex flex-wrap items-center gap-4">
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#b8c5d6] size-4" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#c3b9a7] size-4" />
           <input
             type="text"
             placeholder="Szukaj zleceń..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg pl-10 pr-4 py-2 text-sm text-white"
+            className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg pl-10 pr-4 py-2 text-sm text-white"
           />
         </div>
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+          className="bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
         >
           <option value="wszystkie">Wszystkie statusy</option>
           {statusOptions.map((s) => (
@@ -206,11 +206,11 @@ export default function ZleceniaPage() {
 
       {/* Orders List */}
       {loading ? (
-        <div className="bg-[#1a2332] p-12 rounded-xl border border-[#2a3a4a] text-center text-[#b8c5d6] flex items-center justify-center gap-3">
+        <div className="bg-[#141210] p-12 rounded-xl border border-[#352c1d] text-center text-[#c3b9a7] flex items-center justify-center gap-3">
           <Loader2 className="animate-spin" size={18} /> Wczytywanie zleceń...
         </div>
       ) : filteredOrders.length === 0 ? (
-        <div className="bg-[#1a2332] p-12 rounded-xl border border-[#2a3a4a] text-center text-[#b8c5d6]">
+        <div className="bg-[#141210] p-12 rounded-xl border border-[#352c1d] text-center text-[#c3b9a7]">
           Brak zleceń. Dodaj nowe ręcznie lub przekształć zaakceptowane zapytanie w CRM.
         </div>
       ) : (
@@ -220,11 +220,11 @@ export default function ZleceniaPage() {
             const StatusIcon = statusInfo.icon;
 
             return (
-              <div key={order.id} className="bg-[#1a2332] p-6 rounded-xl border border-[#2a3a4a] hover:border-[#f0a500]/30 transition-colors">
+              <div key={order.id} className="bg-[#141210] p-6 rounded-xl border border-[#352c1d] hover:border-[#d4a24a]/30 transition-colors">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <span className="font-mono text-[#f0a500] font-semibold">{order.numer}</span>
+                      <span className="font-mono text-[#d4a24a] font-semibold">{order.numer}</span>
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 ${statusInfo.color}`}>
                         <StatusIcon size={12} />
                         {statusInfo.label}
@@ -234,21 +234,21 @@ export default function ZleceniaPage() {
                     <h3 className="text-lg font-semibold mb-2">{order.zakres}</h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
-                      <div className="flex items-center gap-2 text-[#b8c5d6]">
-                        <FileText size={14} className="text-[#f0a500]" />
+                      <div className="flex items-center gap-2 text-[#c3b9a7]">
+                        <FileText size={14} className="text-[#d4a24a]" />
                         {SERVICE_LABELS[order.usluga] ?? order.usluga}
                       </div>
-                      <div className="flex items-center gap-2 text-[#b8c5d6]">
-                        <MapPin size={14} className="text-[#f0a500]" />
+                      <div className="flex items-center gap-2 text-[#c3b9a7]">
+                        <MapPin size={14} className="text-[#d4a24a]" />
                         {order.lokalizacja}
                       </div>
-                      <div className="flex items-center gap-2 text-[#b8c5d6]">
-                        <Calendar size={14} className="text-[#f0a500]" />
+                      <div className="flex items-center gap-2 text-[#c3b9a7]">
+                        <Calendar size={14} className="text-[#d4a24a]" />
                         {new Date(order.termin).toLocaleString("pl-PL", { dateStyle: "short", timeStyle: "short" })}
                       </div>
                       {order.pracownik && (
-                        <div className="flex items-center gap-2 text-[#b8c5d6]">
-                          <User size={14} className="text-[#f0a500]" />
+                        <div className="flex items-center gap-2 text-[#c3b9a7]">
+                          <User size={14} className="text-[#d4a24a]" />
                           {order.pracownik}
                         </div>
                       )}
@@ -256,16 +256,16 @@ export default function ZleceniaPage() {
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <div className="text-lg font-bold text-[#f0a500]">
+                    <div className="text-lg font-bold text-[#d4a24a]">
                       {order.cena ? `${order.cena.toLocaleString()} zł` : "—"}
                     </div>
                     <button
                       onClick={() => openEditModal(order)}
-                      className="px-4 py-2 rounded-lg bg-[#2a3a4a] text-sm font-semibold hover:bg-[#f0a500] hover:text-[#0f1419] transition-colors flex items-center gap-2"
+                      className="px-4 py-2 rounded-lg bg-[#352c1d] text-sm font-semibold hover:bg-[#d4a24a] hover:text-[#0b0b0a] transition-colors flex items-center gap-2"
                     >
                       <Edit size={14} /> Edytuj
                     </button>
-                    <button onClick={() => handleDelete(order)} className="p-2 rounded-lg hover:bg-[#2a3a4a] transition-colors" title="Usuń">
+                    <button onClick={() => handleDelete(order)} className="p-2 rounded-lg hover:bg-[#352c1d] transition-colors" title="Usuń">
                       <Trash2 size={14} className="text-red-400" />
                     </button>
                   </div>
@@ -278,21 +278,21 @@ export default function ZleceniaPage() {
 
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70">
-          <div className="bg-[#1a2332] border border-[#2a3a4a] rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-6 border-b border-[#2a3a4a] sticky top-0 bg-[#1a2332]">
+          <div className="bg-[#141210] border border-[#352c1d] rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-[#352c1d] sticky top-0 bg-[#141210]">
               <h2 className="text-xl font-montserrat font-bold">{editingId ? "Edytuj zlecenie" : "Nowe zlecenie"}</h2>
-              <button onClick={() => setModalOpen(false)} className="text-[#b8c5d6] hover:text-white">
+              <button onClick={() => setModalOpen(false)} className="text-[#c3b9a7] hover:text-white">
                 <X size={22} />
               </button>
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-[#b8c5d6] mb-1">Usługa</label>
+                  <label className="block text-sm text-[#c3b9a7] mb-1">Usługa</label>
                   <select
                     value={form.usluga}
                     onChange={(e) => setForm({ ...form, usluga: e.target.value as ServiceType })}
-                    className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
                   >
                     {serviceOptions.map((s) => (
                       <option key={s} value={s}>{SERVICE_LABELS[s]}</option>
@@ -300,11 +300,11 @@ export default function ZleceniaPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm text-[#b8c5d6] mb-1">Status</label>
+                  <label className="block text-sm text-[#c3b9a7] mb-1">Status</label>
                   <select
                     value={form.status}
                     onChange={(e) => setForm({ ...form, status: e.target.value as LeadStatus })}
-                    className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
                   >
                     {statusOptions.map((s) => (
                       <option key={s} value={s}>{statusConfig[s].label}</option>
@@ -314,66 +314,66 @@ export default function ZleceniaPage() {
               </div>
 
               <div>
-                <label className="block text-sm text-[#b8c5d6] mb-1">Lokalizacja *</label>
+                <label className="block text-sm text-[#c3b9a7] mb-1">Lokalizacja *</label>
                 <input
                   required
                   value={form.lokalizacja}
                   onChange={(e) => setForm({ ...form, lokalizacja: e.target.value })}
-                  className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+                  className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
                   placeholder="np. Raszówka"
                 />
               </div>
 
               <div>
-                <label className="block text-sm text-[#b8c5d6] mb-1">Zakres prac *</label>
+                <label className="block text-sm text-[#c3b9a7] mb-1">Zakres prac *</label>
                 <textarea
                   required
                   rows={3}
                   value={form.zakres}
                   onChange={(e) => setForm({ ...form, zakres: e.target.value })}
-                  className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+                  className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-[#b8c5d6] mb-1">Termin</label>
+                  <label className="block text-sm text-[#c3b9a7] mb-1">Termin</label>
                   <input
                     type="datetime-local"
                     value={form.termin}
                     onChange={(e) => setForm({ ...form, termin: e.target.value })}
-                    className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-[#b8c5d6] mb-1">Cena (zł)</label>
+                  <label className="block text-sm text-[#c3b9a7] mb-1">Cena (zł)</label>
                   <input
                     type="number"
                     min="0"
                     step="0.01"
                     value={form.cena}
                     onChange={(e) => setForm({ ...form, cena: Number(e.target.value) })}
-                    className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm text-[#b8c5d6] mb-1">Pracownik / operator</label>
+                <label className="block text-sm text-[#c3b9a7] mb-1">Pracownik / operator</label>
                 <input
                   value={form.pracownik}
                   onChange={(e) => setForm({ ...form, pracownik: e.target.value })}
-                  className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+                  className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
                 />
               </div>
 
               <div>
-                <label className="block text-sm text-[#b8c5d6] mb-1">Notatki</label>
+                <label className="block text-sm text-[#c3b9a7] mb-1">Notatki</label>
                 <textarea
                   rows={2}
                   value={form.notatki}
                   onChange={(e) => setForm({ ...form, notatki: e.target.value })}
-                  className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+                  className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
                 />
               </div>
 
@@ -381,7 +381,7 @@ export default function ZleceniaPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="btn-primary flex-1 px-6 py-3 rounded-lg font-semibold text-[#0f1419] disabled:opacity-60 flex items-center justify-center gap-2"
+                  className="btn-primary flex-1 px-6 py-3 rounded-lg font-semibold text-[#0b0b0a] disabled:opacity-60 flex items-center justify-center gap-2"
                 >
                   {saving && <Loader2 size={16} className="animate-spin" />}
                   {editingId ? "Zapisz zmiany" : "Dodaj zlecenie"}
@@ -389,7 +389,7 @@ export default function ZleceniaPage() {
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-6 py-3 rounded-lg font-semibold border border-[#2a3a4a] text-[#b8c5d6] hover:text-white"
+                  className="px-6 py-3 rounded-lg font-semibold border border-[#352c1d] text-[#c3b9a7] hover:text-white"
                 >
                   Anuluj
                 </button>

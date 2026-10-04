@@ -201,7 +201,7 @@ export default function MaterialyPage() {
         <h1 className="text-2xl font-montserrat font-bold">Materiały</h1>
         <button
           onClick={openAddModal}
-          className="btn-primary px-4 py-2 rounded-lg text-sm font-semibold text-[#0f1419] flex items-center gap-2"
+          className="btn-primary px-4 py-2 rounded-lg text-sm font-semibold text-[#0b0b0a] flex items-center gap-2"
         >
           <Plus size={16} /> Dodaj ofertę
         </button>
@@ -214,48 +214,48 @@ export default function MaterialyPage() {
       )}
 
       {loading ? (
-        <div className="bg-[#1a2332] p-12 rounded-xl border border-[#2a3a4a] text-center text-[#b8c5d6] flex items-center justify-center gap-3">
+        <div className="bg-[#141210] p-12 rounded-xl border border-[#352c1d] text-center text-[#c3b9a7] flex items-center justify-center gap-3">
           <Loader2 className="animate-spin" size={18} /> Wczytywanie materiałów...
         </div>
       ) : (
       <>
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-[#1a2332] p-4 rounded-xl border border-[#2a3a4a]">
+        <div className="bg-[#141210] p-4 rounded-xl border border-[#352c1d]">
           <div className="text-2xl font-bold text-green-400">{stats.dostepne}</div>
-          <div className="text-sm text-[#b8c5d6]">Dostępne</div>
+          <div className="text-sm text-[#c3b9a7]">Dostępne</div>
         </div>
-        <div className="bg-[#1a2332] p-4 rounded-xl border border-[#2a3a4a]">
+        <div className="bg-[#141210] p-4 rounded-xl border border-[#352c1d]">
           <div className="text-2xl font-bold text-yellow-400">{stats.zarezerwowane}</div>
-          <div className="text-sm text-[#b8c5d6]">Zarezerwowane</div>
+          <div className="text-sm text-[#c3b9a7]">Zarezerwowane</div>
         </div>
-        <div className="bg-[#1a2332] p-4 rounded-xl border border-[#2a3a4a]">
+        <div className="bg-[#141210] p-4 rounded-xl border border-[#352c1d]">
           <div className="text-2xl font-bold text-gray-400">{stats.sprzedane}</div>
-          <div className="text-sm text-[#b8c5d6]">Sprzedane</div>
+          <div className="text-sm text-[#c3b9a7]">Sprzedane</div>
         </div>
-        <div className="bg-[#1a2332] p-4 rounded-xl border border-[#2a3a4a]">
-          <div className="text-2xl font-bold text-[#f0a500]">{stats.razem}</div>
-          <div className="text-sm text-[#b8c5d6]">Razem</div>
+        <div className="bg-[#141210] p-4 rounded-xl border border-[#352c1d]">
+          <div className="text-2xl font-bold text-[#d4a24a]">{stats.razem}</div>
+          <div className="text-sm text-[#c3b9a7]">Razem</div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-[#1a2332] p-4 rounded-xl border border-[#2a3a4a] mb-6">
+      <div className="bg-[#141210] p-4 rounded-xl border border-[#352c1d] mb-6">
         <div className="flex flex-wrap items-center gap-4">
           <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#b8c5d6] size-4" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#c3b9a7] size-4" />
             <input
               type="text"
               placeholder="Szukaj materiałów..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg pl-10 pr-4 py-2 text-sm text-white"
+              className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg pl-10 pr-4 py-2 text-sm text-white"
             />
           </div>
           <select
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
-            className="bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+            className="bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
           >
             <option value="Wszystkie">Wszystkie</option>
             {MATERIAL_CATEGORIES.map((cat) => (
@@ -265,7 +265,7 @@ export default function MaterialyPage() {
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+            className="bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
           >
             <option value="wszystkie">Wszystkie statusy</option>
             {MATERIAL_STATUSES.map((s) => (
@@ -277,7 +277,7 @@ export default function MaterialyPage() {
 
       {/* Materials Grid */}
       {filteredMaterials.length === 0 ? (
-        <div className="bg-[#1a2332] p-12 rounded-xl border border-[#2a3a4a] text-center text-[#b8c5d6]">
+        <div className="bg-[#141210] p-12 rounded-xl border border-[#352c1d] text-center text-[#c3b9a7]">
           Brak materiałów spełniających kryteria.
         </div>
       ) : (
@@ -287,17 +287,17 @@ export default function MaterialyPage() {
             const StatusIcon = statusInfo.icon;
 
             return (
-              <div key={material.id} className="bg-[#1a2332] rounded-xl border border-[#2a3a4a] hover:border-[#f0a500]/30 transition-colors overflow-hidden">
-                <div className="aspect-video bg-[#0f1419] flex items-center justify-center overflow-hidden">
+              <div key={material.id} className="bg-[#141210] rounded-xl border border-[#352c1d] hover:border-[#d4a24a]/30 transition-colors overflow-hidden">
+                <div className="aspect-video bg-[#0b0b0a] flex items-center justify-center overflow-hidden">
                   {material.zdjecia && material.zdjecia.length > 0 ? (
                     <img src={material.zdjecia[0]} alt={material.nazwa} className="w-full h-full object-cover" />
                   ) : (
-                    <Package className="text-[#2a3a4a] size-12" />
+                    <Package className="text-[#352c1d] size-12" />
                   )}
                 </div>
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-4">
-                    <span className="font-mono text-[#f0a500] text-sm">{material.id_materialu}</span>
+                    <span className="font-mono text-[#d4a24a] text-sm">{material.id_materialu}</span>
                     <span className={`px-2 py-1 rounded text-xs font-semibold flex items-center gap-1 ${statusInfo.color}`}>
                       <StatusIcon size={12} />
                       {statusInfo.label}
@@ -306,7 +306,7 @@ export default function MaterialyPage() {
 
                   <h3 className="text-lg font-semibold mb-2">{material.nazwa}</h3>
 
-                  <div className="space-y-2 text-sm text-[#b8c5d6] mb-4">
+                  <div className="space-y-2 text-sm text-[#c3b9a7] mb-4">
                     <div className="flex justify-between">
                       <span>Kategoria:</span>
                       <span className="text-white">{categoryLabel(material.kategoria)}</span>
@@ -335,38 +335,38 @@ export default function MaterialyPage() {
                     </div>
                   </div>
 
-                  <div className="text-lg font-bold text-[#f0a500] mb-4">
+                  <div className="text-lg font-bold text-[#d4a24a] mb-4">
                     {material.cena ? `${material.cena.toFixed(2)} zł` : "Zapytaj o cenę"}
                   </div>
 
-                  <div className="flex items-center gap-2 pt-4 border-t border-[#2a3a4a]">
+                  <div className="flex items-center gap-2 pt-4 border-t border-[#352c1d]">
                     <button
                       onClick={() => openEditModal(material)}
-                      className="flex-1 px-3 py-2 rounded-lg bg-[#2a3a4a] text-sm font-semibold hover:bg-[#f0a500] hover:text-[#0f1419] transition-colors flex items-center justify-center gap-2"
+                      className="flex-1 px-3 py-2 rounded-lg bg-[#352c1d] text-sm font-semibold hover:bg-[#d4a24a] hover:text-[#0b0b0a] transition-colors flex items-center justify-center gap-2"
                     >
                       <Edit size={14} /> Edytuj
                     </button>
                     {(material.status === "dostepny" || material.status === "zarezerwowany") && (
                       <button
                         onClick={() => handleToggleReserve(material)}
-                        className="p-2 rounded-lg hover:bg-[#2a3a4a] transition-colors"
+                        className="p-2 rounded-lg hover:bg-[#352c1d] transition-colors"
                         title={material.status === "zarezerwowany" ? "Zdejmij rezerwację" : "Zarezerwuj"}
                       >
                         {material.status === "zarezerwowany" ? (
                           <BookmarkCheck size={14} className="text-yellow-400" />
                         ) : (
-                          <Bookmark size={14} className="text-[#b8c5d6]" />
+                          <Bookmark size={14} className="text-[#c3b9a7]" />
                         )}
                       </button>
                     )}
                     <button
                       onClick={() => setPromotingMaterial(material)}
-                      className="p-2 rounded-lg hover:bg-[#2a3a4a] transition-colors"
+                      className="p-2 rounded-lg hover:bg-[#352c1d] transition-colors"
                       title="Wystaw na innych portalach"
                     >
-                      <Share2 size={14} className="text-[#b8c5d6]" />
+                      <Share2 size={14} className="text-[#c3b9a7]" />
                     </button>
-                    <button onClick={() => handleDelete(material.id)} className="p-2 rounded-lg hover:bg-[#2a3a4a] transition-colors" title="Usuń">
+                    <button onClick={() => handleDelete(material.id)} className="p-2 rounded-lg hover:bg-[#352c1d] transition-colors" title="Usuń">
                       <Trash2 size={14} className="text-red-400" />
                     </button>
                   </div>
@@ -382,12 +382,12 @@ export default function MaterialyPage() {
       {/* Add / Edit Modal */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70">
-          <div className="bg-[#1a2332] border border-[#2a3a4a] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-6 border-b border-[#2a3a4a] sticky top-0 bg-[#1a2332]">
+          <div className="bg-[#141210] border border-[#352c1d] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-[#352c1d] sticky top-0 bg-[#141210]">
               <h2 className="text-xl font-montserrat font-bold">
                 {editingId ? "Edytuj ofertę" : "Dodaj ofertę materiału"}
               </h2>
-              <button onClick={closeModal} className="text-[#b8c5d6] hover:text-white">
+              <button onClick={closeModal} className="text-[#c3b9a7] hover:text-white">
                 <X size={22} />
               </button>
             </div>
@@ -395,11 +395,11 @@ export default function MaterialyPage() {
             <form onSubmit={handleSubmit} className="p-6 space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-[#b8c5d6] mb-1">Kategoria</label>
+                  <label className="block text-sm text-[#c3b9a7] mb-1">Kategoria</label>
                   <select
                     value={form.kategoria}
                     onChange={(e) => setForm({ ...form, kategoria: e.target.value as Material["kategoria"] })}
-                    className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
                   >
                     {MATERIAL_CATEGORIES.map((c) => (
                       <option key={c.value} value={c.value}>{c.label}</option>
@@ -407,11 +407,11 @@ export default function MaterialyPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm text-[#b8c5d6] mb-1">Stan</label>
+                  <label className="block text-sm text-[#c3b9a7] mb-1">Stan</label>
                   <select
                     value={form.stan}
                     onChange={(e) => setForm({ ...form, stan: e.target.value as Material["stan"] })}
-                    className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
                   >
                     {MATERIAL_CONDITIONS.map((c) => (
                       <option key={c.value} value={c.value}>{c.label}</option>
@@ -421,29 +421,29 @@ export default function MaterialyPage() {
               </div>
 
               <div>
-                <label className="block text-sm text-[#b8c5d6] mb-1">Nazwa materiału *</label>
+                <label className="block text-sm text-[#c3b9a7] mb-1">Nazwa materiału *</label>
                 <input
                   required
                   value={form.nazwa}
                   onChange={(e) => setForm({ ...form, nazwa: e.target.value })}
                   placeholder="np. Profil stalowy 100x100"
-                  className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+                  className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="sm:col-span-2">
-                  <label className="block text-sm text-[#b8c5d6] mb-1">Wymiary *</label>
+                  <label className="block text-sm text-[#c3b9a7] mb-1">Wymiary *</label>
                   <input
                     required
                     value={form.wymiary}
                     onChange={(e) => setForm({ ...form, wymiary: e.target.value })}
                     placeholder="np. 100 × 100 mm"
-                    className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-[#b8c5d6] mb-1">Długość (m)</label>
+                  <label className="block text-sm text-[#c3b9a7] mb-1">Długość (m)</label>
                   <input
                     type="number"
                     step="0.1"
@@ -451,31 +451,31 @@ export default function MaterialyPage() {
                     value={form.dlugosc ?? ""}
                     onChange={(e) => setForm({ ...form, dlugosc: e.target.value ? Number(e.target.value) : undefined })}
                     placeholder="opcjonalnie"
-                    className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm text-[#b8c5d6] mb-1">Ilość (szt.) *</label>
+                  <label className="block text-sm text-[#c3b9a7] mb-1">Ilość (szt.) *</label>
                   <input
                     required
                     type="number"
                     min="1"
                     value={form.ilosc}
                     onChange={(e) => setForm({ ...form, ilosc: Number(e.target.value) })}
-                    className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-[#b8c5d6] mb-1">Lokalizacja na placu *</label>
+                  <label className="block text-sm text-[#c3b9a7] mb-1">Lokalizacja na placu *</label>
                   <input
                     required
                     value={form.lokalizacja}
                     onChange={(e) => setForm({ ...form, lokalizacja: e.target.value })}
                     placeholder="np. Plac A / sektor 3"
-                    className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
                   />
                 </div>
               </div>
@@ -483,13 +483,13 @@ export default function MaterialyPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="block text-sm text-[#b8c5d6]">Cena (zł)</label>
-                    <label className="flex items-center gap-2 text-xs text-[#b8c5d6]">
+                    <label className="block text-sm text-[#c3b9a7]">Cena (zł)</label>
+                    <label className="flex items-center gap-2 text-xs text-[#c3b9a7]">
                       <input
                         type="checkbox"
                         checked={askPrice}
                         onChange={(e) => setAskPrice(e.target.checked)}
-                        className="accent-[#f0a500]"
+                        className="accent-[#d4a24a]"
                       />
                       Zapytaj o cenę
                     </label>
@@ -501,15 +501,15 @@ export default function MaterialyPage() {
                     disabled={askPrice}
                     value={form.cena ?? ""}
                     onChange={(e) => setForm({ ...form, cena: e.target.value ? Number(e.target.value) : undefined })}
-                    className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white disabled:opacity-40"
+                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white disabled:opacity-40"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-[#b8c5d6] mb-1">Status</label>
+                  <label className="block text-sm text-[#c3b9a7] mb-1">Status</label>
                   <select
                     value={form.status}
                     onChange={(e) => setForm({ ...form, status: e.target.value as MaterialStatus })}
-                    className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+                    className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
                   >
                     {MATERIAL_STATUSES.map((s) => (
                       <option key={s.value} value={s.value}>{s.label}</option>
@@ -519,20 +519,20 @@ export default function MaterialyPage() {
               </div>
 
               <div>
-                <label className="block text-sm text-[#b8c5d6] mb-1">Notatki wewnętrzne</label>
+                <label className="block text-sm text-[#c3b9a7] mb-1">Notatki wewnętrzne</label>
                 <textarea
                   rows={3}
                   value={form.notatki}
                   onChange={(e) => setForm({ ...form, notatki: e.target.value })}
-                  className="w-full bg-[#0f1419] border border-[#2a3a4a] rounded-lg px-4 py-2 text-sm text-white"
+                  className="w-full bg-[#0b0b0a] border border-[#352c1d] rounded-lg px-4 py-2 text-sm text-white"
                 />
               </div>
 
               <div>
-                <label className="block text-sm text-[#b8c5d6] mb-2">Zdjęcia</label>
+                <label className="block text-sm text-[#c3b9a7] mb-2">Zdjęcia</label>
                 <div className="flex flex-wrap gap-3 mb-3">
                   {(form.zdjecia ?? []).map((src, i) => (
-                    <div key={i} className="relative w-20 h-20 rounded-lg overflow-hidden border border-[#2a3a4a]">
+                    <div key={i} className="relative w-20 h-20 rounded-lg overflow-hidden border border-[#352c1d]">
                       <img src={src} alt="" className="w-full h-full object-cover" />
                       <button
                         type="button"
@@ -543,13 +543,13 @@ export default function MaterialyPage() {
                       </button>
                     </div>
                   ))}
-                  <label className="w-20 h-20 rounded-lg border border-dashed border-[#2a3a4a] flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-[#f0a500] transition-colors" title="Wybierz z galerii">
+                  <label className="w-20 h-20 rounded-lg border border-dashed border-[#352c1d] flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-[#d4a24a] transition-colors" title="Wybierz z galerii">
                     {uploading ? (
-                      <Loader2 size={20} className="animate-spin text-[#f0a500]" />
+                      <Loader2 size={20} className="animate-spin text-[#d4a24a]" />
                     ) : (
                       <>
-                        <ImagePlus size={18} className="text-[#b8c5d6]" />
-                        <span className="text-[9px] text-[#b8c5d6]">Galeria</span>
+                        <ImagePlus size={18} className="text-[#c3b9a7]" />
+                        <span className="text-[9px] text-[#c3b9a7]">Galeria</span>
                       </>
                     )}
                     <input
@@ -560,13 +560,13 @@ export default function MaterialyPage() {
                       onChange={(e) => handleFiles(e.target.files)}
                     />
                   </label>
-                  <label className="w-20 h-20 rounded-lg border border-dashed border-[#2a3a4a] flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-[#f0a500] transition-colors" title="Zrób zdjęcie aparatem">
+                  <label className="w-20 h-20 rounded-lg border border-dashed border-[#352c1d] flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-[#d4a24a] transition-colors" title="Zrób zdjęcie aparatem">
                     {uploading ? (
-                      <Loader2 size={20} className="animate-spin text-[#f0a500]" />
+                      <Loader2 size={20} className="animate-spin text-[#d4a24a]" />
                     ) : (
                       <>
-                        <Camera size={18} className="text-[#b8c5d6]" />
-                        <span className="text-[9px] text-[#b8c5d6]">Aparat</span>
+                        <Camera size={18} className="text-[#c3b9a7]" />
+                        <span className="text-[9px] text-[#c3b9a7]">Aparat</span>
                       </>
                     )}
                     <input
@@ -584,7 +584,7 @@ export default function MaterialyPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="btn-primary flex-1 px-6 py-3 rounded-lg font-semibold text-[#0f1419] disabled:opacity-60 flex items-center justify-center gap-2"
+                  className="btn-primary flex-1 px-6 py-3 rounded-lg font-semibold text-[#0b0b0a] disabled:opacity-60 flex items-center justify-center gap-2"
                 >
                   {saving && <Loader2 size={16} className="animate-spin" />}
                   {editingId ? "Zapisz zmiany" : "Dodaj do magazynu"}
@@ -593,7 +593,7 @@ export default function MaterialyPage() {
                   type="button"
                   onClick={closeModal}
                   disabled={saving}
-                  className="px-6 py-3 rounded-lg font-semibold border border-[#2a3a4a] text-[#b8c5d6] hover:text-white disabled:opacity-60"
+                  className="px-6 py-3 rounded-lg font-semibold border border-[#352c1d] text-[#c3b9a7] hover:text-white disabled:opacity-60"
                 >
                   Anuluj
                 </button>

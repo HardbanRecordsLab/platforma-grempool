@@ -15,8 +15,7 @@ export type ServiceType =
   | 'transport' 
   | 'koparki' 
   | 'rozbiorki' 
-  | 'materialy' 
-  | 'klimatyzacja';
+  | 'materialy';
 
 export type MaterialStatus = 
   | 'dostepny' 

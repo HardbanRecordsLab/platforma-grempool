@@ -51,7 +51,7 @@ export async function sendNewLeadNotification(lead: Lead): Promise<void> {
 
   const html = `
     <div style="font-family: sans-serif; max-width: 480px;">
-      <h2 style="color:#0f1419;">Nowe zapytanie: ${lead.numer}</h2>
+      <h2 style="color:#0b0b0a;">Nowe zapytanie: ${lead.numer}</h2>
       <p><strong>Usługa:</strong> ${usluga}</p>
       <p><strong>Klient:</strong> ${lead.klient_imie} ${lead.klient_nazwisko}</p>
       <p><strong>Telefon:</strong> <a href="tel:${lead.klient_telefon}">${lead.klient_telefon}</a></p>
@@ -59,7 +59,7 @@ export async function sendNewLeadNotification(lead: Lead): Promise<void> {
       <p><strong>Lokalizacja:</strong> ${lead.lokalizacja}</p>
       ${lead.opis ? `<p><strong>Opis:</strong> ${lead.opis}</p>` : ""}
       ${lead.notatki ? `<p><strong>Szczegóły:</strong> ${lead.notatki}</p>` : ""}
-      ${appUrl ? `<p><a href="${appUrl}/admin/crm" style="display:inline-block;margin-top:12px;padding:10px 20px;background:#f0a500;color:#0f1419;text-decoration:none;border-radius:6px;font-weight:bold;">Otwórz w CRM</a></p>` : ""}
+      ${appUrl ? `<p><a href="${appUrl}/admin/crm" style="display:inline-block;margin-top:12px;padding:10px 20px;background:#d4a24a;color:#0b0b0a;text-decoration:none;border-radius:6px;font-weight:bold;">Otwórz w CRM</a></p>` : ""}
     </div>
   `;
 
@@ -71,13 +71,13 @@ export async function sendContactMessageNotification(msg: ContactMessage): Promi
 
   const html = `
     <div style="font-family: sans-serif; max-width: 480px;">
-      <h2 style="color:#0f1419;">Nowa wiadomość z formularza kontaktowego</h2>
+      <h2 style="color:#0b0b0a;">Nowa wiadomość z formularza kontaktowego</h2>
       <p><strong>Od:</strong> ${msg.imie} ${msg.nazwisko}</p>
       <p><strong>Email:</strong> ${msg.email}</p>
       ${msg.telefon ? `<p><strong>Telefon:</strong> <a href="tel:${msg.telefon}">${msg.telefon}</a></p>` : ""}
       <p><strong>Temat:</strong> ${msg.temat}</p>
       <p><strong>Wiadomość:</strong> ${msg.wiadomosc}</p>
-      ${appUrl ? `<p><a href="${appUrl}/admin/wiadomosci" style="display:inline-block;margin-top:12px;padding:10px 20px;background:#f0a500;color:#0f1419;text-decoration:none;border-radius:6px;font-weight:bold;">Otwórz w panelu</a></p>` : ""}
+      ${appUrl ? `<p><a href="${appUrl}/admin/wiadomosci" style="display:inline-block;margin-top:12px;padding:10px 20px;background:#d4a24a;color:#0b0b0a;text-decoration:none;border-radius:6px;font-weight:bold;">Otwórz w panelu</a></p>` : ""}
     </div>
   `;
 

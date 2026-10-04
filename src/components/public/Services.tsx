@@ -26,16 +26,16 @@ const coreServices = [
     image: "https://images.unsplash.com/photo-1764448726225-12da63f109e6?auto=format&fit=crop&w=600&q=80",
   },
   {
+    title: "WAGA NAJAZDOWA 50 T",
+    description: "Ważenie złomu i materiałów na miejscu",
+    href: "/uslugi/waga-najazdowa",
+    image: "https://images.unsplash.com/photo-1746349086423-06ea6b4d73f7?auto=format&fit=crop&w=600&q=80",
+  },
+  {
     title: "MATERIAŁY BUDOWLANE",
     description: "Cegła, cement, kruszywa, piasek, kostka brukowa",
     href: "/uslugi/materialy",
     image: "https://images.unsplash.com/photo-1711989691538-4c1aac2c4279?auto=format&fit=crop&w=600&q=80",
-  },
-  {
-    title: "KLIMATYZACJA AUT",
-    description: "Napełnianie, czyszczenie w autach",
-    href: "/uslugi/klimatyzacja",
-    image: "https://images.unsplash.com/photo-1625047509248-ec889cbff17f?auto=format&fit=crop&w=600&q=80",
   },
 ];
 
@@ -47,30 +47,30 @@ export default function Services() {
   }, []);
 
   return (
-    <section className="py-20 bg-[#0f1419]">
+    <section className="py-20 bg-[#0b0b0a]">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-montserrat font-bold text-center mb-16">
-          NASZE <span className="text-[#f0a500]">USŁUGI</span>
+          NASZE <span className="text-[#d4a24a]">USŁUGI</span>
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {coreServices.map((service) => (
             <Link
               key={service.title}
               href={service.href}
-              className="card-hover group relative rounded-xl overflow-hidden border border-[#2a3a4a] aspect-[3/4]"
+              className="card-hover group relative rounded-xl overflow-hidden border border-[#352c1d] aspect-[3/4]"
             >
               <img
                 src={service.image}
                 alt={service.title}
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                className="img-brand absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-[#0f1419]/60 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b0a] via-[#0b0b0a]/60 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-4">
                 <h3 className="font-montserrat font-semibold text-sm mb-1 text-white">
                   {service.title}
                 </h3>
-                <p className="text-[#b8c5d6] text-xs">
+                <p className="text-[#c3b9a7] text-xs">
                   {service.description}
                 </p>
               </div>
@@ -81,25 +81,25 @@ export default function Services() {
             <Link
               key={service.id}
               href={service.href || "/wycena"}
-              className="card-hover group relative rounded-xl overflow-hidden border border-[#2a3a4a] aspect-[3/4]"
+              className="card-hover group relative rounded-xl overflow-hidden border border-[#352c1d] aspect-[3/4]"
             >
               {service.zdjecie ? (
                 <img
                   src={service.zdjecie}
                   alt={service.nazwa}
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="img-brand absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
               ) : (
-                <div className="absolute inset-0 bg-[#1a2332] flex items-center justify-center">
-                  <Package className="text-[#2a3a4a] size-10" />
+                <div className="absolute inset-0 bg-[#141210] flex items-center justify-center">
+                  <Package className="text-[#352c1d] size-10" />
                 </div>
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0f1419] via-[#0f1419]/60 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b0a] via-[#0b0b0a]/60 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-4">
                 <h3 className="font-montserrat font-semibold text-sm mb-1 text-white">
                   {service.nazwa.toUpperCase()}
                 </h3>
-                {service.opis && <p className="text-[#b8c5d6] text-xs">{service.opis}</p>}
+                {service.opis && <p className="text-[#c3b9a7] text-xs">{service.opis}</p>}
               </div>
             </Link>
           ))}
