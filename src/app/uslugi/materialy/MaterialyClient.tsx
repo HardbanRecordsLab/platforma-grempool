@@ -79,40 +79,6 @@ export default function MaterialyClient() {
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="py-16 bg-[#0a0a0a]">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-montserrat font-bold text-center mb-12">
-            KATEGORIE <span className="text-[#f5b52c]">MATERIAŁÓW</span>
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            <button
-              onClick={() => setActiveCategory("Wszystkie")}
-              className={`text-left bg-[#000000] p-6 rounded-xl border transition-colors ${
-                activeCategory === "Wszystkie" ? "border-[#f5b52c]" : "border-[#5c4716] hover:border-[#f5b52c]/50"
-              }`}
-            >
-              <Package className="text-[#f5b52c] size-8 mb-3" />
-              <h3 className="font-montserrat font-bold mb-1">Wszystkie</h3>
-              <p className="text-[#f5b52c] text-sm">{materials.length} pozycji</p>
-            </button>
-            {categorySummary.map((cat) => (
-              <button
-                key={cat.value}
-                onClick={() => setActiveCategory(cat.label)}
-                className={`text-left bg-[#000000] p-6 rounded-xl border transition-colors ${
-                  activeCategory === cat.label ? "border-[#f5b52c]" : "border-[#5c4716] hover:border-[#f5b52c]/50"
-                }`}
-              >
-                <Package className="text-[#f5b52c] size-8 mb-3" />
-                <h3 className="font-montserrat font-bold mb-1">{cat.label}</h3>
-                <p className="text-[#f5b52c] text-sm">{cat.count} pozycji</p>
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Available Items */}
       <section className="py-16 bg-[#000000]">
         <div className="container mx-auto px-4">
@@ -120,15 +86,41 @@ export default function MaterialyClient() {
             <h2 className="text-3xl font-montserrat font-bold">
               DOSTĘPNE <span className="text-[#f5b52c]">MATERIAŁY</span>
             </h2>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#e8dfcc] size-4" />
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Szukaj materiałów..."
-                className="bg-[#0a0a0a] border border-[#5c4716] rounded-lg pl-10 pr-4 py-2 text-sm text-white w-64"
-              />
+            <div className="flex flex-wrap gap-3 w-full md:w-auto">
+              <div className="relative flex-1 md:flex-none">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#e8dfcc] size-4" />
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Szukaj po nazwie lub ID..."
+                  className="w-full md:w-64 bg-[#0a0a0a] border border-[#5c4716] rounded-lg pl-10 pr-4 py-2 text-sm text-white"
+                />
+              </div>
+              <select
+                value={activeCategory}
+                onChange={(e) => setActiveCategory(e.target.value)}
+                className="bg-[#0a0a0a] border border-[#5c4716] rounded-lg px-4 py-2 text-sm text-white"
+              >
+                <option value="Wszystkie">Wszystkie kategorie ({materials.length})</option>
+                {categorySummary.map((cat) => (
+                  <option key={cat.value} value={cat.label}>
+                    {cat.label} ({cat.count})
+                  </option>
+                ))}
+              </select>
+              {(query || activeCategory !== "Wszystkie") && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuery("");
+                    setActiveCategory("Wszystkie");
+                  }}
+                  className="px-4 py-2 rounded-lg border border-[#5c4716] text-sm text-[#e8dfcc] hover:text-white hover:border-[#f5b52c]"
+                >
+                  Wyczyść
+                </button>
+              )}
             </div>
           </div>
 
