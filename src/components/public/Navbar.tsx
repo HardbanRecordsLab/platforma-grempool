@@ -12,7 +12,7 @@ const navLinks = [
   { href: "/uslugi/skup-zlomu", label: "SKUP ZŁOMU" },
   { href: "/uslugi", label: "USŁUGI" },
   { href: "/uslugi/transport", label: "TRANSPORT" },
-  { href: "/uslugi/materialy", label: "MATERIAŁY" },
+  { href: "/uslugi/materialy", label: "OGŁOSZENIA" },
   { href: "/kontakt", label: "KONTAKT" },
 ];
 

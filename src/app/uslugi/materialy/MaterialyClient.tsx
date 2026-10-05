@@ -20,6 +20,15 @@ export default function MaterialyClient() {
   const [activeCategory, setActiveCategory] = useState<string>("Wszystkie");
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("q");
+    const kat = params.get("kat");
+    if (q) setQuery(q);
+    const label = MATERIAL_CATEGORIES.find((c) => c.value === kat)?.label;
+    if (label) setActiveCategory(label);
+  }, []);
+
+  useEffect(() => {
     getAvailableMaterials()
       .then(setMaterials)
       .catch(() => setMaterials([]))
@@ -60,7 +69,7 @@ export default function MaterialyClient() {
               <div className="w-12 h-12 rounded-lg bg-[#f5b52c]/10 flex items-center justify-center">
                 <Package className="text-[#f5b52c] size-6" />
               </div>
-              <span className="text-[#f5b52c] font-semibold">SKLEP</span>
+              <span className="text-[#f5b52c] font-semibold">TABLICA OGŁOSZEŃ</span>
             </div>
             <h1 className="text-4xl md:text-5xl font-montserrat font-bold mb-6">
               MATERIAŁY <span className="text-[#f5b52c]">Z ODZYSKU</span>

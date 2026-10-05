@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
         destination: "https://grempool.pl/:path*",
         permanent: true,
       },
+      { source: "/ogloszenia", destination: "/uslugi/materialy", permanent: false },
     ];
   },
 };
