@@ -1,7 +1,7 @@
 import type { Lead } from "@/types";
 import { SERVICE_LABELS } from "@/lib/supabase";
 
-const RESEND_FROM = "GREMPOOL <onboarding@resend.dev>";
+const RESEND_FROM = "GREMPOOL <powiadomienia@grempool.pl>";
 
 interface ContactMessage {
   id: string;
