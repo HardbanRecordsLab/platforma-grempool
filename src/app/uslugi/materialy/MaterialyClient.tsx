@@ -5,6 +5,8 @@ import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
 import { Package, Phone, ArrowRight, Search } from "lucide-react";
 import Link from "next/link";
+import { DEMO_LISTINGS } from "@/lib/site";
+import DemoListingsNotice from "@/components/public/DemoListingsNotice";
 import type { Material } from "@/types";
 import { MATERIAL_CATEGORIES, getAvailableMaterials } from "@/lib/materials-store";
 
@@ -65,7 +67,7 @@ export default function MaterialyClient() {
             </h1>
             <p className="text-[#e8dfcc] text-lg mb-8">
               Oferujemy szeroki wybór materiałów budowlanych z odzysku w atrakcyjnych cenach.
-              Stal, cegła, okna, drzwi i wiele więcej. Poniżej aktualna dostępność z naszego placu.
+              Stal, cegła, okna, drzwi i wiele więcej. {DEMO_LISTINGS ? "Poniżej przykładowe ogłoszenia - katalog jest w przygotowaniu." : "Poniżej aktualna dostępność z naszego placu."}
             </p>
             <div className="flex gap-4">
               <a href="tel:+48663288533" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#000000] flex items-center gap-2">
@@ -82,6 +84,7 @@ export default function MaterialyClient() {
       {/* Available Items */}
       <section className="py-16 bg-[#000000]">
         <div className="container mx-auto px-4">
+          <DemoListingsNotice />
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <h2 className="text-3xl font-montserrat font-bold">
               DOSTĘPNE <span className="text-[#f5b52c]">MATERIAŁY</span>
@@ -146,9 +149,15 @@ export default function MaterialyClient() {
                   <div className="p-4">
                     <div className="flex items-start justify-between mb-2 gap-1">
                       <span className="font-mono text-[#f5b52c] text-[10px] truncate">{item.id_materialu}</span>
-                      <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-green-500/20 text-green-400 shrink-0">
-                        Dostępny
-                      </span>
+                      {DEMO_LISTINGS ? (
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#f5b52c] text-black shrink-0">
+                          PRZYKŁAD
+                        </span>
+                      ) : (
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-green-500/20 text-green-400 shrink-0">
+                          Dostępny
+                        </span>
+                      )}
                     </div>
                     <h3 className="font-semibold text-sm mb-2 line-clamp-2 min-h-[2.5rem]">{item.nazwa}</h3>
                     <div className="space-y-0.5 text-xs text-[#e8dfcc] mb-3">

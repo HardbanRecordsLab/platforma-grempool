@@ -28,3 +28,7 @@ export const BUSINESS = {
     { days: ["Saturday"], opens: "08:00", closes: "14:00" },
   ],
 };
+
+// Marketplace listings are sample data while the site is being built.
+// Set to false once real stock is entered in the admin panel.
+export const DEMO_LISTINGS = true;

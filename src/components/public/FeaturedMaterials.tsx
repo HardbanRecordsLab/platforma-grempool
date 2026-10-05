@@ -5,7 +5,8 @@ import Link from "next/link";
 import { Package, ArrowRight, MapPin, Phone, Ruler, Layers, ShieldCheck, Clock } from "lucide-react";
 import type { Material } from "@/types";
 import { MATERIAL_CATEGORIES, MATERIAL_CONDITIONS, getAvailableMaterials } from "@/lib/materials-store";
-import { BUSINESS } from "@/lib/site";
+import { BUSINESS, DEMO_LISTINGS } from "@/lib/site";
+import DemoListingsNotice from "./DemoListingsNotice";
 
 const LIMIT = 8;
 
@@ -61,7 +62,7 @@ export default function FeaturedMaterials() {
                 MATERIAŁY <span className="text-[#f5b52c]">DOSTĘPNE TERAZ</span>
               </h2>
               <p className="text-sm text-[#e8dfcc] mt-2">
-                {materials.length} aktywnych ogłoszeń &middot; odbiór osobisty w Raszówce lub dowóz naszym transportem
+                {materials.length} {DEMO_LISTINGS ? "przykładowych" : "aktywnych"} ogłoszeń &middot; odbiór osobisty w Raszówce lub dowóz naszym transportem
               </p>
             </div>
           </div>
@@ -72,6 +73,8 @@ export default function FeaturedMaterials() {
             WSZYSTKIE OGŁOSZENIA <ArrowRight size={16} />
           </Link>
         </div>
+
+        <DemoListingsNotice />
 
         {counts.length > 1 && (
           <div className="flex flex-wrap gap-2 mb-8">
@@ -136,9 +139,15 @@ export default function FeaturedMaterials() {
                     <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/75 border border-[#f5b52c]/50 text-[#f5b52c] text-[11px] font-bold tracking-wide uppercase">
                       {categoryLabel(item.kategoria)}
                     </span>
-                    <span className="absolute top-3 right-3 px-2.5 py-1 rounded-md bg-emerald-500/90 text-black text-[11px] font-bold">
-                      DOSTĘPNY
-                    </span>
+                    {DEMO_LISTINGS ? (
+                      <span className="absolute top-3 right-3 px-2.5 py-1 rounded-md bg-[#f5b52c] text-black text-[11px] font-bold">
+                        PRZYKŁAD
+                      </span>
+                    ) : (
+                      <span className="absolute top-3 right-3 px-2.5 py-1 rounded-md bg-emerald-500/90 text-black text-[11px] font-bold">
+                        DOSTĘPNY
+                      </span>
+                    )}
                     <img
                       src="/assets/logo-grempool-sygnet.png"
                       alt=""
