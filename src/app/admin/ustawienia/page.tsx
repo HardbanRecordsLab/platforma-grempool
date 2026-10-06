@@ -1,27 +1,95 @@
 "use client";
 
-import { useState } from "react";
-import { 
-  Save, 
-  User, 
-  Building, 
-  Bell, 
-  Shield, 
-  Globe,
-  Mail,
-  Phone,
-  MapPin
-} from "lucide-react";
+import { useEffect, useState } from "react";
+import { Building, Bell, Shield, CheckCircle2, XCircle, Loader2, Send, LogOut } from "lucide-react";
 import { BUSINESS } from "@/lib/site";
+
+interface SystemStatus {
+  notificationEmail: string | null;
+  emailConfigured: boolean;
+  photosConfigured: boolean;
+  photosUrl: string | null;
+  database: string | null;
+}
+
+const DAY_LABELS: Record<string, string> = {
+  Monday: "Pon",
+  Tuesday: "Wt",
+  Wednesday: "Śr",
+  Thursday: "Czw",
+  Friday: "Pt",
+  Saturday: "Sob",
+  Sunday: "Ndz",
+};
+
+const formatDays = (days: string[]) =>
+  days.length > 1 ? `${DAY_LABELS[days[0]]}–${DAY_LABELS[days[days.length - 1]]}` : DAY_LABELS[days[0]];
+
+function Row({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 py-3 border-b border-[#5c4716] last:border-0">
+      <span className="sm:w-44 shrink-0 text-sm text-[#e8dfcc]">{label}</span>
+      <span className="text-white break-words">{value}</span>
+    </div>
+  );
+}
+
+function StatusBadge({ ok, okText, badText }: { ok: boolean; okText: string; badText: string }) {
+  return ok ? (
+    <span className="inline-flex items-center gap-1.5 text-green-400 text-sm">
+      <CheckCircle2 size={16} /> {okText}
+    </span>
+  ) : (
+    <span className="inline-flex items-center gap-1.5 text-red-400 text-sm">
+      <XCircle size={16} /> {badText}
+    </span>
+  );
+}
 
 export default function UstawieniaPage() {
   const [activeTab, setActiveTab] = useState("firma");
+  const [status, setStatus] = useState<SystemStatus | null>(null);
+  const [user, setUser] = useState<{ login: string; label: string } | null>(null);
+  const [testState, setTestState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [testError, setTestError] = useState("");
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((res) => (res.ok ? res.json() : null))
+      .then(setStatus)
+      .catch(() => setStatus(null));
+    fetch("/api/auth/me")
+      .then((res) => (res.ok ? res.json() : null))
+      .then(setUser)
+      .catch(() => setUser(null));
+  }, []);
+
+  const sendTest = async () => {
+    setTestState("sending");
+    try {
+      const res = await fetch("/api/settings/test-email", { method: "POST" });
+      const body = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setTestState("sent");
+      } else {
+        setTestError(body.error ?? "Nie udało się wysłać");
+        setTestState("error");
+      }
+    } catch {
+      setTestError("Brak połączenia z serwerem");
+      setTestState("error");
+    }
+  };
+
+  const logout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
+    window.location.replace("/admin/login");
+  };
 
   const tabs = [
     { id: "firma", label: "Firma", icon: Building },
-    { id: "powiadomienia", label: "Powiadomienia", icon: Bell },
-    { id: "uzytkownicy", label: "Użytkownicy", icon: User },
-    { id: "bezpieczenstwo", label: "Bezpieczeństwo", icon: Shield },
+    { id: "powiadomienia", label: "Powiadomienia i system", icon: Bell },
+    { id: "bezpieczenstwo", label: "Konto i dostęp", icon: Shield },
   ];
 
   return (
@@ -29,17 +97,14 @@ export default function UstawieniaPage() {
       <h1 className="text-2xl font-montserrat font-bold mb-6">Ustawienia</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Sidebar */}
-        <div className="bg-[#0a0a0a] p-4 rounded-xl border border-[#5c4716]">
+        <div className="bg-[#0a0a0a] p-4 rounded-xl border border-[#5c4716] h-fit">
           <nav className="space-y-2">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                  activeTab === tab.id
-                    ? "bg-[#f5b52c]/10 text-[#f5b52c]"
-                    : "text-[#e8dfcc] hover:bg-[#5c4716]"
+                  activeTab === tab.id ? "bg-[#f5b52c]/10 text-[#f5b52c]" : "text-[#e8dfcc] hover:bg-[#5c4716]"
                 }`}
               >
                 <tab.icon size={18} />
@@ -49,204 +114,95 @@ export default function UstawieniaPage() {
           </nav>
         </div>
 
-        {/* Content */}
         <div className="lg:col-span-3">
           {activeTab === "firma" && (
             <div className="bg-[#0a0a0a] p-6 rounded-xl border border-[#5c4716]">
-              <h2 className="text-xl font-montserrat font-bold mb-6">Informacje o firmie</h2>
-              
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm text-[#e8dfcc] mb-2">Nazwa firmy</label>
-                    <input type="text" defaultValue="GREMPOOL" className="w-full bg-[#000000] border border-[#5c4716] rounded-lg p-3 text-white" />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-[#e8dfcc] mb-2">NIP</label>
-                    <input type="text" defaultValue="123-456-78-90" className="w-full bg-[#000000] border border-[#5c4716] rounded-lg p-3 text-white" />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm text-[#e8dfcc] mb-2">Adres</label>
-                  <input type="text" defaultValue="ul. Kolejowa 5a, 59-307 Raszówka" className="w-full bg-[#000000] border border-[#5c4716] rounded-lg p-3 text-white" />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm text-[#e8dfcc] mb-2">Telefon</label>
-                    <input type="tel" defaultValue="+48 663 288 533" className="w-full bg-[#000000] border border-[#5c4716] rounded-lg p-3 text-white" />
-                  </div>
-                  <div>
-                    <label className="block text-sm text-[#e8dfcc] mb-2">Email</label>
-                    <input type="email" defaultValue={BUSINESS.email} className="w-full bg-[#000000] border border-[#5c4716] rounded-lg p-3 text-white" />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm text-[#e8dfcc] mb-2">Opis firmy</label>
-                  <textarea rows={4} defaultValue="GREMPOOL - Złom, Transport, Usługi. Solidnie. Terminowo. Na lata." className="w-full bg-[#000000] border border-[#5c4716] rounded-lg p-3 text-white" />
-                </div>
-
-                <div>
-                  <label className="block text-sm text-[#e8dfcc] mb-2">Godziny otwarcia</label>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-xs text-[#e8dfcc]">Poniedziałek - Piątek</label>
-                      <input type="text" defaultValue="7:00 - 17:00" className="w-full bg-[#000000] border border-[#5c4716] rounded-lg p-3 text-white text-sm" />
-                    </div>
-                    <div>
-                      <label className="text-xs text-[#e8dfcc]">Sobota</label>
-                      <input type="text" defaultValue="8:00 - 14:00" className="w-full bg-[#000000] border border-[#5c4716] rounded-lg p-3 text-white text-sm" />
-                    </div>
-                  </div>
-                </div>
-
-                <button className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#000000] flex items-center gap-2">
-                  <Save size={18} /> Zapisz zmiany
-                </button>
-              </div>
+              <h2 className="text-xl font-montserrat font-bold mb-2">Dane firmy</h2>
+              <p className="text-sm text-[#e8dfcc] mb-6">
+                Te dane widać na stronie (stopka, kontakt, „O nas”) i w wynikach Google. Zmianę zgłoś osobie, która
+                prowadzi stronę — są wpisane w kodzie, żeby nikt ich przypadkiem nie nadpisał.
+              </p>
+              <Row label="Nazwa" value={BUSINESS.legalName} />
+              <Row label="NIP" value={BUSINESS.taxId} />
+              <Row label="REGON" value={BUSINESS.regon} />
+              <Row
+                label="Adres"
+                value={`${BUSINESS.streetAddress}, ${BUSINESS.postalCode} ${BUSINESS.addressLocality}`}
+              />
+              <Row label="Telefon" value={BUSINESS.phoneDisplay} />
+              <Row label="E-mail na stronie" value={BUSINESS.email} />
+              <Row
+                label="Godziny otwarcia"
+                value={BUSINESS.openingHours.map((h) => `${formatDays(h.days)} ${h.opens}–${h.closes}`).join(", ")}
+              />
+              <Row label="Obszar działania" value={BUSINESS.areaServed.join(", ")} />
             </div>
           )}
 
           {activeTab === "powiadomienia" && (
             <div className="bg-[#0a0a0a] p-6 rounded-xl border border-[#5c4716]">
-              <h2 className="text-xl font-montserrat font-bold mb-6">Powiadomienia</h2>
-              
-              <div className="space-y-6">
-                <div className="flex items-center justify-between p-4 bg-[#000000] rounded-lg">
-                  <div>
-                    <h3 className="font-semibold">Nowy lead</h3>
-                    <p className="text-sm text-[#e8dfcc]">Powiadomienie o nowym zapytaniu</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" defaultChecked className="sr-only peer" />
-                    <div className="w-11 h-6 bg-[#5c4716] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#f5b52c]"></div>
-                  </label>
+              <h2 className="text-xl font-montserrat font-bold mb-2">Powiadomienia i system</h2>
+              <p className="text-sm text-[#e8dfcc] mb-6">
+                Każde nowe zapytanie o wycenę i każda wiadomość z formularza kontaktowego trafia na poniższy adres
+                e-mail.
+              </p>
+              {!status ? (
+                <div className="flex items-center gap-2 text-[#e8dfcc] text-sm">
+                  <Loader2 size={16} className="animate-spin" /> Sprawdzanie...
                 </div>
+              ) : (
+                <>
+                  <Row label="Powiadomienia na adres" value={status.notificationEmail ?? "— nie ustawiono —"} />
+                  <Row
+                    label="Wysyłka e-maili"
+                    value={<StatusBadge ok={status.emailConfigured} okText="Działa" badText="Nie skonfigurowana" />}
+                  />
+                  <Row
+                    label="Zdjęcia (Cloudflare R2)"
+                    value={
+                      <StatusBadge
+                        ok={status.photosConfigured}
+                        okText={status.photosUrl ? `Działa — ${status.photosUrl}` : "Działa"}
+                        badText="Nie skonfigurowane"
+                      />
+                    }
+                  />
+                  <Row label="Baza danych (Supabase)" value={status.database ?? "—"} />
 
-                <div className="flex items-center justify-between p-4 bg-[#000000] rounded-lg">
-                  <div>
-                    <h3 className="font-semibold">Zmiana statusu zlecenia</h3>
-                    <p className="text-sm text-[#e8dfcc]">Powiadomienie przy zmianie statusu</p>
+                  <div className="mt-6 flex flex-wrap items-center gap-3">
+                    <button
+                      onClick={sendTest}
+                      disabled={testState === "sending" || !status.emailConfigured}
+                      className="btn-primary px-5 py-2.5 rounded-lg text-sm font-semibold text-[#000000] flex items-center gap-2 disabled:opacity-60"
+                    >
+                      {testState === "sending" ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+                      Wyślij testowe powiadomienie
+                    </button>
+                    {testState === "sent" && (
+                      <span className="text-sm text-green-400">Wysłano — sprawdź skrzynkę (także folder spam).</span>
+                    )}
+                    {testState === "error" && <span className="text-sm text-red-400">{testError}</span>}
                   </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" defaultChecked className="sr-only peer" />
-                    <div className="w-11 h-6 bg-[#5c4716] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#f5b52c]"></div>
-                  </label>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-[#000000] rounded-lg">
-                  <div>
-                    <h3 className="font-semibold">Przegląd pojazdu</h3>
-                    <p className="text-sm text-[#e8dfcc]">Przypomnienie o zbliżającym się przeglądzie</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" defaultChecked className="sr-only peer" />
-                    <div className="w-11 h-6 bg-[#5c4716] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#f5b52c]"></div>
-                  </label>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-[#000000] rounded-lg">
-                  <div>
-                    <h3 className="font-semibold">Nowa opinia</h3>
-                    <p className="text-sm text-[#e8dfcc]">Powiadomienie o nowej opinii klienta</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" defaultChecked className="sr-only peer" />
-                    <div className="w-11 h-6 bg-[#5c4716] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#f5b52c]"></div>
-                  </label>
-                </div>
-
-                <button className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#000000] flex items-center gap-2">
-                  <Save size={18} /> Zapisz zmiany
-                </button>
-              </div>
-            </div>
-          )}
-
-          {activeTab === "uzytkownicy" && (
-            <div className="bg-[#0a0a0a] p-6 rounded-xl border border-[#5c4716]">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-montserrat font-bold">Użytkownicy</h2>
-                <button className="btn-primary px-4 py-2 rounded-lg text-sm font-semibold text-[#000000]">
-                  + Dodaj użytkownika
-                </button>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-[#000000] rounded-lg">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-[#f5b52c] flex items-center justify-center text-[#000000] font-bold">W</div>
-                    <div>
-                      <h3 className="font-semibold">Właściciel</h3>
-                      <p className="text-sm text-[#e8dfcc]">wlasciciel@grempool.pl</p>
-                    </div>
-                  </div>
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#f5b52c]/20 text-[#f5b52c]">Właściciel</span>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-[#000000] rounded-lg">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">M</div>
-                    <div>
-                      <h3 className="font-semibold">Marek Nowak</h3>
-                      <p className="text-sm text-[#e8dfcc]">marek@grempool.pl</p>
-                    </div>
-                  </div>
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-400">Koordynator</span>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-[#000000] rounded-lg">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white font-bold">P</div>
-                    <div>
-                      <h3 className="font-semibold">Piotr Kowalczyk</h3>
-                      <p className="text-sm text-[#e8dfcc]">piotr@grempool.pl</p>
-                    </div>
-                  </div>
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-500/20 text-green-400">Pracownik</span>
-                </div>
-              </div>
+                </>
+              )}
             </div>
           )}
 
           {activeTab === "bezpieczenstwo" && (
             <div className="bg-[#0a0a0a] p-6 rounded-xl border border-[#5c4716]">
-              <h2 className="text-xl font-montserrat font-bold mb-6">Bezpieczeństwo</h2>
-              
-              <div className="space-y-6">
-                <div className="p-4 bg-[#000000] rounded-lg">
-                  <h3 className="font-semibold mb-2">Zmiana hasła</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input type="password" placeholder="Aktualne hasło" className="bg-[#0a0a0a] border border-[#5c4716] rounded-lg p-3 text-white" />
-                    <input type="password" placeholder="Nowe hasło" className="bg-[#0a0a0a] border border-[#5c4716] rounded-lg p-3 text-white" />
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-[#000000] rounded-lg">
-                  <div>
-                    <h3 className="font-semibold">Weryfikacja dwuskładnikowa</h3>
-                    <p className="text-sm text-[#e8dfcc]">Dodatkowe zabezpieczenie konta</p>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" className="sr-only peer" />
-                    <div className="w-11 h-6 bg-[#5c4716] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#f5b52c]"></div>
-                  </label>
-                </div>
-
-                <div className="p-4 bg-[#000000] rounded-lg">
-                  <h3 className="font-semibold mb-2">Aktywne sesje</h3>
-                  <div className="text-sm text-[#e8dfcc]">
-                    <p>Ostatnie logowanie: 13.09.2026, 10:30</p>
-                    <p>IP: 192.168.1.100</p>
-                  </div>
-                </div>
-
-                <button className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#000000] flex items-center gap-2">
-                  <Save size={18} /> Zapisz zmiany
-                </button>
-              </div>
+              <h2 className="text-xl font-montserrat font-bold mb-2">Konto i dostęp</h2>
+              <p className="text-sm text-[#e8dfcc] mb-6">
+                Panel ma dwa konta z pełnym dostępem: <span className="text-white">owner</span> i{" "}
+                <span className="text-white">admin</span>. Logowanie jest ważne 30 dni na danym urządzeniu. Zmiana
+                hasła wylogowuje to konto ze wszystkich urządzeń — hasła zmienia osoba prowadząca stronę.
+              </p>
+              <Row label="Zalogowany jako" value={user ? `${user.login} (${user.label})` : "…"} />
+              <button
+                onClick={logout}
+                className="mt-6 px-5 py-2.5 rounded-lg text-sm font-semibold border border-red-500/40 text-red-400 hover:bg-red-500/10 flex items-center gap-2"
+              >
+                <LogOut size={16} /> Wyloguj z tego urządzenia
+              </button>
             </div>
           )}
         </div>

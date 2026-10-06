@@ -16,6 +16,7 @@ import {
   LayoutGrid,
   Settings,
   LogOut,
+  Globe,
   Menu,
   X,
   Mail,
@@ -46,6 +47,7 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [user, setUser] = useState<{ login: string; label: string } | null>(null);
 
   useEffect(() => {
     if ("serviceWorker" in navigator) {
@@ -53,8 +55,21 @@ export default function AdminLayout({
     }
   }, []);
 
-  return (
-    <div className="min-h-screen bg-[#000000] flex">
+  useEffect(() => {
+    if (pathname === "/admin/login") return;
+    fetch("/api/auth/me")
+      .then((res) => (res.ok ? res.json() : null))
+      .then(setUser)
+      .catch(() => setUser(null));
+  }, [pathname]);
+
+  const logout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
+    window.location.replace("/admin/login");
+  };
+
+  const pwaTags = (
+    <>
       <link rel="manifest" href="/admin-manifest.json" />
       <link rel="apple-touch-icon" href="/icon-192.png" />
       <meta name="theme-color" content="#000000" />
@@ -62,8 +77,23 @@ export default function AdminLayout({
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       <meta name="apple-mobile-web-app-title" content="GREMPOOL Panel" />
+    </>
+  );
+
+  if (pathname === "/admin/login") {
+    return (
+      <>
+        {pwaTags}
+        {children}
+      </>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#000000] flex">
+      {pwaTags}
       {/* Sidebar */}
-      <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-[#0a0a0a] border-r border-[#5c4716] transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+      <aside className={`fixed lg:sticky lg:top-0 lg:h-screen inset-y-0 left-0 z-50 w-64 flex flex-col bg-[#0a0a0a] border-r border-[#5c4716] transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         <div className="p-6 border-b border-[#5c4716]">
           <Link href="/admin/dashboard" className="flex items-center">
             <img src="/assets/logo-grempool-wide.png" alt="GREMPOOL" className="h-9 w-auto" />
@@ -71,7 +101,7 @@ export default function AdminLayout({
           <p className="text-xs text-[#e8dfcc] mt-1">Panel Administracyjny</p>
         </div>
 
-        <nav className="p-4">
+        <nav className="flex-1 overflow-y-auto p-4">
           {menuItems.map((item) => (
             <Link
               key={item.href}
@@ -89,11 +119,15 @@ export default function AdminLayout({
           ))}
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[#5c4716]">
-          <Link href="/" className="flex items-center gap-3 px-4 py-3 text-[#e8dfcc] hover:text-white transition-colors">
-            <LogOut size={20} />
+        <div className="p-4 border-t border-[#5c4716]">
+          <Link href="/" className="flex items-center gap-3 px-4 py-2.5 text-[#e8dfcc] hover:text-white transition-colors">
+            <Globe size={20} />
             <span className="text-sm">Strona publiczna</span>
           </Link>
+          <button onClick={logout} className="w-full flex items-center gap-3 px-4 py-2.5 text-[#e8dfcc] hover:text-red-400 transition-colors">
+            <LogOut size={20} />
+            <span className="text-sm">Wyloguj</span>
+          </button>
         </div>
       </aside>
 
@@ -117,10 +151,10 @@ export default function AdminLayout({
           <div className="flex items-center gap-4">
             <NotificationBell />
             <div className="text-sm text-[#e8dfcc] hidden sm:block">
-              Zalogowany jako: <span className="text-white font-semibold">Właściciel</span>
+              Zalogowany jako: <span className="text-white font-semibold">{user ? `${user.login} (${user.label})` : "…"}</span>
             </div>
-            <div className="w-8 h-8 rounded-full bg-[#f5b52c] flex items-center justify-center text-[#000000] font-bold text-sm">
-              W
+            <div className="w-8 h-8 rounded-full bg-[#f5b52c] flex items-center justify-center text-[#000000] font-bold text-sm uppercase">
+              {user?.login.charAt(0) ?? ""}
             </div>
           </div>
         </header>
