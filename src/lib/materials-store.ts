@@ -5,6 +5,11 @@ export const MATERIAL_CATEGORIES: { value: Material["kategoria"]; label: string 
   { value: "cegla", label: "Cegła" },
   { value: "okna", label: "Okna" },
   { value: "drzwi", label: "Drzwi" },
+  { value: "kruszywa", label: "Kruszywa i gruz" },
+  { value: "drewno", label: "Drewno" },
+  { value: "maszyny", label: "Maszyny budowlane" },
+  { value: "pojazdy", label: "Pojazdy" },
+  { value: "narzedzia", label: "Narzędzia i sprzęt" },
   { value: "inne", label: "Inne materiały" },
 ];
 

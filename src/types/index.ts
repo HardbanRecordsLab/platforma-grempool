@@ -103,7 +103,17 @@ export interface Maszyna {
 export interface Material {
   id: string;
   id_materialu: string;
-  kategoria: 'stal' | 'cegla' | 'okna' | 'drzwi' | 'inne';
+  kategoria:
+    | 'stal'
+    | 'cegla'
+    | 'okna'
+    | 'drzwi'
+    | 'kruszywa'
+    | 'drewno'
+    | 'maszyny'
+    | 'pojazdy'
+    | 'narzedzia'
+    | 'inne';
   nazwa: string;
   wymiary: string;
   dlugosc?: number;
