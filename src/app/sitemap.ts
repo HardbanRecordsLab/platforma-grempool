@@ -9,7 +9,7 @@ const staticRoutes: { path: string; priority: number; changeFrequency: MetadataR
   { path: "/uslugi/koparki", priority: 0.8, changeFrequency: "monthly" },
   { path: "/uslugi/rozbiorki", priority: 0.8, changeFrequency: "monthly" },
   { path: "/uslugi/waga-najazdowa", priority: 0.8, changeFrequency: "monthly" },
-  { path: "/uslugi/materialy", priority: 0.8, changeFrequency: "daily" },
+  { path: "/ogloszenia", priority: 0.8, changeFrequency: "daily" },
   { path: "/wycena", priority: 0.9, changeFrequency: "monthly" },
   { path: "/kontakt", priority: 0.7, changeFrequency: "monthly" },
 ];

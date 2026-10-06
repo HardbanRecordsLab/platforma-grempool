@@ -34,7 +34,7 @@ const coreServices = [
   {
     title: "MATERIAŁY BUDOWLANE",
     description: "Cegła, cement, kruszywa, piasek, kostka brukowa",
-    href: "/uslugi/materialy",
+    href: "/ogloszenia",
     image: "https://images.unsplash.com/photo-1711989691538-4c1aac2c4279?auto=format&fit=crop&w=600&q=80",
   },
 ];

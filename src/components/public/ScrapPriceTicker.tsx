@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import type { ScrapPrice } from "@/types";
 import { formatScrapPrice, getActiveScrapPrices } from "@/lib/scrap-prices-store";
 
@@ -16,7 +17,7 @@ export default function ScrapPriceTicker() {
   }, []);
 
   if (loaded && prices.length === 0) return null;
-  if (!loaded) return <div className="h-11 bg-[#0a0a0a] border-y border-[#5c4716]" />;
+  if (!loaded) return <div className="h-11 bg-[#0a0a0a] border-t border-[#5c4716]" />;
 
   // "Gruby" on its own means nothing in a scrolling strip, so steel grades get their group name.
   const label = (p: ScrapPrice) => (p.grupa === "stalowy" ? `Złom stalowy ${p.nazwa.toLowerCase()}` : p.nazwa);
@@ -24,8 +25,12 @@ export default function ScrapPriceTicker() {
   const track = [...items, ...items];
 
   return (
-    <div className="relative bg-[#0a0a0a] border-y border-[#5c4716] overflow-hidden py-3">
-      <div className="ticker-track flex items-center gap-10 w-max">
+    <Link
+      href="/uslugi/skup-zlomu"
+      aria-label="Cennik skupu złomu"
+      className="group relative block bg-[#0a0a0a] border-t border-[#5c4716] overflow-hidden py-3"
+    >
+      <div className="ticker-track flex items-center gap-10 w-max group-hover:[animation-play-state:paused]">
         {track.map((text, i) => (
           <span key={i} className="flex items-center gap-2 text-sm font-semibold whitespace-nowrap">
             <span className="text-[#f5b52c]">●</span>
@@ -47,6 +52,6 @@ export default function ScrapPriceTicker() {
           }
         }
       `}</style>
-    </div>
+    </Link>
   );
 }

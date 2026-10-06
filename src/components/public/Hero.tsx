@@ -8,7 +8,7 @@ const strip = [
   { icon: Truck, title: "TRANSPORT", description: "Busy i ciężarówki z HDS", href: "/uslugi/transport" },
   { icon: HardHat, title: "USŁUGI KOPARKĄ", description: "Wywóz, niwelacje, rozbiórki", href: "/uslugi/koparki" },
   { icon: Scale, title: "WAGA NAJAZDOWA 50 T", description: "Ważenie złomu i materiałów na miejscu", href: "/uslugi/waga-najazdowa" },
-  { icon: Boxes, title: "MATERIAŁY BUDOWLANE", description: "Cegła, cement, kruszywa, piasek, kostka brukowa", href: "/uslugi/materialy" },
+  { icon: Boxes, title: "MATERIAŁY BUDOWLANE", description: "Cegła, cement, kruszywa, piasek, kostka brukowa", href: "/ogloszenia" },
 ];
 
 export default function Hero() {

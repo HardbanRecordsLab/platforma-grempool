@@ -53,7 +53,7 @@ export default function Footer() {
               <li><Link href="/uslugi/koparki" className="hover:text-[#f5b52c] transition-colors">Usługi Koparką</Link></li>
               <li><Link href="/uslugi/rozbiorki" className="hover:text-[#f5b52c] transition-colors">Rozbiórki</Link></li>
               <li><Link href="/uslugi/waga-najazdowa" className="hover:text-[#f5b52c] transition-colors">Waga Najazdowa 50 t</Link></li>
-              <li><Link href="/uslugi/materialy" className="hover:text-[#f5b52c] transition-colors">Materiały Budowlane</Link></li>
+              <li><Link href="/ogloszenia" className="hover:text-[#f5b52c] transition-colors">Ogłoszenia</Link></li>
             </ul>
           </div>
 

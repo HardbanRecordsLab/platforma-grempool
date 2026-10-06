@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
-import ScrapPriceTicker from "@/components/public/ScrapPriceTicker";
 import ScrapPriceSidebar from "@/components/public/ScrapPriceSidebar";
 import { Recycle, Phone, ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
@@ -44,7 +43,6 @@ export default function SkupZlomuPage() {
   return (
     <main className="min-h-screen">
       <Navbar />
-      <ScrapPriceTicker />
 
       {/* Hero */}
       <section className="relative py-32 overflow-hidden">

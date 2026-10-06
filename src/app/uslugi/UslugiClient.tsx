@@ -49,7 +49,7 @@ const services = [
     title: "MATERIAŁY BUDOWLANE",
     description: "Sprzedaż materiałów z odzysku - stal, cegła, okna, drzwi i więcej.",
     features: ["Stal użytkowa", "Cegła", "Okna i drzwi", "Kostka brukowa"],
-    href: "/uslugi/materialy",
+    href: "/ogloszenia",
   },
 ];
 

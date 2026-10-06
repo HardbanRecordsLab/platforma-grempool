@@ -3,40 +3,20 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  Package,
-  ArrowRight,
-  MapPin,
-  Phone,
-  Ruler,
-  Layers,
-  ShieldCheck,
-  Clock,
-  Search,
-  LayoutGrid,
-  Megaphone,
-} from "lucide-react";
+import { ArrowRight, Search, LayoutGrid, Truck } from "lucide-react";
 import type { Material } from "@/types";
-import { MATERIAL_CONDITIONS, getAvailableMaterials } from "@/lib/materials-store";
-import { LISTING_CATEGORIES, categoryOf } from "@/lib/listing-categories";
-import { BUSINESS, DEMO_LISTINGS } from "@/lib/site";
+import { getAvailableMaterials } from "@/lib/materials-store";
+import { LISTING_CATEGORIES } from "@/lib/listing-categories";
+import { DEMO_LISTINGS } from "@/lib/site";
 import DemoListingsNotice from "./DemoListingsNotice";
+import { FeaturedCard, ListingCard, SellBanner } from "./ListingCards";
 
+// One featured listing plus six regular cards fills the 4-column layout:
+// the featured card takes 2x2, four cards sit beside it, two more below
+// next to the "sell to us" banner.
 const LIMIT = 7;
 
 type Sort = "newest" | "price_asc" | "price_desc";
-
-const conditionLabel = (value: Material["stan"]) =>
-  MATERIAL_CONDITIONS.find((c) => c.value === value)?.label ?? value;
-
-function addedAgo(date?: string) {
-  if (!date) return null;
-  const days = Math.floor((Date.now() - new Date(date).getTime()) / 86_400_000);
-  if (Number.isNaN(days) || days < 0) return null;
-  if (days === 0) return "dziś";
-  if (days === 1) return "wczoraj";
-  return `${days} dni temu`;
-}
 
 export default function FeaturedMaterials() {
   const router = useRouter();
@@ -61,12 +41,16 @@ export default function FeaturedMaterials() {
     [materials]
   );
 
-  const visible = useMemo(() => {
+  const { featured, rest } = useMemo(() => {
     const list = category === "all" ? [...materials] : materials.filter((m) => m.kategoria === category);
     if (sort === "price_asc") list.sort((a, b) => (a.cena ?? Infinity) - (b.cena ?? Infinity));
     else if (sort === "price_desc") list.sort((a, b) => (b.cena ?? -1) - (a.cena ?? -1));
     else list.sort((a, b) => (b.utworzone ?? "").localeCompare(a.utworzone ?? ""));
-    return list.slice(0, LIMIT);
+    const shown = list.slice(0, LIMIT);
+    // The featured slot needs a photo to look right.
+    const index = shown.findIndex((m) => m.zdjecia && m.zdjecia.length > 0);
+    if (index === -1 || shown.length < 3) return { featured: null, rest: shown };
+    return { featured: shown[index], rest: shown.filter((_, i) => i !== index) };
   }, [materials, category, sort]);
 
   const search = (e: React.FormEvent) => {
@@ -74,246 +58,146 @@ export default function FeaturedMaterials() {
     const params = new URLSearchParams();
     if (query.trim()) params.set("q", query.trim());
     if (category !== "all") params.set("kat", category);
-    router.push(`/uslugi/materialy${params.toString() ? `?${params}` : ""}`);
+    router.push(`/ogloszenia${params.toString() ? `?${params}` : ""}`);
   };
 
+  const chipClass = (active: boolean) =>
+    `flex items-center gap-2 whitespace-nowrap pl-3.5 pr-2 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+      active
+        ? "bg-[#f5b52c] text-black border-[#f5b52c]"
+        : "border-white/10 bg-white/[0.03] text-[#e8dfcc] hover:border-[#f5b52c]/60 hover:text-white"
+    }`;
+
+  const countClass = (active: boolean) =>
+    `min-w-6 px-1.5 py-0.5 rounded-full text-[11px] font-bold text-center ${
+      active ? "bg-black/15 text-black" : "bg-white/10 text-[#e8dfcc]"
+    }`;
+
   return (
-    <section className="relative py-20 bg-[#0a0a0a] border-b border-[#5c4716] overflow-hidden">
-      <div className="pointer-events-none absolute -top-40 right-0 w-[520px] h-[520px] rounded-full bg-[#f5b52c]/5 blur-3xl" />
+    <section className="relative py-24 bg-[#050505] overflow-hidden">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#f5b52c]/60 to-transparent" />
+      <div className="pointer-events-none absolute -top-48 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full bg-[#f5b52c]/[0.06] blur-3xl" />
 
       <div className="relative container mx-auto px-4">
         {/* Header */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 items-end mb-10">
-          <div className="flex items-center gap-5">
-            <img src="/assets/logo-grempool-sygnet.png" alt="GREMPOOL" className="h-16 md:h-20 w-auto shrink-0" />
-            <div>
-              <span className="text-[#f5b52c] font-semibold text-xs tracking-[0.25em]">GREMPOOL &middot; GIEŁDA</span>
-              <h2 className="text-3xl md:text-5xl font-montserrat font-bold mt-1 leading-none">
-                TABLICA <span className="text-[#f5b52c]">OGŁOSZEŃ</span>
-              </h2>
-              <p className="text-sm text-[#e8dfcc] mt-3 max-w-xl">
-                Materiały z odzysku i rozbiórek prosto z naszego placu w Raszówce. Odbiór osobisty albo dowóz
-                naszym transportem.
-              </p>
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-10">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="h-px w-10 bg-[#f5b52c]" />
+              <span className="text-[#f5b52c] text-xs font-bold tracking-[0.3em] uppercase">Giełda GREMPOOL</span>
             </div>
+            <h2 className="font-montserrat font-bold text-4xl md:text-6xl leading-[0.95] tracking-tight">
+              Tablica <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ffd36b] to-[#f5b52c]">ogłoszeń</span>
+            </h2>
+            <p className="mt-5 text-[#e8dfcc] text-base md:text-lg">
+              Materiały z rozbiórek, maszyny i sprzęt prosto z naszego placu w Raszówce. Odbiór osobisty albo dowóz
+              naszym transportem.
+            </p>
           </div>
 
-          <div className="flex gap-6 lg:gap-8">
-            <div>
-              <div className="text-3xl font-montserrat font-bold text-[#f5b52c] leading-none">{materials.length}</div>
-              <div className="text-xs text-[#e8dfcc] mt-1">{DEMO_LISTINGS ? "ogłoszeń przykładowych" : "aktywnych ogłoszeń"}</div>
-            </div>
-            <div className="w-px bg-[#5c4716]" />
-            <div>
-              <div className="text-3xl font-montserrat font-bold text-[#f5b52c] leading-none">{tabs.length}</div>
-              <div className="text-xs text-[#e8dfcc] mt-1">kategorii</div>
-            </div>
-          </div>
+          <dl className="grid grid-cols-3 rounded-2xl border border-white/10 bg-white/[0.02] divide-x divide-white/10">
+            {[
+              { value: materials.length || "—", label: DEMO_LISTINGS ? "ogłoszeń (demo)" : "ogłoszeń" },
+              { value: tabs.length || "—", label: "kategorii" },
+              { value: <Truck size={26} className="text-[#f5b52c]" />, label: "dowóz w regionie" },
+            ].map((stat) => (
+              <div key={stat.label} className="px-5 md:px-7 py-4 text-center">
+                <dd className="font-montserrat font-bold text-3xl text-white leading-none h-8 flex items-center justify-center">
+                  {stat.value}
+                </dd>
+                <dt className="mt-2 text-[11px] uppercase tracking-[0.15em] text-[#e8dfcc]/60 whitespace-nowrap">
+                  {stat.label}
+                </dt>
+              </div>
+            ))}
+          </dl>
         </div>
 
-        <DemoListingsNotice />
-
         {/* Toolbar */}
-        <div className="rounded-xl border border-[#5c4716] bg-black p-3 mb-8">
-          <form onSubmit={search} className="flex flex-col md:flex-row gap-3">
+        <div className="mb-10">
+          <form
+            onSubmit={search}
+            className="flex flex-col md:flex-row md:items-center gap-2 p-2 rounded-2xl md:rounded-full border border-white/10 bg-[#0d0d0d] shadow-[0_20px_60px_-30px_rgba(0,0,0,0.9)] focus-within:border-[#f5b52c]/50 transition-colors"
+          >
             <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#f5b52c] size-5" />
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-[#f5b52c] size-5" />
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Czego szukasz? np. stal, cegła rozbiórkowa, okna..."
-                className="w-full bg-[#0a0a0a] border border-[#5c4716] focus:border-[#f5b52c] outline-none rounded-lg pl-12 pr-4 py-3 text-white placeholder:text-[#e8dfcc]/50"
+                placeholder="Czego szukasz? np. stal, cegła rozbiórkowa, koparka..."
+                className="w-full bg-transparent outline-none pl-14 pr-4 py-3.5 text-white placeholder:text-[#e8dfcc]/40"
               />
             </div>
+            <span className="hidden md:block w-px h-8 bg-white/10" />
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value as Sort)}
-              className="bg-[#0a0a0a] border border-[#5c4716] rounded-lg px-4 py-3 text-sm text-white"
+              aria-label="Sortowanie"
+              className="bg-transparent md:bg-transparent rounded-xl px-4 py-3 text-sm text-white outline-none cursor-pointer [&>option]:bg-[#0d0d0d]"
             >
               <option value="newest">Najnowsze</option>
-              <option value="price_asc">Cena: od najniższej</option>
-              <option value="price_desc">Cena: od najwyższej</option>
+              <option value="price_asc">Cena rosnąco</option>
+              <option value="price_desc">Cena malejąco</option>
             </select>
-            <button type="submit" className="btn-primary px-8 py-3 rounded-lg font-semibold text-black">
-              Szukaj
+            <button
+              type="submit"
+              className="btn-primary inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl md:rounded-full font-bold text-sm text-black"
+            >
+              Szukaj <ArrowRight size={16} />
             </button>
           </form>
 
           {tabs.length > 0 && (
-            <div className="flex gap-2 mt-3 overflow-x-auto pb-1">
-              <button
-                onClick={() => setCategory("all")}
-                className={`flex items-center gap-2 whitespace-nowrap px-4 py-2 rounded-lg text-sm font-semibold border transition-colors ${
-                  category === "all"
-                    ? "bg-[#f5b52c] text-black border-[#f5b52c]"
-                    : "border-[#5c4716] text-[#e8dfcc] hover:border-[#f5b52c] hover:text-white"
-                }`}
-              >
-                <LayoutGrid size={16} /> Wszystkie
-                <span className="opacity-70">{materials.length}</span>
+            <div className="flex gap-2 mt-4 overflow-x-auto pb-1 [scrollbar-width:none]">
+              <button onClick={() => setCategory("all")} className={chipClass(category === "all")}>
+                <LayoutGrid size={15} /> Wszystkie <span className={countClass(category === "all")}>{materials.length}</span>
               </button>
               {tabs.map((c) => (
-                <button
-                  key={c.value}
-                  onClick={() => setCategory(c.value)}
-                  className={`flex items-center gap-2 whitespace-nowrap px-4 py-2 rounded-lg text-sm font-semibold border transition-colors ${
-                    category === c.value
-                      ? "bg-[#f5b52c] text-black border-[#f5b52c]"
-                      : "border-[#5c4716] text-[#e8dfcc] hover:border-[#f5b52c] hover:text-white"
-                  }`}
-                >
-                  <c.icon size={16} /> {c.label}
-                  <span className="opacity-70">{c.count}</span>
+                <button key={c.value} onClick={() => setCategory(c.value)} className={chipClass(category === c.value)}>
+                  <c.icon size={15} /> {c.label} <span className={countClass(category === c.value)}>{c.count}</span>
                 </button>
               ))}
             </div>
           )}
         </div>
 
-        {/* Grid */}
+        <DemoListingsNotice />
+
+        {/* Listings */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="h-[420px] rounded-xl border border-[#5c4716] bg-black animate-pulse" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className="sm:col-span-2 lg:row-span-2 min-h-[460px] rounded-2xl bg-white/[0.03] animate-pulse" />
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-[400px] rounded-2xl bg-white/[0.03] animate-pulse" />
             ))}
           </div>
+        ) : featured === null && rest.length === 0 ? (
+          <div className="rounded-2xl border border-white/10 bg-[#0d0d0d] p-12 text-center text-[#e8dfcc]">
+            Brak ogłoszeń w tej kategorii. Zadzwoń — być może mamy coś, czego jeszcze nie wystawiliśmy.
+          </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {visible.map((item) => {
-              const cat = categoryOf(item.kategoria);
-              const CatIcon = cat?.icon ?? Package;
-              const ago = addedAgo(item.utworzone);
-              return (
-                <article
-                  key={item.id}
-                  className="group flex flex-col bg-black rounded-xl border border-[#5c4716] overflow-hidden hover:border-[#f5b52c] hover:-translate-y-1 hover:shadow-[0_16px_48px_-16px_rgba(245,181,44,0.45)] transition-all"
-                >
-                  <div className="relative aspect-[4/3] bg-[#0a0a0a] overflow-hidden">
-                    {item.zdjecia && item.zdjecia.length > 0 ? (
-                      <img
-                        src={item.zdjecia[0]}
-                        alt={item.nazwa}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <CatIcon className="text-[#5c4716] size-12" />
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/30" />
-                    <span className="absolute top-3 left-3 max-w-[58%] flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-black/75 border border-[#f5b52c]/50 text-[#f5b52c] text-[11px] font-bold tracking-wide uppercase">
-                      <CatIcon size={12} className="shrink-0" /> <span className="truncate">{cat?.label ?? item.kategoria}</span>
-                    </span>
-                    {DEMO_LISTINGS ? (
-                      <span className="absolute top-3 right-3 px-2.5 py-1 rounded-md bg-[#f5b52c] text-black text-[11px] font-bold">
-                        PRZYKŁAD
-                      </span>
-                    ) : (
-                      <span className="absolute top-3 right-3 px-2.5 py-1 rounded-md bg-emerald-500/90 text-black text-[11px] font-bold">
-                        DOSTĘPNY
-                      </span>
-                    )}
-                    <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
-                      <span className="text-xl font-montserrat font-bold text-white drop-shadow">
-                        {item.cena ? (
-                          <>
-                            {item.cena.toFixed(2)} <span className="text-sm text-[#f5b52c]">zł</span>
-                          </>
-                        ) : (
-                          <span className="text-sm text-[#f5b52c]">Cena do uzgodnienia</span>
-                        )}
-                      </span>
-                      <img src="/assets/logo-grempool-sygnet.png" alt="" aria-hidden className="h-6 w-auto opacity-80" />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col flex-1 p-5">
-                    <div className="flex items-center justify-between text-[11px] text-[#e8dfcc]/70 mb-2">
-                      <span className="font-mono text-[#f5b52c]">{item.id_materialu}</span>
-                      {ago && (
-                        <span className="flex items-center gap-1">
-                          <Clock size={11} /> {ago}
-                        </span>
-                      )}
-                    </div>
-
-                    <h3 className="font-montserrat font-bold text-white leading-snug mb-3 line-clamp-2 min-h-[2.75rem]">
-                      {item.nazwa}
-                    </h3>
-
-                    <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs text-[#e8dfcc] mb-4">
-                      {item.wymiary && (
-                        <span className="col-span-2 flex items-center gap-2 truncate">
-                          <Ruler size={13} className="text-[#f5b52c] shrink-0" /> {item.wymiary}
-                        </span>
-                      )}
-                      <span className="flex items-center gap-2">
-                        <Layers size={13} className="text-[#f5b52c] shrink-0" /> {item.ilosc} szt.
-                      </span>
-                      <span className="flex items-center gap-2">
-                        <ShieldCheck size={13} className="text-[#f5b52c] shrink-0" /> {conditionLabel(item.stan)}
-                      </span>
-                      <span className="col-span-2 flex items-center gap-2 truncate">
-                        <MapPin size={13} className="text-[#f5b52c] shrink-0" /> Raszówka
-                        {item.lokalizacja ? ` · ${item.lokalizacja}` : ""}
-                      </span>
-                    </div>
-
-                    <div className="mt-auto flex gap-2">
-                      <Link
-                        href={`/wycena?material=${encodeURIComponent(item.id_materialu)}&nazwa=${encodeURIComponent(item.nazwa)}`}
-                        className="flex-1 text-center btn-primary py-2.5 rounded-md text-sm font-semibold text-black"
-                      >
-                        Zapytaj o ofertę
-                      </Link>
-                      <a
-                        href={`tel:${BUSINESS.phone}`}
-                        aria-label="Zadzwoń"
-                        className="px-3 flex items-center justify-center rounded-md border border-[#5c4716] text-[#f5b52c] hover:border-[#f5b52c]"
-                      >
-                        <Phone size={16} />
-                      </a>
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
-
-            {/* Sell-to-us tile */}
-            <div className="flex flex-col justify-between rounded-xl border-2 border-dashed border-[#f5b52c]/60 bg-gradient-to-br from-[#f5b52c]/15 to-transparent p-6">
-              <div>
-                <Megaphone className="text-[#f5b52c] size-10 mb-4" strokeWidth={1.5} />
-                <h3 className="font-montserrat font-bold text-xl text-white mb-2">Masz coś na sprzedaż?</h3>
-                <p className="text-sm text-[#e8dfcc]">
-                  Skupujemy złom, materiały z rozbiórek, maszyny i sprzęt. Wycenimy szybko i odbierzemy własnym
-                  transportem.
-                </p>
-              </div>
-              <div className="space-y-2 mt-6">
-                <Link
-                  href="/wycena"
-                  className="block text-center btn-primary py-2.5 rounded-md text-sm font-semibold text-black"
-                >
-                  Zgłoś do wyceny
-                </Link>
-                <a
-                  href={`tel:${BUSINESS.phone}`}
-                  className="block text-center py-2.5 rounded-md text-sm font-semibold border border-[#f5b52c] text-[#f5b52c] hover:bg-[#f5b52c] hover:text-black transition-colors"
-                >
-                  {BUSINESS.phoneDisplay}
-                </a>
-              </div>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {featured && <FeaturedCard item={featured} />}
+            {rest.map((item) => (
+              <ListingCard key={item.id} item={item} />
+            ))}
+            <SellBanner />
           </div>
         )}
 
-        <div className="flex justify-center mt-10">
+        <div className="flex flex-col items-center gap-3 mt-12">
           <Link
-            href="/uslugi/materialy"
-            className="inline-flex items-center gap-2 border-2 border-[#f5b52c] text-[#f5b52c] hover:bg-[#f5b52c] hover:text-black px-8 py-3 rounded-md font-semibold text-sm tracking-wide transition-colors"
+            href="/ogloszenia"
+            className="group inline-flex items-center gap-3 pl-8 pr-2 py-2 rounded-full border border-[#f5b52c]/60 text-white hover:bg-[#f5b52c] hover:text-black font-semibold text-sm tracking-wide transition-colors"
           >
-            ZOBACZ WSZYSTKIE OGŁOSZENIA ({materials.length}) <ArrowRight size={16} />
+            Zobacz wszystkie ogłoszenia
+            <span className="w-9 h-9 flex items-center justify-center rounded-full bg-[#f5b52c] text-black group-hover:bg-black group-hover:text-[#f5b52c] transition-colors">
+              <ArrowRight size={16} />
+            </span>
           </Link>
+          <span className="text-xs text-[#e8dfcc]/50">
+            {materials.length} ogłoszeń · aktualizowane na bieżąco z placu w Raszówce
+          </span>
         </div>
       </div>
     </section>

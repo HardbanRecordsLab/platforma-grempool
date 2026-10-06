@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X, Phone, Mail, MapPin } from "lucide-react";
 import { BUSINESS } from "@/lib/site";
+import ScrapPriceTicker from "./ScrapPriceTicker";
 
 const navLinks = [
   { href: "/", label: "STRONA GŁÓWNA" },
@@ -12,7 +13,7 @@ const navLinks = [
   { href: "/uslugi/skup-zlomu", label: "SKUP ZŁOMU" },
   { href: "/uslugi", label: "USŁUGI" },
   { href: "/uslugi/transport", label: "TRANSPORT" },
-  { href: "/uslugi/materialy", label: "OGŁOSZENIA" },
+  { href: "/ogloszenia", label: "OGŁOSZENIA" },
   { href: "/kontakt", label: "KONTAKT" },
 ];
 
@@ -99,6 +100,8 @@ export default function Navbar() {
           </ul>
         </nav>
       )}
+
+      <ScrapPriceTicker />
     </header>
   );
 }
