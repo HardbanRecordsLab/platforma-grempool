@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import NotificationBell from "@/components/admin/NotificationBell";
+import InstallAppButton from "@/components/admin/InstallAppButton";
 import { 
   LayoutDashboard, 
   Users, 
@@ -149,6 +150,7 @@ export default function AdminLayout({
           </button>
 
           <div className="flex items-center gap-4">
+            <InstallAppButton />
             <NotificationBell />
             <div className="text-sm text-[#e8dfcc] hidden sm:block">
               Zalogowany jako: <span className="text-white font-semibold">{user ? `${user.login} (${user.label})` : "…"}</span>
