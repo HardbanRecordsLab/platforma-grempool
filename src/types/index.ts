@@ -149,8 +149,11 @@ export interface Task {
   zaktualizowane: string;
 }
 
+export type ScrapGroup = 'stalowy' | 'kolorowy';
+
 export interface ScrapPrice {
   id: string;
+  grupa: ScrapGroup;
   nazwa: string;
   cena_od: number;
   jednostka: string;

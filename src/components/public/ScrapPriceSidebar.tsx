@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Tags, Phone } from "lucide-react";
 import type { ScrapPrice } from "@/types";
-import { getActiveScrapPrices } from "@/lib/scrap-prices-store";
+import { SCRAP_GROUPS, formatScrapPrice, getActiveScrapPrices } from "@/lib/scrap-prices-store";
 
 export default function ScrapPriceSidebar() {
   const [prices, setPrices] = useState<ScrapPrice[]>([]);
@@ -19,23 +19,39 @@ export default function ScrapPriceSidebar() {
 
   if (loaded && prices.length === 0) return null;
 
+  const groups = SCRAP_GROUPS.map((group) => ({
+    ...group,
+    items: prices.filter((p) => p.grupa === group.value),
+  })).filter((group) => group.items.length > 0);
+
   return (
-    <aside className="bg-[#0a0a0a] border border-[#5c4716] rounded-2xl p-6 w-full lg:max-w-xs shrink-0">
-      <div className="flex items-center gap-2 mb-4">
+    <aside className="bg-[#0a0a0a] border border-[#5c4716] rounded-2xl p-6 w-full lg:w-80 shrink-0">
+      <div className="flex items-center gap-2 mb-5">
         <Tags className="text-[#f5b52c] size-5" />
         <h3 className="font-montserrat font-bold">CENNIK ZŁOMU</h3>
       </div>
 
-      <ul className="space-y-3 mb-4">
-        {prices.map((price) => (
-          <li key={price.id} className="flex items-center justify-between text-sm border-b border-[#5c4716] pb-3 last:border-0 last:pb-0">
-            <span className="text-[#e8dfcc]">{price.nazwa}</span>
-            <span className="text-[#f5b52c] font-bold whitespace-nowrap ml-3">
-              od {price.cena_od.toFixed(2)} {price.jednostka}
-            </span>
-          </li>
+      <div className="space-y-5 mb-5">
+        {groups.map((group) => (
+          <section key={group.value}>
+            <h4 className="text-[#f5b52c] text-xs font-bold tracking-widest uppercase mb-2">{group.label}</h4>
+            <ul className="space-y-2">
+              {group.items.map((price) => (
+                <li
+                  key={price.id}
+                  className="flex items-center justify-between text-sm border-b border-[#5c4716] pb-2 last:border-0 last:pb-0"
+                >
+                  <span className="text-[#e8dfcc]">{price.nazwa}</span>
+                  <span className="text-white font-bold whitespace-nowrap ml-3">{formatScrapPrice(price)}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-2 text-xs text-[#f5b52c]/90 bg-[#f5b52c]/10 border border-[#f5b52c]/30 rounded-md px-2.5 py-1.5">
+              {group.note}
+            </p>
+          </section>
         ))}
-      </ul>
+      </div>
 
       <p className="text-xs text-[#e8dfcc]/70 mb-4">
         Ceny orientacyjne — ostateczna wycena po weryfikacji rodzaju i ilości materiału.

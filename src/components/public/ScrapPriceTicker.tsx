@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { ScrapPrice } from "@/types";
-import { getActiveScrapPrices } from "@/lib/scrap-prices-store";
+import { formatScrapPrice, getActiveScrapPrices } from "@/lib/scrap-prices-store";
 
 export default function ScrapPriceTicker() {
   const [prices, setPrices] = useState<ScrapPrice[]>([]);
@@ -18,7 +18,9 @@ export default function ScrapPriceTicker() {
   if (loaded && prices.length === 0) return null;
   if (!loaded) return <div className="h-11 bg-[#0a0a0a] border-y border-[#5c4716]" />;
 
-  const items = prices.map((p) => `${p.nazwa} — od ${p.cena_od.toFixed(2)} ${p.jednostka}`);
+  // "Gruby" on its own means nothing in a scrolling strip, so steel grades get their group name.
+  const label = (p: ScrapPrice) => (p.grupa === "stalowy" ? `Złom stalowy ${p.nazwa.toLowerCase()}` : p.nazwa);
+  const items = prices.map((p) => `${label(p)} — ${formatScrapPrice(p)}`);
   const track = [...items, ...items];
 
   return (

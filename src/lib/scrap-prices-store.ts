@@ -1,9 +1,25 @@
-import type { ScrapPrice } from "@/types";
+import type { ScrapGroup, ScrapPrice } from "@/types";
+
+export interface ScrapGroupInfo {
+  value: ScrapGroup;
+  label: string;
+  note: string;
+}
+
+// Sections of the public price list, in display order.
+export const SCRAP_GROUPS: ScrapGroupInfo[] = [
+  { value: "stalowy", label: "Złom stalowy", note: "Możliwość negocjacji ceny przy ilości od 1 tony wzwyż." },
+  { value: "kolorowy", label: "Złom kolorowy", note: "Możliwość negocjacji cen przy ilości powyżej 200 kg." },
+];
+
+export const formatScrapPrice = (price: ScrapPrice) =>
+  `${price.cena_od.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${price.jednostka}`;
 
 interface ScrapPriceRow {
   id: string;
+  grupa: ScrapGroup;
   nazwa: string;
-  cena_od: number;
+  cena_od: number | string;
   jednostka: string;
   kolejnosc: number;
   aktywny: boolean;
@@ -14,8 +30,9 @@ interface ScrapPriceRow {
 function fromRow(row: ScrapPriceRow): ScrapPrice {
   return {
     id: row.id,
+    grupa: row.grupa,
     nazwa: row.nazwa,
-    cena_od: row.cena_od,
+    cena_od: Number(row.cena_od),
     jednostka: row.jednostka,
     kolejnosc: row.kolejnosc,
     aktywny: row.aktywny,
