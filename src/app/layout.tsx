@@ -6,6 +6,7 @@ import { createAdminClient } from "@/lib/supabase-admin";
 import { getSiteSettings } from "@/lib/site-settings-server";
 import { openingHoursSpecification, telHref } from "@/lib/site-settings";
 import { SiteSettingsProvider } from "@/components/SiteSettingsProvider";
+import PageViewTracker from "@/components/PageViewTracker";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -120,6 +121,7 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <SiteSettingsProvider settings={settings}>{children}</SiteSettingsProvider>
+        <PageViewTracker />
       </body>
     </html>
   );

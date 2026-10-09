@@ -64,7 +64,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     recipient: offer.klient_email,
     subject,
     body: intro,
-    sent_by: sessionUser(request.cookies.get(ADMIN_COOKIE)?.value),
+    sent_by: await sessionUser(request.cookies.get(ADMIN_COOKIE)?.value),
   });
   return NextResponse.json({ ok: true });
 }

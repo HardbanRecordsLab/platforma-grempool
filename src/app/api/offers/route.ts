@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
   const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("offers")
-    .insert({ ...result.row, wystawil: sessionUser(request.cookies.get(ADMIN_COOKIE)?.value) })
+    .insert({ ...result.row, wystawil: await sessionUser(request.cookies.get(ADMIN_COOKIE)?.value) })
     .select()
     .single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

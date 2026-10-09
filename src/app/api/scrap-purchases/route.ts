@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
   if (!result.ok) return NextResponse.json({ error: result.errors.join(". ") }, { status: 400 });
 
   const supabase = createAdminClient();
-  const wystawil = sessionUser(request.cookies.get(ADMIN_COOKIE)?.value);
+  const wystawil = await sessionUser(request.cookies.get(ADMIN_COOKIE)?.value);
   const { data, error } = await supabase
     .from("scrap_purchases")
     .insert({ ...result.row, wystawil })

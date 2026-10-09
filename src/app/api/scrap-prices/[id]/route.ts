@@ -19,7 +19,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       nazwa: data.nazwa,
       cena_stara: before.cena_od,
       cena_nowa: data.cena_od,
-      zmienil: sessionUser(request.cookies.get(ADMIN_COOKIE)?.value),
+      zmienil: await sessionUser(request.cookies.get(ADMIN_COOKIE)?.value),
     });
   }
 

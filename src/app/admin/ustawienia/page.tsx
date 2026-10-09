@@ -15,11 +15,14 @@ import {
   Package,
   Save,
   Upload,
+  History,
+  DatabaseBackup,
 } from "lucide-react";
 import { BUSINESS } from "@/lib/site";
 import { DEFAULT_SITE_SETTINGS, type SiteSettings, type TimeSlot } from "@/lib/site-settings";
 import { uploadImageFile } from "@/lib/image-utils";
 import PushSettings from "@/components/admin/PushSettings";
+import { AuditLogPanel, BackupPanel, PasswordForm } from "@/components/admin/SecurityPanels";
 
 interface SystemStatus {
   notificationEmail: string | null;
@@ -194,6 +197,8 @@ export default function UstawieniaPage() {
     { id: "ogloszenia", label: "Ogłoszenia", icon: Package },
     { id: "powiadomienia", label: "Powiadomienia i system", icon: Bell },
     { id: "bezpieczenstwo", label: "Konto i dostęp", icon: Shield },
+    { id: "dziennik", label: "Dziennik zmian", icon: History },
+    { id: "kopia", label: "Kopia zapasowa", icon: DatabaseBackup },
   ];
 
   const editableTab = ["firma", "komunikat", "strona", "ogloszenia"].includes(activeTab);
@@ -550,7 +555,7 @@ export default function UstawieniaPage() {
               <p className="text-sm text-[#e8dfcc] mb-6">
                 Panel ma dwa konta z pełnym dostępem: <span className="text-white">owner</span> i{" "}
                 <span className="text-white">admin</span>. Logowanie jest ważne 30 dni na danym urządzeniu. Zmiana
-                hasła wylogowuje to konto ze wszystkich urządzeń — hasła zmienia osoba prowadząca stronę.
+                hasła wylogowuje to konto z pozostałych urządzeń.
               </p>
               <Row label="Zalogowany jako" value={user ? `${user.login} (${user.label})` : "…"} />
               <button
@@ -559,8 +564,12 @@ export default function UstawieniaPage() {
               >
                 <LogOut size={16} /> Wyloguj z tego urządzenia
               </button>
+              <PasswordForm />
             </div>
           )}
+
+          {activeTab === "dziennik" && <AuditLogPanel />}
+          {activeTab === "kopia" && <BackupPanel />}
         </div>
       </div>
     </div>

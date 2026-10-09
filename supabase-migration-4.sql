@@ -147,3 +147,55 @@ CREATE TRIGGER set_offer_number BEFORE INSERT ON public.offers FOR EACH ROW EXEC
 DROP TRIGGER IF EXISTS update_offers_updated_at ON public.offers;
 CREATE TRIGGER update_offers_updated_at BEFORE UPDATE ON public.offers FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 ALTER TABLE public.offers ENABLE ROW LEVEL SECURITY;
+
+-- Statystyki odwiedzin (anonimowe: bez IP, odwiedzający = dzienny hash).
+CREATE TABLE IF NOT EXISTS public.page_views (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  path TEXT NOT NULL,
+  referrer TEXT,
+  device TEXT,
+  visitor TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+ALTER TABLE public.page_views ENABLE ROW LEVEL SECURITY;
+CREATE INDEX IF NOT EXISTS page_views_created_idx ON public.page_views (created_at DESC);
+
+CREATE OR REPLACE FUNCTION public.page_view_stats(p_days INTEGER)
+RETURNS JSON LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public AS $$
+  WITH v AS (SELECT * FROM page_views WHERE created_at >= NOW() - make_interval(days => p_days))
+  SELECT json_build_object(
+    'total', (SELECT count(*) FROM v),
+    'visitors', (SELECT count(DISTINCT visitor) FROM v),
+    'daily', COALESCE((SELECT json_agg(d ORDER BY d.day) FROM (
+        SELECT to_char(date_trunc('day', created_at AT TIME ZONE 'Europe/Warsaw'), 'YYYY-MM-DD') AS day,
+               count(*) AS views, count(DISTINCT visitor) AS visitors
+        FROM v GROUP BY 1) d), '[]'::json),
+    'pages', COALESCE((SELECT json_agg(p) FROM (
+        SELECT path, count(*) AS views FROM v GROUP BY path ORDER BY views DESC LIMIT 15) p), '[]'::json),
+    'sources', COALESCE((SELECT json_agg(s) FROM (
+        SELECT COALESCE(NULLIF(referrer, ''), 'bezpośrednio') AS source, count(*) AS views
+        FROM v GROUP BY 1 ORDER BY views DESC LIMIT 10) s), '[]'::json),
+    'devices', COALESCE((SELECT json_agg(x) FROM (
+        SELECT COALESCE(device, 'inne') AS device, count(*) AS views FROM v GROUP BY 1 ORDER BY views DESC) x), '[]'::json)
+  );
+$$;
+REVOKE ALL ON FUNCTION public.page_view_stats(INTEGER) FROM PUBLIC, anon, authenticated;
+
+-- Dziennik zmian w panelu.
+CREATE TABLE IF NOT EXISTS public.audit_log (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  login TEXT,
+  method TEXT NOT NULL,
+  path TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+ALTER TABLE public.audit_log ENABLE ROW LEVEL SECURITY;
+CREATE INDEX IF NOT EXISTS audit_log_created_idx ON public.audit_log (created_at DESC);
+
+-- Hasła zmienione w panelu (skrót scrypt); bez wpisu obowiązuje ADMIN_USERS.
+CREATE TABLE IF NOT EXISTS public.admin_users (
+  login TEXT PRIMARY KEY,
+  password_hash TEXT NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+ALTER TABLE public.admin_users ENABLE ROW LEVEL SECURITY;

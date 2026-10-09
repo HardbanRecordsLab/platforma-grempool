@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
   if (!result.ok) return NextResponse.json({ error: result.error }, { status: 500 });
 
   const supabase = createAdminClient();
-  const sentBy = sessionUser(request.cookies.get(ADMIN_COOKIE)?.value);
+  const sentBy = await sessionUser(request.cookies.get(ADMIN_COOKIE)?.value);
   await supabase.from("client_emails").insert({ kind, ref_id: refId, recipient: to, subject, body: text, sent_by: sentBy });
   if (refId && kind === "lead") {
     await supabase.from("leads").update({ data_ostatniego_kontaktu: new Date().toISOString() }).eq("id", refId);

@@ -23,7 +23,8 @@ import {
   Mail,
   Gavel,
   Receipt,
-  FileSignature
+  FileSignature,
+  BarChart3
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -42,6 +43,7 @@ const menuItems = [
   { icon: Wrench, label: "Maszyny", href: "/admin/maszyny" },
   { icon: Mail, label: "Wiadomości", href: "/admin/wiadomosci" },
   { icon: Gavel, label: "Przetargi", href: "/admin/przetargi" },
+  { icon: BarChart3, label: "Statystyki", href: "/admin/statystyki" },
   { icon: Settings, label: "Ustawienia", href: "/admin/ustawienia" },
 ];
 

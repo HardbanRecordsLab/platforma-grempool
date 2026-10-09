@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       endpoint,
       p256dh,
       auth,
-      login: sessionUser(request.cookies.get(ADMIN_COOKIE)?.value),
+      login: await sessionUser(request.cookies.get(ADMIN_COOKIE)?.value),
       user_agent: request.headers.get("user-agent")?.slice(0, 300) ?? null,
     },
     { onConflict: "endpoint" }

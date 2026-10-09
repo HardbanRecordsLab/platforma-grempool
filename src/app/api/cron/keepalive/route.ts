@@ -12,6 +12,10 @@ export async function GET(request: NextRequest) {
 
   const supabase = createAdminClient();
   const { count, error } = await supabase.from("scrap_prices").select("id", { count: "exact", head: true });
+
+  // Statistics are kept for 13 months.
+  const cutoff = new Date(Date.now() - 395 * 86_400_000).toISOString();
+  await supabase.from("page_views").delete().lt("created_at", cutoff);
   if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
   return NextResponse.json({ ok: true, rows: count, at: new Date().toISOString() });
 }

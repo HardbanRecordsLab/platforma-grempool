@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ADMIN_COOKIE, SESSION_DAYS, checkCredentials, createSessionToken, isConfigured } from "@/lib/admin-auth";
+import { checkCredentials, createSessionToken, isConfigured, sessionCookie } from "@/lib/admin-auth";
 
 export async function POST(request: NextRequest) {
   if (!isConfigured()) {
@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => ({}));
   const login = typeof body.login === "string" ? body.login.trim() : "";
   const password = typeof body.password === "string" ? body.password : "";
-  const token = checkCredentials(login, password) ? createSessionToken(login) : null;
+  const token = (await checkCredentials(login, password)) ? await createSessionToken(login) : null;
 
   if (!token) {
     // Slows down password guessing.
@@ -18,12 +18,6 @@ export async function POST(request: NextRequest) {
   }
 
   const response = NextResponse.json({ ok: true });
-  response.cookies.set(ADMIN_COOKIE, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: SESSION_DAYS * 24 * 60 * 60,
-  });
+  response.cookies.set(sessionCookie(token));
   return response;
 }

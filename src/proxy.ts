@@ -1,4 +1,4 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse, type NextFetchEvent, type NextRequest } from "next/server";
 import { ADMIN_COOKIE, sessionUser } from "@/lib/admin-auth";
 
 interface PublicEndpoint {
@@ -18,6 +18,7 @@ const PUBLIC_API: PublicEndpoint[] = [
   { method: "POST", path: "/api/leads" },
   { method: "POST", path: "/api/contact-messages" },
   { method: "POST", path: "/api/materials/view" },
+  { method: "POST", path: "/api/stats/view" },
   { method: "POST", path: "/api/auth/login" },
   { method: "POST", path: "/api/auth/logout" },
   // Daily database ping from Vercel Cron; the route checks CRON_SECRET itself.
@@ -34,23 +35,46 @@ const isPublicApi = (request: NextRequest) => {
   );
 };
 
-export function proxy(request: NextRequest) {
+// Changes made in the panel go to the audit log (Dziennik zmian). Requests
+// that change nothing worth tracking are skipped.
+const NOT_AUDITED = ["/api/auth/", "/api/push/", "/api/stats/", "/api/materials/view", "/api/cron/"];
+
+function audit(request: NextRequest, login: string, event: NextFetchEvent) {
+  const { pathname } = request.nextUrl;
+  if (request.method === "GET" || NOT_AUDITED.some((p) => pathname.startsWith(p))) return;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return;
+  event.waitUntil(
+    fetch(`${url}/rest/v1/audit_log`, {
+      method: "POST",
+      headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json", Prefer: "return=minimal" },
+      body: JSON.stringify({ login, method: request.method, path: pathname.slice(0, 200) }),
+    }).catch(() => {})
+  );
+}
+
+export async function proxy(request: NextRequest, event: NextFetchEvent) {
   const { pathname, search } = request.nextUrl;
-  const loggedIn = sessionUser(request.cookies.get(ADMIN_COOKIE)?.value) !== null;
+  const login = await sessionUser(request.cookies.get(ADMIN_COOKIE)?.value);
 
   if (pathname.startsWith("/api/")) {
-    if (loggedIn || isPublicApi(request)) return NextResponse.next();
+    if (login) {
+      audit(request, login, event);
+      return NextResponse.next();
+    }
+    if (isPublicApi(request)) return NextResponse.next();
     return NextResponse.json({ error: "Wymagane logowanie do panelu" }, { status: 401 });
   }
 
   if (pathname === "/admin/login") {
-    return loggedIn ? NextResponse.redirect(new URL("/admin/dashboard", request.url)) : NextResponse.next();
+    return login ? NextResponse.redirect(new URL("/admin/dashboard", request.url)) : NextResponse.next();
   }
 
-  if (!loggedIn) {
-    const login = new URL("/admin/login", request.url);
-    login.searchParams.set("next", pathname + search);
-    return NextResponse.redirect(login);
+  if (!login) {
+    const loginUrl = new URL("/admin/login", request.url);
+    loginUrl.searchParams.set("next", pathname + search);
+    return NextResponse.redirect(loginUrl);
   }
 
   return NextResponse.next();
