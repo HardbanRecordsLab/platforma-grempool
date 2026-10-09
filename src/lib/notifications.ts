@@ -87,6 +87,13 @@ export async function sendNewLeadNotification(lead: Lead): Promise<void> {
       <p><strong>Lokalizacja:</strong> ${escapeHtml(lead.lokalizacja)}</p>
       ${lead.opis ? `<p><strong>Opis:</strong> ${escapeHtml(lead.opis)}</p>` : ""}
       ${lead.notatki ? `<p><strong>Szczegóły:</strong> ${escapeHtml(lead.notatki)}</p>` : ""}
+      ${
+        lead.zdjecia && lead.zdjecia.length > 0
+          ? `<p><strong>Zdjęcia (${lead.zdjecia.length}):</strong><br>${lead.zdjecia
+              .map((src) => `<a href="${escapeHtml(src)}"><img src="${escapeHtml(src)}" alt="" width="120" style="margin:4px;border-radius:6px;"></a>`)
+              .join("")}</p>`
+          : ""
+      }
       ${appUrl ? `<p><a href="${appUrl}/admin/crm" style="display:inline-block;margin-top:12px;padding:10px 20px;background:#f5b52c;color:#000000;text-decoration:none;border-radius:6px;font-weight:bold;">Otwórz w CRM</a></p>` : ""}
     </div>
   `;

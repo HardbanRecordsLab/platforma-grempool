@@ -4,7 +4,10 @@ import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
-import { Send, Upload, CheckCircle2 } from "lucide-react";
+import { Send, Upload, CheckCircle2, Loader2, X } from "lucide-react";
+import { uploadPublicPhoto } from "@/lib/image-utils";
+
+const MAX_PHOTOS = 8;
 
 type ServiceType = "skup_zlomu" | "transport" | "koparki" | "rozbiorki" | "materialy";
 
@@ -56,6 +59,25 @@ function WycenaForm() {
   const [error, setError] = useState<string | null>(null);
   const [leadNumer, setLeadNumer] = useState<string | null>(null);
   const [materialCode, setMaterialCode] = useState<string | null>(null);
+  const [photos, setPhotos] = useState<string[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [dragging, setDragging] = useState(false);
+
+  const addPhotos = async (files: FileList | File[] | null) => {
+    const images = Array.from(files ?? []).filter((f) => f.type.startsWith("image/"));
+    const room = MAX_PHOTOS - photos.length;
+    if (images.length === 0 || room <= 0) return;
+    setUploading(true);
+    setError(null);
+    try {
+      const urls = await Promise.all(images.slice(0, room).map(uploadPublicPhoto));
+      setPhotos((prev) => [...prev, ...urls].slice(0, MAX_PHOTOS));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Nie udało się wgrać zdjęcia");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   useEffect(() => {
     const materialId = searchParams.get("material");
@@ -111,6 +133,7 @@ function WycenaForm() {
           notatki: detailsSummary || null,
           preferowany_termin: formData.termin || null,
           material: materialCode,
+          zdjecia: photos,
         }),
       });
       const data = await res.json();
@@ -289,13 +312,63 @@ function WycenaForm() {
                 </div>
 
                 <div className="mb-8">
-                  <label className="block text-sm text-[#e8dfcc] mb-2">ZDJĘCIA (opcjonalnie)</label>
-                  <div className="border-2 border-dashed border-[#5c4716] rounded-lg p-8 text-center hover:border-[#f5b52c]/50 transition-colors cursor-pointer">
-                    <Upload className="text-[#e8dfcc] size-8 mx-auto mb-2" />
-                    <p className="text-[#e8dfcc] text-sm">
-                      Przeciągnij zdjęcia lub kliknij, aby dodać
-                    </p>
-                  </div>
+                  <label className="block text-sm text-[#e8dfcc] mb-2">
+                    ZDJĘCIA (opcjonalnie, do {MAX_PHOTOS}) — wycenimy szybciej i bez dojazdu
+                  </label>
+                  {photos.length > 0 && (
+                    <div className="flex flex-wrap gap-3 mb-3">
+                      {photos.map((src) => (
+                        <div key={src} className="relative w-24 h-24 rounded-lg overflow-hidden border border-[#5c4716]">
+                          <img src={src} alt="Dołączone zdjęcie" className="w-full h-full object-cover" />
+                          <button
+                            type="button"
+                            onClick={() => setPhotos((prev) => prev.filter((p) => p !== src))}
+                            className="absolute top-1 right-1 bg-black/75 rounded-full p-1"
+                            aria-label="Usuń zdjęcie"
+                          >
+                            <X size={12} className="text-white" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {photos.length < MAX_PHOTOS && (
+                    <label
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        setDragging(true);
+                      }}
+                      onDragLeave={() => setDragging(false)}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        setDragging(false);
+                        addPhotos(e.dataTransfer.files);
+                      }}
+                      className={`block border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
+                        dragging ? "border-[#f5b52c] bg-[#f5b52c]/5" : "border-[#5c4716] hover:border-[#f5b52c]/50"
+                      }`}
+                    >
+                      {uploading ? (
+                        <Loader2 className="text-[#f5b52c] size-8 mx-auto mb-2 animate-spin" />
+                      ) : (
+                        <Upload className="text-[#e8dfcc] size-8 mx-auto mb-2" />
+                      )}
+                      <p className="text-[#e8dfcc] text-sm">
+                        {uploading ? "Wgrywanie zdjęć..." : "Przeciągnij zdjęcia lub kliknij, aby dodać (także z aparatu w telefonie)"}
+                      </p>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        className="hidden"
+                        disabled={uploading}
+                        onChange={(e) => {
+                          addPhotos(e.target.files);
+                          e.target.value = "";
+                        }}
+                      />
+                    </label>
+                  )}
                 </div>
 
                 {error && (
@@ -306,7 +379,7 @@ function WycenaForm() {
 
                 <button
                   type="submit"
-                  disabled={submitting}
+                  disabled={submitting || uploading}
                   className="w-full btn-primary py-4 rounded-lg font-semibold text-[#000000] text-lg flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   <Send size={20} />

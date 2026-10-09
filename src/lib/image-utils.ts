@@ -56,6 +56,19 @@ function fileToCompressedBlob(file: File, maxWidth = 1600, quality = 0.8): Promi
 
 export type UploadFolder = "materials" | "services" | "site";
 
+// Customer photos from the public quote form (separate, rate-limited endpoint).
+export async function uploadPublicPhoto(file: File): Promise<string> {
+  const blob = await fileToCompressedBlob(file);
+  const res = await fetch("/api/upload/public", {
+    method: "POST",
+    headers: { "Content-Type": "image/jpeg" },
+    body: blob,
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(body.error ?? "Nie udało się wgrać zdjęcia");
+  return body.url as string;
+}
+
 export async function uploadImageFile(file: File, folder: UploadFolder): Promise<string> {
   const blob = await fileToCompressedBlob(file);
   const res = await fetch(`/api/upload?folder=${folder}`, {

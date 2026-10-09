@@ -41,6 +41,14 @@ export async function POST(request: NextRequest) {
     if (body[field] !== undefined) lead[field] = body[field];
   }
 
+  // Photos: only files uploaded to our own storage, at most 8.
+  const photoBase = (process.env.R2_PUBLIC_URL ?? "").replace(/\/$/, "");
+  if (Array.isArray(body.zdjecia) && photoBase) {
+    lead.zdjecia = body.zdjecia
+      .filter((url: unknown): url is string => typeof url === "string" && url.startsWith(`${photoBase}/leads/`))
+      .slice(0, 8);
+  }
+
   const { data, error } = await supabase.from("leads").insert(lead).select().single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 

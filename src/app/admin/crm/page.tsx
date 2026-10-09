@@ -273,6 +273,19 @@ export default function CRMPage() {
                 <div className="text-sm whitespace-pre-wrap">{selected.opis || "—"}</div>
               </div>
 
+              {selected.zdjecia && selected.zdjecia.length > 0 && (
+                <div>
+                  <div className="text-xs text-[#e8dfcc] mb-2">Zdjęcia od klienta ({selected.zdjecia.length})</div>
+                  <div className="flex flex-wrap gap-2">
+                    {selected.zdjecia.map((src) => (
+                      <a key={src} href={src} target="_blank" rel="noopener noreferrer" className="block w-20 h-20 rounded-lg overflow-hidden border border-[#5c4716] hover:border-[#f5b52c]">
+                        <img src={src} alt="Zdjęcie od klienta" className="w-full h-full object-cover" />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {selected.notatki && (
                 <div>
                   <div className="text-xs text-[#e8dfcc] mb-1">Szczegóły z formularza</div>
