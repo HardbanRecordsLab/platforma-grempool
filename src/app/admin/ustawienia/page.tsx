@@ -17,9 +17,17 @@ import {
   Upload,
   History,
   DatabaseBackup,
+  LayoutList,
 } from "lucide-react";
 import { BUSINESS } from "@/lib/site";
-import { DEFAULT_SITE_SETTINGS, type SiteSettings, type TimeSlot } from "@/lib/site-settings";
+import {
+  DEFAULT_SITE_SETTINGS,
+  SERVICE_PAGES,
+  type ServicePageSlug,
+  type ServicePageTexts,
+  type SiteSettings,
+  type TimeSlot,
+} from "@/lib/site-settings";
 import { uploadImageFile } from "@/lib/image-utils";
 import PushSettings from "@/components/admin/PushSettings";
 import { AuditLogPanel, BackupPanel, PasswordForm } from "@/components/admin/SecurityPanels";
@@ -108,6 +116,7 @@ export default function UstawieniaPage() {
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [saveError, setSaveError] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [servicePage, setServicePage] = useState<ServicePageSlug>("skup-zlomu");
 
   useEffect(() => {
     fetch("/api/settings")
@@ -152,6 +161,10 @@ export default function UstawieniaPage() {
     }
   };
 
+  const setServiceTexts = (patch: Partial<ServicePageTexts>) =>
+    settings &&
+    update({ services: { ...settings.services, [servicePage]: { ...settings.services[servicePage], ...patch } } });
+
   const setHours = (key: HoursKey, slot: TimeSlot | null) =>
     settings && update({ hours: { ...settings.hours, [key]: slot } });
 
@@ -194,6 +207,7 @@ export default function UstawieniaPage() {
     { id: "firma", label: "Dane firmy", icon: Building },
     { id: "komunikat", label: "Komunikat na stronie", icon: Megaphone },
     { id: "strona", label: "Strona główna", icon: Home },
+    { id: "uslugi", label: "Podstrony usług", icon: LayoutList },
     { id: "ogloszenia", label: "Ogłoszenia", icon: Package },
     { id: "powiadomienia", label: "Powiadomienia i system", icon: Bell },
     { id: "bezpieczenstwo", label: "Konto i dostęp", icon: Shield },
@@ -201,7 +215,7 @@ export default function UstawieniaPage() {
     { id: "kopia", label: "Kopia zapasowa", icon: DatabaseBackup },
   ];
 
-  const editableTab = ["firma", "komunikat", "strona", "ogloszenia"].includes(activeTab);
+  const editableTab = ["firma", "komunikat", "strona", "uslugi", "ogloszenia"].includes(activeTab);
 
   const saveBar = (
     <div className="sticky bottom-0 -mx-6 -mb-6 mt-8 px-6 py-4 bg-[#0a0a0a]/95 backdrop-blur border-t border-[#5c4716] rounded-b-xl flex flex-wrap items-center gap-3">
@@ -479,6 +493,66 @@ export default function UstawieniaPage() {
                 />
               </Field>
 
+              {saveBar}
+            </div>
+          )}
+
+          {activeTab === "uslugi" && settings && (
+            <div className="bg-[#0a0a0a] p-6 rounded-xl border border-[#5c4716]">
+              <h2 className="text-xl font-montserrat font-bold mb-2">Podstrony usług</h2>
+              <p className="text-sm text-[#e8dfcc] mb-5">
+                Opis pod tytułem, lista punktów i hasło w złotym pasku na dole każdej podstrony.
+              </p>
+              <div className="flex flex-wrap gap-2 mb-6">
+                {SERVICE_PAGES.map((page) => (
+                  <button
+                    key={page.slug}
+                    onClick={() => setServicePage(page.slug)}
+                    className={`px-4 py-2 rounded-full text-sm border ${
+                      servicePage === page.slug
+                        ? "bg-[#f5b52c] border-[#f5b52c] text-black font-semibold"
+                        : "border-[#5c4716] text-[#e8dfcc] hover:border-[#f5b52c]"
+                    }`}
+                  >
+                    {page.label}
+                  </button>
+                ))}
+              </div>
+              <div className="space-y-4">
+                <Field label="Opis pod tytułem">
+                  <textarea
+                    rows={4}
+                    value={settings.services[servicePage].intro}
+                    onChange={(e) => setServiceTexts({ intro: e.target.value })}
+                    className={inputClass}
+                  />
+                </Field>
+                {SERVICE_PAGES.find((p) => p.slug === servicePage)?.hasItems && (
+                  <Field label="Lista punktów (każdy w osobnej linii)" hint="Do 12 pozycji.">
+                    <textarea
+                      rows={8}
+                      value={settings.services[servicePage].items.join("\n")}
+                      onChange={(e) => setServiceTexts({ items: e.target.value.split("\n") })}
+                      className={inputClass}
+                    />
+                  </Field>
+                )}
+                <Field label="Hasło w złotym pasku na dole">
+                  <input
+                    value={settings.services[servicePage].ctaTitle}
+                    onChange={(e) => setServiceTexts({ ctaTitle: e.target.value })}
+                    className={inputClass}
+                  />
+                </Field>
+                <a
+                  href={`/uslugi/${servicePage}`}
+                  target="_blank"
+                  rel="noopener"
+                  className="inline-block text-sm text-[#f5b52c] hover:underline underline-offset-2"
+                >
+                  Zobacz podstronę →
+                </a>
+              </div>
               {saveBar}
             </div>
           )}

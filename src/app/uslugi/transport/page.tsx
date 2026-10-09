@@ -22,6 +22,7 @@ const gallery = [
 
 export default async function TransportPage() {
   const site = await getSiteSettings();
+  const texts = site.services["transport"];
   const vehicles = [
     { name: "Bus krótki", capacity: "do 1.5 tony", use: "Przesyłki, małe ładunki" },
     { name: "Bus długi", capacity: "do 3 ton", use: "Większe ładunki, meble" },
@@ -53,8 +54,7 @@ export default async function TransportPage() {
               <span className="text-[#f5b52c]">TRANSPORT</span>
             </h1>
             <p className="text-[#e8dfcc] text-lg mb-8">
-              Transportujemy ładunki różnego rodzaju - od małych po duże gabaryty.
-              Dysponujemy własną flotą pojazdów przystosowanych do różnych typów ładunków.
+              {texts.intro}
             </p>
             <div className="flex gap-4">
               <a href={telHref(site.phone)} className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#000000] flex items-center gap-2">
@@ -144,7 +144,7 @@ export default async function TransportPage() {
       <section className="py-16 bg-gradient-to-r from-[#f5b52c] to-[#c98f12]">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-montserrat font-bold text-[#000000] mb-4">
-            POTRZEBUJESZ TRANSPORTU?
+            {texts.ctaTitle}
           </h2>
           <div className="flex flex-wrap justify-center gap-4">
             <a href={telHref(site.phone)} className="bg-[#000000] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#0a0a0a] transition-colors flex items-center gap-2">

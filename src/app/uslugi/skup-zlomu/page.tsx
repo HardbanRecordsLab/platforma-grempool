@@ -24,6 +24,7 @@ const gallery = [
 
 export default async function SkupZlomuPage() {
   const site = await getSiteSettings();
+  const texts = site.services["skup-zlomu"];
   const materials = [
     { name: "Stal węglowa", image: "https://images.unsplash.com/photo-1763771420303-0f11ccf613d1?auto=format&fit=crop&w=400&q=80" },
     { name: "Stal nierdzewna", image: "https://images.unsplash.com/photo-1538474705339-e87de81450e8?auto=format&fit=crop&w=400&q=80" },
@@ -35,14 +36,7 @@ export default async function SkupZlomuPage() {
     { name: "Brąz", image: "https://images.unsplash.com/photo-1702196665517-9d3670421443?auto=format&fit=crop&w=400&q=80" },
   ];
 
-  const benefits = [
-    "Atrakcyjne ceny skupu",
-    "Szybka wycena na podstawie zdjęć",
-    "Własny transport - odbiór od klienta",
-    "Negocjacje cen przy dużych ilościach",
-    "Profesjonalna obsługa",
-    "Elastyczne terminy odbioru",
-  ];
+  const benefits = texts.items;
 
   return (
     <main className="min-h-screen">
@@ -68,8 +62,7 @@ export default async function SkupZlomuPage() {
                 SKUP <span className="text-[#f5b52c]">ZŁOMU</span>
               </h1>
               <p className="text-[#e8dfcc] text-lg mb-8">
-                Skupujemy wszystkie rodzaje złomu stalowego i metali kolorowych.
-                Oferujemy atrakcyjne ceny, szybki odbiór i profesjonalną obsługę.
+                {texts.intro}
               </p>
               <div className="flex gap-4">
                 <a href={telHref(site.phone)} className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#000000] flex items-center gap-2">
@@ -183,7 +176,7 @@ export default async function SkupZlomuPage() {
       <section className="py-16 bg-gradient-to-r from-[#f5b52c] to-[#c98f12]">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-montserrat font-bold text-[#000000] mb-4">
-            MASZ ZŁOM? WYCENIMY GO!
+            {texts.ctaTitle}
           </h2>
           <div className="flex flex-wrap justify-center gap-4">
             <a href={telHref(site.phone)} className="bg-[#000000] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#0a0a0a] transition-colors flex items-center gap-2">

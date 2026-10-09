@@ -22,16 +22,8 @@ const gallery = [
 
 export default async function RozbiorkiPage() {
   const site = await getSiteSettings();
-  const services = [
-    "Wyburzanie budynków",
-    "Rozbiórki częściowe",
-    "Demontaż konstrukcji stalowych",
-    "Rozbiórki fundamentów",
-    "Demontaż dachów i więźby",
-    "Usuwanie ścian i stropów",
-    "Rozbiórki altan i garaży",
-    "Przygotowanie terenu pod nową budowę",
-  ];
+  const texts = site.services["rozbiorki"];
+  const services = texts.items;
 
   const advantages = [
     { icon: Hammer, title: "Profesjonalny sprzęt", desc: "Nowoczesne koparki z osprzętem do rozbiórek" },
@@ -62,8 +54,7 @@ export default async function RozbiorkiPage() {
               <span className="text-[#f5b52c]">ROZBIÓRKI</span>
             </h1>
             <p className="text-[#e8dfcc] text-lg mb-8">
-              Kompleksowe rozbiórki budynków i obiektów z segregacją materiałów.
-              Zapewniamy bezpieczeństwo, terminowość i dbałość o środowisko.
+              {texts.intro}
             </p>
             <div className="flex gap-4">
               <a href={telHref(site.phone)} className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#000000] flex items-center gap-2">
@@ -170,7 +161,7 @@ export default async function RozbiorkiPage() {
       <section className="py-16 bg-gradient-to-r from-[#f5b52c] to-[#c98f12]">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-montserrat font-bold text-[#000000] mb-4">
-            POTRZEBUJESZ ROZBIÓRKI?
+            {texts.ctaTitle}
           </h2>
           <div className="flex flex-wrap justify-center gap-4">
             <a href={telHref(site.phone)} className="bg-[#000000] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#0a0a0a] transition-colors flex items-center gap-2">

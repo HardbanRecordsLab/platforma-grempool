@@ -22,22 +22,14 @@ const gallery = [
 
 export default async function KoparkiPage() {
   const site = await getSiteSettings();
+  const texts = site.services["koparki"];
   const machines = [
     { name: "Koparka #01", model: "Caterpillar 320D", weight: "22 tony", depth: "6.7m", equipment: ["Łyżka 0.8m³", "Łyżka 1.2m³", "Świder", "Chwytak"] },
     { name: "Koparka #02", model: "Komatsu PC210", weight: "21 tony", depth: "6.5m", equipment: ["Łyżka 0.7m³", "Łyżka 1.0m³"] },
     { name: "Koparko-ładowarka", model: "JCB 3CX", weight: "8.5 tony", depth: "4.5m", equipment: ["Łyżka kop. 0.3m³", "Łyżka ładow. 1.0m³", "Świder"] },
   ];
 
-  const services = [
-    "Wykopy fundamentowe",
-    "Niwelacje terenu",
-    "Korytowanie",
-    "Przygotowanie terenu pod budowę",
-    "Rozbiórki",
-    "Wykop pod przyłącza",
-    "Prace melioracyjne",
-    "Zaplecze budowy",
-  ];
+  const services = texts.items;
 
   const process = [
     { step: 1, title: "Kontakt", desc: "Opisz zakres prac i lokalizację" },
@@ -69,8 +61,7 @@ export default async function KoparkiPage() {
               USŁUGI <span className="text-[#f5b52c]">KOPARKĄ</span>
             </h1>
             <p className="text-[#e8dfcc] text-lg mb-8">
-              Profesjonalne usługi koparką i koparko-ładowarką. Wykopy, niwelacje, rozbiórki
-              i prace ziemne na najwyższym poziomie. Działamy na terenie Dolnego Śląska.
+              {texts.intro}
             </p>
             <div className="flex gap-4">
               <a href={telHref(site.phone)} className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#000000] flex items-center gap-2">
@@ -179,7 +170,7 @@ export default async function KoparkiPage() {
       <section className="py-16 bg-gradient-to-r from-[#f5b52c] to-[#c98f12]">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-montserrat font-bold text-[#000000] mb-4">
-            POTRZEBUJESZ KOPARKI?
+            {texts.ctaTitle}
           </h2>
           <div className="flex flex-wrap justify-center gap-4">
             <a href={telHref(site.phone)} className="bg-[#000000] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#0a0a0a] transition-colors flex items-center gap-2">

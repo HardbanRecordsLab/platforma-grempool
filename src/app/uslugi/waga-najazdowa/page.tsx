@@ -22,6 +22,7 @@ const gallery = [
 
 export default async function WagaNajazdowaPage() {
   const site = await getSiteSettings();
+  const texts = site.services["waga-najazdowa"];
   const weighed = [
     { title: "Złom stalowy i metale", desc: "Ważenie przy skupie - cenę liczymy od rzeczywistej masy dostawy" },
     { title: "Kruszywa i materiały sypkie", desc: "Piasek, żwir, kamień, ziemia - kontrola masy przy załadunku i rozładunku" },
@@ -59,9 +60,7 @@ export default async function WagaNajazdowaPage() {
               WAGA NAJAZDOWA <span className="text-[#f5b52c] whitespace-nowrap">50 TON</span>
             </h1>
             <p className="text-[#e8dfcc] text-lg mb-8">
-              Na naszym placu przy ul. Kolejowej 5a w Raszówce stoi waga najazdowa o nośności 50 ton.
-              Każdą dostawę ważymy na miejscu, przy kliencie - dzięki temu rozliczenie opiera się na
-              rzeczywistej masie ładunku, a nie na szacunkach.
+              {texts.intro}
             </p>
             <div className="flex flex-wrap gap-4">
               <a href={telHref(site.phone)} className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#000000] flex items-center gap-2">
@@ -159,7 +158,7 @@ export default async function WagaNajazdowaPage() {
       <section className="py-16 bg-gradient-to-r from-[#f5b52c] to-[#c98f12]">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-montserrat font-bold text-[#000000] mb-4">
-            PRZYJEDŹ Z ŁADUNKIEM - ZWAŻYMY I ROZLICZYMY
+            {texts.ctaTitle}
           </h2>
           <p className="text-[#000000]/80 mb-8">
             {site.streetAddress}, {site.postalCode} {site.addressLocality}

@@ -9,6 +9,22 @@ export interface TimeSlot {
   closes: string;
 }
 
+export const SERVICE_PAGES = [
+  { slug: "skup-zlomu", label: "Skup złomu", hasItems: true },
+  { slug: "transport", label: "Transport", hasItems: false },
+  { slug: "koparki", label: "Usługi koparką", hasItems: true },
+  { slug: "rozbiorki", label: "Rozbiórki", hasItems: true },
+  { slug: "waga-najazdowa", label: "Waga najazdowa", hasItems: false },
+] as const;
+
+export type ServicePageSlug = (typeof SERVICE_PAGES)[number]["slug"];
+
+export interface ServicePageTexts {
+  intro: string;
+  items: string[];
+  ctaTitle: string;
+}
+
 export interface SiteSettings {
   phone: string;
   email: string;
@@ -37,6 +53,7 @@ export interface SiteSettings {
   about: {
     paragraphs: string[];
   };
+  services: Record<ServicePageSlug, ServicePageTexts>;
 }
 
 export const SITE_SETTINGS_TAG = "site-settings";
@@ -67,6 +84,33 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
       "GREMPOOL Maria Muczyńska działa w Raszówce na Dolnym Śląsku od 2013 roku. Zaczynaliśmy od skupu złomu, a z czasem rozszerzyliśmy działalność o transport, prace koparką, rozbiórki, sprzedaż materiałów budowlanych z odzysku oraz usługi brukarsko-tynkarskie. Nasza firma jest zweryfikowana w rejestrze GUS i figuruje w ewidencji działalności gospodarczej pod numerem NIP 692-11-91-050.",
       "Obsługujemy głównie okolice Lubina, Legnicy, Głogowa i Polkowic, ale dojeżdżamy też dalej na terenie Dolnego Śląska. Mamy własny tabor pojazdów i sprzęt do prac ziemnych, więc odbiór, transport i realizację zlecenia załatwiamy sami, bez pośredników. Materiały z rozbiórek segregujemy i sprzedajemy dalej, a każde zlecenie wyceniamy indywidualnie - bez ukrytych kosztów i niespodzianek w trakcie pracy.",
     ],
+  },
+  services: {
+    "skup-zlomu": {
+      intro: "Skupujemy wszystkie rodzaje złomu stalowego i metali kolorowych. Oferujemy atrakcyjne ceny, szybki odbiór i profesjonalną obsługę.",
+      items: ["Atrakcyjne ceny skupu", "Szybka wycena na podstawie zdjęć", "Własny transport - odbiór od klienta", "Negocjacje cen przy dużych ilościach", "Profesjonalna obsługa", "Elastyczne terminy odbioru"],
+      ctaTitle: "MASZ ZŁOM? WYCENIMY GO!",
+    },
+    "transport": {
+      intro: "Transportujemy ładunki różnego rodzaju - od małych po duże gabaryty. Dysponujemy własną flotą pojazdów przystosowanych do różnych typów ładunków.",
+      items: [],
+      ctaTitle: "POTRZEBUJESZ TRANSPORTU?",
+    },
+    "koparki": {
+      intro: "Profesjonalne usługi koparką i koparko-ładowarką. Wykopy, niwelacje, rozbiórki i prace ziemne na najwyższym poziomie. Działamy na terenie Dolnego Śląska.",
+      items: ["Wykopy fundamentowe", "Niwelacje terenu", "Korytowanie", "Przygotowanie terenu pod budowę", "Rozbiórki", "Wykop pod przyłącza", "Prace melioracyjne", "Zaplecze budowy"],
+      ctaTitle: "POTRZEBUJESZ KOPARKI?",
+    },
+    "rozbiorki": {
+      intro: "Kompleksowe rozbiórki budynków i obiektów z segregacją materiałów. Zapewniamy bezpieczeństwo, terminowość i dbałość o środowisko.",
+      items: ["Wyburzanie budynków", "Rozbiórki częściowe", "Demontaż konstrukcji stalowych", "Rozbiórki fundamentów", "Demontaż dachów i więźby", "Usuwanie ścian i stropów", "Rozbiórki altan i garaży", "Przygotowanie terenu pod nową budowę"],
+      ctaTitle: "POTRZEBUJESZ ROZBIÓRKI?",
+    },
+    "waga-najazdowa": {
+      intro: "Na naszym placu przy ul. Kolejowej 5a w Raszówce stoi waga najazdowa o nośności 50 ton. Każdą dostawę ważymy na miejscu, przy kliencie - dzięki temu rozliczenie opiera się na rzeczywistej masie ładunku, a nie na szacunkach.",
+      items: [],
+      ctaTitle: "PRZYJEDŹ Z ŁADUNKIEM - ZWAŻYMY I ROZLICZYMY",
+    },
   },
 };
 
@@ -106,6 +150,7 @@ export function normalizeSiteSettings(input: unknown): SiteSettings {
   const announcement = obj(raw.announcement);
   const hero = obj(raw.hero);
   const about = obj(raw.about);
+  const services = obj(raw.services);
   return {
     phone: str(raw.phone, d.phone, 40) || d.phone,
     email: str(raw.email, d.email, 120) || d.email,
@@ -134,6 +179,20 @@ export function normalizeSiteSettings(input: unknown): SiteSettings {
     about: {
       paragraphs: strList(about.paragraphs, d.about.paragraphs, 6),
     },
+    services: Object.fromEntries(
+      SERVICE_PAGES.map(({ slug }) => {
+        const raw = obj(services[slug]);
+        const def = d.services[slug];
+        return [
+          slug,
+          {
+            intro: str(raw.intro, def.intro, 1000) || def.intro,
+            items: strList(raw.items, def.items, 12),
+            ctaTitle: str(raw.ctaTitle, def.ctaTitle, 100) || def.ctaTitle,
+          },
+        ];
+      })
+    ) as Record<ServicePageSlug, ServicePageTexts>,
   };
 }
 
