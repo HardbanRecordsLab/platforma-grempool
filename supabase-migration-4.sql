@@ -97,3 +97,53 @@ CREATE TABLE IF NOT EXISTS public.push_subscriptions (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE public.push_subscriptions ENABLE ROW LEVEL SECURITY;
+
+-- Wiadomości e-mail wysłane klientom z panelu (historia odpowiedzi).
+CREATE TABLE IF NOT EXISTS public.client_emails (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  kind TEXT NOT NULL CHECK (kind IN ('lead', 'message', 'offer', 'receipt')),
+  ref_id UUID,
+  recipient TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  body TEXT NOT NULL,
+  sent_by TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE public.client_emails ENABLE ROW LEVEL SECURITY;
+CREATE INDEX IF NOT EXISTS client_emails_ref_idx ON public.client_emails (ref_id, created_at DESC);
+
+-- Oferty dla klientów z numeracją OF-RRRR-00001.
+CREATE SEQUENCE IF NOT EXISTS public.offer_seq;
+CREATE TABLE IF NOT EXISTS public.offers (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  numer TEXT UNIQUE,
+  lead_id UUID REFERENCES public.leads(id) ON DELETE SET NULL,
+  klient_nazwa TEXT NOT NULL,
+  klient_email TEXT,
+  klient_telefon TEXT,
+  klient_adres TEXT,
+  temat TEXT,
+  pozycje JSONB NOT NULL DEFAULT '[]'::jsonb,
+  vat TEXT NOT NULL DEFAULT '23' CHECK (vat IN ('zw', '8', '23')),
+  suma_netto NUMERIC(12,2) NOT NULL DEFAULT 0,
+  suma_brutto NUMERIC(12,2) NOT NULL DEFAULT 0,
+  waznosc_dni INTEGER NOT NULL DEFAULT 14,
+  uwagi TEXT,
+  wystawil TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE OR REPLACE FUNCTION public.generate_offer_number() RETURNS TRIGGER
+LANGUAGE plpgsql AS $$
+BEGIN
+  IF NEW.numer IS NULL THEN
+    NEW.numer := 'OF-' || to_char(NOW(), 'YYYY') || '-' || lpad(nextval('offer_seq')::text, 5, '0');
+  END IF;
+  RETURN NEW;
+END;
+$$;
+DROP TRIGGER IF EXISTS set_offer_number ON public.offers;
+CREATE TRIGGER set_offer_number BEFORE INSERT ON public.offers FOR EACH ROW EXECUTE FUNCTION generate_offer_number();
+DROP TRIGGER IF EXISTS update_offers_updated_at ON public.offers;
+CREATE TRIGGER update_offers_updated_at BEFORE UPDATE ON public.offers FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+ALTER TABLE public.offers ENABLE ROW LEVEL SECURITY;

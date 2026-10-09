@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Mail, MailOpen, Trash2, Loader2, Phone } from "lucide-react";
+import { Mail, MailOpen, Trash2, Loader2, Phone, Reply } from "lucide-react";
+import ReplyModal from "@/components/admin/ReplyModal";
 import type { ContactMessage } from "@/types";
 import {
   deleteContactMessage,
@@ -10,6 +11,7 @@ import {
 } from "@/lib/contact-messages-store";
 
 export default function WiadomosciPage() {
+  const [replyTo, setReplyTo] = useState<ContactMessage | null>(null);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -105,6 +107,16 @@ export default function WiadomosciPage() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
+                      setReplyTo(msg);
+                    }}
+                    className="px-3 py-1.5 rounded-lg border border-[#5c4716] text-xs font-semibold text-white hover:border-[#f5b52c] flex items-center gap-1.5"
+                    title="Odpowiedz e-mailem"
+                  >
+                    <Reply size={14} /> Odpowiedz
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
                       handleDelete(msg.id);
                     }}
                     className="p-2 rounded-lg hover:bg-[#5c4716] transition-colors"
@@ -119,6 +131,18 @@ export default function WiadomosciPage() {
             </div>
           ))}
         </div>
+      )}
+
+      {replyTo && (
+        <ReplyModal
+          kind="message"
+          refId={replyTo.id}
+          to={replyTo.email}
+          name={`${replyTo.imie} ${replyTo.nazwisko}`}
+          defaultSubject={`Re: ${replyTo.temat}`}
+          onClose={() => setReplyTo(null)}
+          onSent={refresh}
+        />
       )}
     </div>
   );

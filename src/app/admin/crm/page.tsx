@@ -11,7 +11,11 @@ import {
   Loader2,
   Trash2,
   ArrowRightCircle,
+  Reply,
+  FileText as OfferIcon,
 } from "lucide-react";
+import Link from "next/link";
+import ReplyModal from "@/components/admin/ReplyModal";
 import type { Lead, LeadStatus } from "@/types";
 import { SERVICE_LABELS } from "@/lib/supabase";
 import { deleteLead, getLeads, updateLead } from "@/lib/leads-store";
@@ -34,6 +38,7 @@ const stageLabel = (status: LeadStatus) => pipelineStages.find((s) => s.id === s
 const stageColor = (status: LeadStatus) => pipelineStages.find((s) => s.id === status)?.color ?? "bg-gray-500";
 
 export default function CRMPage() {
+  const [replyTo, setReplyTo] = useState<Lead | null>(null);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -296,7 +301,31 @@ export default function CRMPage() {
                 </select>
               </div>
 
-              <div className="flex items-center gap-3 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                {selected.klient_email ? (
+                  <button
+                    onClick={() => setReplyTo(selected)}
+                    className="px-4 py-3 rounded-lg border border-[#5c4716] text-sm font-semibold text-white hover:border-[#f5b52c] flex items-center justify-center gap-2"
+                  >
+                    <Reply size={16} /> Odpowiedz e-mailem
+                  </button>
+                ) : (
+                  <a
+                    href={`tel:${selected.klient_telefon}`}
+                    className="px-4 py-3 rounded-lg border border-[#5c4716] text-sm font-semibold text-white hover:border-[#f5b52c] flex items-center justify-center gap-2"
+                  >
+                    <Phone size={16} /> Zadzwoń (brak e-maila)
+                  </a>
+                )}
+                <Link
+                  href={`/admin/oferty/nowa?lead=${selected.id}`}
+                  className="px-4 py-3 rounded-lg border border-[#5c4716] text-sm font-semibold text-white hover:border-[#f5b52c] flex items-center justify-center gap-2"
+                >
+                  <OfferIcon size={16} /> Przygotuj ofertę
+                </Link>
+              </div>
+
+              <div className="flex items-center gap-3">
                 <button
                   onClick={() => handleConvertToOrder(selected)}
                   disabled={saving}
@@ -316,6 +345,17 @@ export default function CRMPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {replyTo && replyTo.klient_email && (
+        <ReplyModal
+          kind="lead"
+          refId={replyTo.id}
+          to={replyTo.klient_email}
+          name={`${replyTo.klient_imie} ${replyTo.klient_nazwisko ?? ""}`.trim()}
+          numer={replyTo.numer}
+          onClose={() => setReplyTo(null)}
+        />
       )}
     </div>
   );
