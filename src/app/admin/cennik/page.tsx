@@ -21,6 +21,18 @@ const emptyForm: ScrapPriceInput = {
   aktywny: true,
 };
 
+interface PriceChange {
+  id: string;
+  nazwa: string;
+  cena_stara: number | string | null;
+  cena_nowa: number | string | null;
+  zmienil: string | null;
+  created_at: string;
+}
+
+const pln = (value: number | string | null) =>
+  value === null ? "—" : Number(value).toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
 export default function CennikPage() {
   const [prices, setPrices] = useState<ScrapPrice[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,12 +40,15 @@ export default function CennikPage() {
   const [form, setForm] = useState<ScrapPriceInput>(emptyForm);
   const [saving, setSaving] = useState(false);
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [history, setHistory] = useState<PriceChange[]>([]);
 
   const refresh = async () => {
     try {
       const data = await getScrapPrices();
       setPrices(data);
       setError(null);
+      const res = await fetch("/api/scrap-prices/history", { cache: "no-store" });
+      if (res.ok) setHistory(await res.json());
     } catch (err) {
       setError(err instanceof Error ? err.message : "Nie udało się wczytać cennika");
     } finally {
@@ -277,6 +292,48 @@ export default function CennikPage() {
           })}
         </div>
       )}
+
+      <section className="mt-10">
+        <h2 className="font-montserrat font-bold text-lg mb-1">Historia zmian cen</h2>
+        <p className="text-sm text-[#e8dfcc] mb-3">Ostatnie 100 zmian — kto i kiedy zmienił cenę.</p>
+        {history.length === 0 ? (
+          <div className="bg-[#0a0a0a] p-6 rounded-xl border border-[#5c4716] text-sm text-[#e8dfcc]">
+            Brak zmian. Każda zmiana ceny pojawi się tutaj.
+          </div>
+        ) : (
+          <div className="bg-[#0a0a0a] rounded-xl border border-[#5c4716] overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="text-left text-[#e8dfcc] border-b border-[#5c4716]">
+                <tr>
+                  <th className="px-4 py-2.5 font-semibold">Data</th>
+                  <th className="px-4 py-2.5 font-semibold">Pozycja</th>
+                  <th className="px-4 py-2.5 font-semibold text-right">Było</th>
+                  <th className="px-4 py-2.5 font-semibold text-right">Jest</th>
+                  <th className="px-4 py-2.5 font-semibold">Zmienił</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#5c4716]/50">
+                {history.map((h) => {
+                  const up = Number(h.cena_nowa) > Number(h.cena_stara);
+                  return (
+                    <tr key={h.id}>
+                      <td className="px-4 py-2.5 whitespace-nowrap text-[#e8dfcc]">
+                        {new Date(h.created_at).toLocaleString("pl-PL", { dateStyle: "short", timeStyle: "short" })}
+                      </td>
+                      <td className="px-4 py-2.5">{h.nazwa}</td>
+                      <td className="px-4 py-2.5 text-right whitespace-nowrap text-[#e8dfcc]">{pln(h.cena_stara)} zł</td>
+                      <td className={`px-4 py-2.5 text-right whitespace-nowrap font-semibold ${up ? "text-green-400" : "text-red-400"}`}>
+                        {pln(h.cena_nowa)} zł {up ? "▲" : "▼"}
+                      </td>
+                      <td className="px-4 py-2.5 text-[#e8dfcc]">{h.zmienil ?? "—"}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
     </div>
   );
 }

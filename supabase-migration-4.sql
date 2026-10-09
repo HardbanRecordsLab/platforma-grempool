@@ -31,3 +31,57 @@ LANGUAGE sql SECURITY DEFINER SET search_path = public AS $$
 $$;
 REVOKE ALL ON FUNCTION public.material_viewed(TEXT) FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON FUNCTION public.material_inquired(TEXT) FROM PUBLIC, anon, authenticated;
+
+-- Skup złomu: kwity (rejestr skupu) z numeracją KS-RRRR-00001.
+CREATE SEQUENCE IF NOT EXISTS public.scrap_purchase_seq;
+CREATE TABLE IF NOT EXISTS public.scrap_purchases (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  numer TEXT UNIQUE,
+  data TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  sprzedawca_typ TEXT NOT NULL DEFAULT 'osoba' CHECK (sprzedawca_typ IN ('osoba', 'firma')),
+  sprzedawca_nazwa TEXT NOT NULL,
+  sprzedawca_dokument TEXT,
+  sprzedawca_adres TEXT,
+  sprzedawca_telefon TEXT,
+  sprzedawca_email TEXT,
+  nr_rejestracyjny TEXT,
+  waga_brutto NUMERIC(10,1),
+  waga_tara NUMERIC(10,1),
+  pozycje JSONB NOT NULL DEFAULT '[]'::jsonb,
+  suma NUMERIC(12,2) NOT NULL DEFAULT 0,
+  platnosc TEXT NOT NULL DEFAULT 'gotowka' CHECK (platnosc IN ('gotowka', 'przelew')),
+  uwagi TEXT,
+  wystawil TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE OR REPLACE FUNCTION public.generate_scrap_purchase_number() RETURNS TRIGGER
+LANGUAGE plpgsql AS $$
+BEGIN
+  IF NEW.numer IS NULL THEN
+    NEW.numer := 'KS-' || to_char(COALESCE(NEW.data, NOW()), 'YYYY') || '-' || lpad(nextval('scrap_purchase_seq')::text, 5, '0');
+  END IF;
+  RETURN NEW;
+END;
+$$;
+DROP TRIGGER IF EXISTS set_scrap_purchase_number ON public.scrap_purchases;
+CREATE TRIGGER set_scrap_purchase_number BEFORE INSERT ON public.scrap_purchases
+  FOR EACH ROW EXECUTE FUNCTION generate_scrap_purchase_number();
+DROP TRIGGER IF EXISTS update_scrap_purchases_updated_at ON public.scrap_purchases;
+CREATE TRIGGER update_scrap_purchases_updated_at BEFORE UPDATE ON public.scrap_purchases
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+ALTER TABLE public.scrap_purchases ENABLE ROW LEVEL SECURITY;
+CREATE INDEX IF NOT EXISTS scrap_purchases_data_idx ON public.scrap_purchases (data DESC);
+
+-- Historia zmian cen w cenniku złomu.
+CREATE TABLE IF NOT EXISTS public.scrap_price_history (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  scrap_price_id UUID REFERENCES public.scrap_prices(id) ON DELETE SET NULL,
+  nazwa TEXT NOT NULL,
+  cena_stara NUMERIC(10,2),
+  cena_nowa NUMERIC(10,2),
+  zmienil TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE public.scrap_price_history ENABLE ROW LEVEL SECURITY;
+CREATE INDEX IF NOT EXISTS scrap_price_history_created_idx ON public.scrap_price_history (created_at DESC);

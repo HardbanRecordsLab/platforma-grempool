@@ -22,6 +22,10 @@ export default function ScrapPriceSidebar() {
 
   if (loaded && prices.length === 0) return null;
 
+  // Date of the most recent change to any active price.
+  const latest = prices.reduce<string | null>((max, p) => (!max || p.zaktualizowane > max ? p.zaktualizowane : max), null);
+  const updatedAt = latest ? new Date(latest).toLocaleDateString("pl-PL") : null;
+
   const groups = SCRAP_GROUPS.map((group) => ({
     ...group,
     items: prices.filter((p) => p.grupa === group.value),
@@ -56,6 +60,11 @@ export default function ScrapPriceSidebar() {
         ))}
       </div>
 
+      {updatedAt && (
+        <p className="text-xs text-white mb-1">
+          Ceny aktualne na dzień <strong>{updatedAt}</strong>
+        </p>
+      )}
       <p className="text-xs text-[#e8dfcc]/70 mb-4">
         Ceny orientacyjne — ostateczna wycena po weryfikacji rodzaju i ilości materiału.
       </p>

@@ -23,7 +23,7 @@ function getAppUrl(): string {
 
 // Form fields come from anonymous visitors, so they must not be able to
 // inject markup or links into the owner's inbox.
-function escapeHtml(value: string | null | undefined): string {
+export function escapeHtml(value: string | null | undefined): string {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -32,12 +32,18 @@ function escapeHtml(value: string | null | undefined): string {
     .replace(/'/g, "&#39;");
 }
 
-type SendResult = { ok: true } | { ok: false; error: string };
+export type SendResult = { ok: true } | { ok: false; error: string };
 
-async function sendEmail(subject: string, html: string): Promise<SendResult> {
+// Sends to the owner's notification address unless another recipient is
+// given (e.g. a receipt for a customer, with replies going to the owner).
+export async function sendEmail(
+  subject: string,
+  html: string,
+  options: { to?: string; replyTo?: string } = {}
+): Promise<SendResult> {
   const apiKey = process.env.RESEND_API_KEY;
-  const to = process.env.NOTIFICATION_EMAIL;
-  if (!apiKey || !to) return { ok: false, error: "Brak RESEND_API_KEY lub NOTIFICATION_EMAIL" };
+  const to = options.to ?? process.env.NOTIFICATION_EMAIL;
+  if (!apiKey || !to) return { ok: false, error: "Brak RESEND_API_KEY lub adresu odbiorcy" };
 
   try {
     const res = await fetch("https://api.resend.com/emails", {
@@ -46,7 +52,13 @@ async function sendEmail(subject: string, html: string): Promise<SendResult> {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ from: RESEND_FROM, to: [to], subject, html }),
+      body: JSON.stringify({
+        from: RESEND_FROM,
+        to: [to],
+        subject,
+        html,
+        ...(options.replyTo ? { reply_to: options.replyTo } : {}),
+      }),
     });
 
     if (!res.ok) {

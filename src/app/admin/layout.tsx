@@ -21,7 +21,8 @@ import {
   Menu,
   X,
   Mail,
-  Gavel
+  Gavel,
+  Receipt
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -32,6 +33,7 @@ const menuItems = [
   { icon: Package, label: "Ogłoszenia", href: "/admin/materialy" },
   { icon: LayoutGrid, label: "Nasze usługi", href: "/admin/uslugi" },
   { icon: Tags, label: "Cennik złomu", href: "/admin/cennik" },
+  { icon: Receipt, label: "Skup — kwity", href: "/admin/skup" },
   { icon: Share2, label: "Social media", href: "/admin/social" },
   { icon: Calendar, label: "Kalendarz", href: "/admin/kalendarz" },
   { icon: Truck, label: "Flota", href: "/admin/flota" },
@@ -91,10 +93,10 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-[#000000] flex">
+    <div className="min-h-screen bg-[#000000] flex print:block print:bg-white">
       {pwaTags}
       {/* Sidebar */}
-      <aside className={`fixed lg:sticky lg:top-0 lg:h-screen inset-y-0 left-0 z-50 w-64 flex flex-col bg-[#0a0a0a] border-r border-[#5c4716] transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+      <aside className={`print:hidden fixed lg:sticky lg:top-0 lg:h-screen inset-y-0 left-0 z-50 w-64 flex flex-col bg-[#0a0a0a] border-r border-[#5c4716] transform transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         <div className="p-6 border-b border-[#5c4716]">
           <Link href="/admin/dashboard" className="flex items-center">
             <img src="/assets/logo-grempool-wide.png" alt="GREMPOOL" className="h-9 w-auto" />
@@ -108,7 +110,7 @@ export default function AdminLayout({
               key={item.href}
               href={item.href}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg mb-2 transition-colors ${
-                pathname === item.href
+                pathname === item.href || pathname.startsWith(`${item.href}/`)
                   ? "bg-[#f5b52c]/10 text-[#f5b52c]"
                   : "text-[#e8dfcc] hover:bg-[#5c4716]"
               }`}
@@ -135,13 +137,13 @@ export default function AdminLayout({
       {/* Main Content */}
       <div className="relative flex-1 flex flex-col min-h-screen">
         <div
-          className="fixed inset-0 lg:left-64 bg-cover bg-center"
+          className="print:hidden fixed inset-0 lg:left-64 bg-cover bg-center"
           style={{ backgroundImage: "url('https://images.unsplash.com/photo-1722695694560-f452b0919d3a?auto=format&fit=crop&w=1600&q=60')" }}
         />
-        <div className="fixed inset-0 lg:left-64 bg-[#000000]/93" />
+        <div className="print:hidden fixed inset-0 lg:left-64 bg-[#000000]/93" />
 
         {/* Top Bar */}
-        <header className="relative z-10 h-16 bg-[#0a0a0a] border-b border-[#5c4716] flex items-center justify-between px-6">
+        <header className="print:hidden relative z-10 h-16 bg-[#0a0a0a] border-b border-[#5c4716] flex items-center justify-between px-6">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="lg:hidden text-white"
@@ -162,7 +164,7 @@ export default function AdminLayout({
         </header>
 
         {/* Page Content */}
-        <main className="relative z-10 flex-1 p-6 overflow-auto">
+        <main className="relative z-10 flex-1 p-6 overflow-auto print:p-0 print:overflow-visible">
           {children}
         </main>
       </div>
