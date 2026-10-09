@@ -67,7 +67,16 @@ function WycenaForm() {
         ...prev,
         opis: `Zapytanie dotyczące materiału ${materialId}${materialName ? ` - ${materialName}` : ""}.`,
       }));
+      return;
     }
+    // Links from other pages (e.g. the scrap calculator) can preselect a
+    // service and prefill the description.
+    const usluga = searchParams.get("usluga");
+    const opis = searchParams.get("opis");
+    if (usluga && ["skup_zlomu", "transport", "koparki", "rozbiorki", "materialy"].includes(usluga)) {
+      setSelectedService(usluga as ServiceType);
+    }
+    if (opis) setFormData((prev) => ({ ...prev, opis: opis.slice(0, 2000) }));
   }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {

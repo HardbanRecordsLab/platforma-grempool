@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
 import ScrapPriceSidebar from "@/components/public/ScrapPriceSidebar";
+import ScrapCalculator from "@/components/public/ScrapCalculator";
 import { Recycle, Phone, ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { telHref } from "@/lib/site-settings";
@@ -86,6 +87,8 @@ export default async function SkupZlomuPage() {
           </div>
         </div>
       </section>
+
+      <ScrapCalculator />
 
       {/* Materials */}
       <section className="py-16 bg-[#0a0a0a]">

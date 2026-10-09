@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
-import { Phone, Mail, MapPin, Clock, Send, Loader2, CheckCircle2 } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, Send, Loader2, CheckCircle2, Navigation } from "lucide-react";
 import { createContactMessage } from "@/lib/contact-messages-store";
 import { hoursLines, telHref } from "@/lib/site-settings";
 import { useSiteSettings } from "@/components/SiteSettingsProvider";
@@ -244,14 +244,32 @@ export default function KontaktClient() {
         </div>
       </section>
 
-      {/* Map */}
-      <section className="h-96 bg-[#0a0a0a] border-y border-[#5c4716]">
-        <div className="w-full h-full flex items-center justify-center text-[#e8dfcc]">
-          <div className="text-center">
-            <MapPin className="text-[#f5b52c] size-12 mx-auto mb-4" />
-            <p className="text-lg font-semibold">Mapa dojazdu</p>
-            <p className="text-sm">{siteAddress}</p>
+      {/* Map — Google Maps embed needs no API key; the address comes from Ustawienia. */}
+      <section className="relative h-[28rem] bg-[#0a0a0a] border-y border-[#5c4716]">
+        <iframe
+          title={`Mapa dojazdu — ${siteAddress}`}
+          src={`https://www.google.com/maps?q=${encodeURIComponent(`GREMPOOL, ${siteAddress}`)}&z=15&output=embed`}
+          className="w-full h-full border-0 grayscale-[30%] contrast-[1.05]"
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          allowFullScreen
+        />
+        <div className="absolute left-4 bottom-4 sm:left-8 sm:bottom-8 max-w-xs rounded-2xl border border-[#f5b52c]/50 bg-black/90 backdrop-blur p-5 shadow-2xl">
+          <div className="flex items-start gap-3 mb-4">
+            <MapPin className="text-[#f5b52c] size-6 shrink-0" />
+            <div>
+              <div className="font-montserrat font-bold text-white">GREMPOOL — plac</div>
+              <div className="text-sm text-[#e8dfcc]">{siteAddress}</div>
+            </div>
           </div>
+          <a
+            href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(siteAddress)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold text-black"
+          >
+            <Navigation size={16} /> Wyznacz trasę
+          </a>
         </div>
       </section>
 
