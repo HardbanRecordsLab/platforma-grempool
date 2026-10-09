@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { CheckCircle2, Recycle, Truck, HardHat, Scale, Boxes } from "lucide-react";
-
-const benefits = ["Uczciwe ceny", "Własny transport", "Terminowa realizacja", "Kompleksowa obsługa"];
+import { getSiteSettings } from "@/lib/site-settings-server";
 
 const strip = [
   { icon: Recycle, title: "SKUP ZŁOMU", description: "Negocjacje cen przy dużych ilościach", href: "/uslugi/skup-zlomu" },
@@ -11,13 +10,14 @@ const strip = [
   { icon: Boxes, title: "MATERIAŁY BUDOWLANE", description: "Cegła, cement, kruszywa, piasek, kostka brukowa", href: "/ogloszenia" },
 ];
 
-export default function Hero() {
+export default async function Hero() {
+  const { hero } = await getSiteSettings();
   return (
     <section className="relative bg-[#000000] overflow-hidden">
       <div className="absolute inset-y-0 right-0 w-full lg:w-[64%]">
         <img
-          src="https://images.unsplash.com/photo-1764448726225-12da63f109e6?auto=format&fit=crop&w=1600&q=80"
-          alt="Koparka z kruszarką podczas rozbiórki"
+          src={hero.image}
+          alt="GREMPOOL - skup złomu i prace rozbiórkowe"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#000] via-[#000]/20 to-transparent lg:via-transparent" />
@@ -28,14 +28,14 @@ export default function Hero() {
       <div className="relative container mx-auto px-4 pt-16 pb-12 min-h-[560px] md:min-h-[620px] flex flex-col">
         <div className="max-w-xl">
           <h1 className="font-montserrat font-bold leading-tight mb-6">
-            <span className="block text-white text-4xl md:text-5xl">SKUP ZŁOMU</span>
-            <span className="block text-[#f5b52c] text-2xl md:text-3xl mt-2 tracking-wide">
-              NA NAJWYŻSZYM POZIOMIE
-            </span>
+            <span className="block text-white text-4xl md:text-5xl">{hero.title}</span>
+            {hero.subtitle && (
+              <span className="block text-[#f5b52c] text-2xl md:text-3xl mt-2 tracking-wide">{hero.subtitle}</span>
+            )}
           </h1>
 
           <ul className="space-y-3 mb-10">
-            {benefits.map((benefit) => (
+            {hero.benefits.map((benefit) => (
               <li key={benefit} className="flex items-center gap-3 text-[#e8dfcc]">
                 <CheckCircle2 className="text-[#f5b52c] size-5 shrink-0" />
                 <span>{benefit}</span>
@@ -50,10 +50,12 @@ export default function Hero() {
             >
               SPRAWDŹ OFERTĘ
             </Link>
-            <div className="border border-[#f5b52c]/40 px-4 py-2 rounded-md text-xs text-[#e8dfcc] leading-snug">
-              <span className="block text-[#f5b52c] font-bold text-lg">10+ LAT</span>
-              doświadczenia w branży
-            </div>
+            {hero.badgeValue && (
+              <div className="border border-[#f5b52c]/40 px-4 py-2 rounded-md text-xs text-[#e8dfcc] leading-snug">
+                <span className="block text-[#f5b52c] font-bold text-lg">{hero.badgeValue}</span>
+                {hero.badgeLabel}
+              </div>
+            )}
           </div>
         </div>
 

@@ -5,8 +5,11 @@ import Link from "next/link";
 import { Tags, Phone } from "lucide-react";
 import type { ScrapPrice } from "@/types";
 import { SCRAP_GROUPS, formatScrapPrice, getActiveScrapPrices } from "@/lib/scrap-prices-store";
+import { telHref } from "@/lib/site-settings";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
 
 export default function ScrapPriceSidebar() {
+  const site = useSiteSettings();
   const [prices, setPrices] = useState<ScrapPrice[]>([]);
   const [loaded, setLoaded] = useState(false);
 
@@ -58,8 +61,8 @@ export default function ScrapPriceSidebar() {
       </p>
 
       <div className="flex flex-col gap-2">
-        <a href="tel:+48663288533" className="flex items-center justify-center gap-2 btn-primary py-2.5 rounded-lg text-sm font-semibold text-[#000000]">
-          <Phone size={16} /> +48 663 288 533
+        <a href={telHref(site.phone)} className="flex items-center justify-center gap-2 btn-primary py-2.5 rounded-lg text-sm font-semibold text-[#000000]">
+          <Phone size={16} /> {site.phone}
         </a>
         <Link href="/wycena" className="text-center py-2.5 rounded-lg text-sm font-semibold border border-[#5c4716] text-[#e8dfcc] hover:text-white transition-colors">
           Wyślij zapytanie

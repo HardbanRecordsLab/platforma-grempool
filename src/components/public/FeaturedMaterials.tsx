@@ -7,9 +7,9 @@ import { ArrowRight, Search, LayoutGrid, Truck } from "lucide-react";
 import type { Material } from "@/types";
 import { getAvailableMaterials } from "@/lib/materials-store";
 import { LISTING_CATEGORIES } from "@/lib/listing-categories";
-import { DEMO_LISTINGS } from "@/lib/site";
 import DemoListingsNotice from "./DemoListingsNotice";
 import { FeaturedCard, ListingCard, SellBanner } from "./ListingCards";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
 
 // One featured listing plus six regular cards fills the 4-column layout:
 // the featured card takes 2x2, four cards sit beside it, two more below
@@ -19,6 +19,7 @@ const LIMIT = 7;
 type Sort = "newest" | "price_asc" | "price_desc";
 
 export default function FeaturedMaterials() {
+  const site = useSiteSettings();
   const router = useRouter();
   const [materials, setMaterials] = useState<Material[]>([]);
   const [loading, setLoading] = useState(true);
@@ -97,7 +98,7 @@ export default function FeaturedMaterials() {
 
           <dl className="grid grid-cols-3 rounded-2xl border border-white/10 bg-white/[0.02] divide-x divide-white/10">
             {[
-              { value: materials.length || "—", label: DEMO_LISTINGS ? "ogłoszeń (demo)" : "ogłoszeń" },
+              { value: materials.length || "—", label: site.demoListings ? "ogłoszeń (demo)" : "ogłoszeń" },
               { value: tabs.length || "—", label: "kategorii" },
               { value: <Truck size={26} className="text-[#f5b52c]" />, label: "dowóz w regionie" },
             ].map((stat) => (

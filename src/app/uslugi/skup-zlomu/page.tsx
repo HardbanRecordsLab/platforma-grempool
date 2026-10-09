@@ -4,6 +4,8 @@ import Footer from "@/components/public/Footer";
 import ScrapPriceSidebar from "@/components/public/ScrapPriceSidebar";
 import { Recycle, Phone, ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
+import { telHref } from "@/lib/site-settings";
+import { getSiteSettings } from "@/lib/site-settings-server";
 
 export const metadata: Metadata = {
   title: "Skup Złomu - Stal, Metale Kolorowe, Odbiór Własnym Transportem",
@@ -19,7 +21,8 @@ const gallery = [
   "https://images.unsplash.com/photo-1679996287979-166522b96c39?auto=format&fit=crop&w=800&q=80",
 ];
 
-export default function SkupZlomuPage() {
+export default async function SkupZlomuPage() {
+  const site = await getSiteSettings();
   const materials = [
     { name: "Stal węglowa", image: "https://images.unsplash.com/photo-1763771420303-0f11ccf613d1?auto=format&fit=crop&w=400&q=80" },
     { name: "Stal nierdzewna", image: "https://images.unsplash.com/photo-1538474705339-e87de81450e8?auto=format&fit=crop&w=400&q=80" },
@@ -68,7 +71,7 @@ export default function SkupZlomuPage() {
                 Oferujemy atrakcyjne ceny, szybki odbiór i profesjonalną obsługę.
               </p>
               <div className="flex gap-4">
-                <a href="tel:+48663288533" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#000000] flex items-center gap-2">
+                <a href={telHref(site.phone)} className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#000000] flex items-center gap-2">
                   <Phone size={20} /> ZADZWOŃ
                 </a>
                 <Link href="/wycena" className="px-6 py-3 rounded-lg font-semibold border-2 border-[#f5b52c] text-[#f5b52c] hover:bg-[#f5b52c] hover:text-[#000000] transition-all">
@@ -180,8 +183,8 @@ export default function SkupZlomuPage() {
             MASZ ZŁOM? WYCENIMY GO!
           </h2>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href="tel:+48663288533" className="bg-[#000000] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#0a0a0a] transition-colors flex items-center gap-2">
-              <Phone size={20} /> +48 663 288 533
+            <a href={telHref(site.phone)} className="bg-[#000000] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#0a0a0a] transition-colors flex items-center gap-2">
+              <Phone size={20} /> {site.phone}
             </a>
             <Link href="/wycena" className="border-2 border-[#000000] text-[#000000] px-8 py-4 rounded-lg font-semibold hover:bg-[#000000] hover:text-[#f5b52c] transition-colors flex items-center gap-2">
               WYCENA ONLINE <ArrowRight size={20} />

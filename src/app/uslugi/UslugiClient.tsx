@@ -7,6 +7,8 @@ import { Phone, ArrowRight, Package } from "lucide-react";
 import Link from "next/link";
 import type { CustomService } from "@/types";
 import { getActiveCustomServices } from "@/lib/custom-services-store";
+import { telHref } from "@/lib/site-settings";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
 
 const services = [
   {
@@ -54,6 +56,7 @@ const services = [
 ];
 
 export default function UslugiClient() {
+  const site = useSiteSettings();
   const [extraServices, setExtraServices] = useState<CustomService[]>([]);
 
   useEffect(() => {
@@ -169,8 +172,8 @@ export default function UslugiClient() {
             Skontaktuj się z nami lub wypełnij formularz szybkiej wyceny
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href="tel:+48663288533" className="bg-[#000000] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#0a0a0a] transition-colors flex items-center gap-2">
-              <Phone size={20} /> +48 663 288 533
+            <a href={telHref(site.phone)} className="bg-[#000000] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#0a0a0a] transition-colors flex items-center gap-2">
+              <Phone size={20} /> {site.phone}
             </a>
             <Link href="/wycena" className="border-2 border-[#000000] text-[#000000] px-8 py-4 rounded-lg font-semibold hover:bg-[#000000] hover:text-[#f5b52c] transition-colors">
               SZYBKA WYCENA

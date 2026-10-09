@@ -5,7 +5,8 @@ import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
 import { Phone, Mail, MapPin, Clock, Send, Loader2, CheckCircle2 } from "lucide-react";
 import { createContactMessage } from "@/lib/contact-messages-store";
-import { BUSINESS } from "@/lib/site";
+import { hoursLines, telHref } from "@/lib/site-settings";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
 
 const TEMAT_LABELS: Record<string, string> = {
   skup: "Skup złomu",
@@ -16,6 +17,8 @@ const TEMAT_LABELS: Record<string, string> = {
 };
 
 export default function KontaktClient() {
+  const site = useSiteSettings();
+  const siteAddress = `${site.streetAddress}, ${site.postalCode} ${site.addressLocality}`;
   const [form, setForm] = useState({
     imie: "",
     nazwisko: "",
@@ -88,7 +91,7 @@ export default function KontaktClient() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Adres</h3>
-                    <p className="text-[#e8dfcc]">ul. Kolejowa 5a<br />59-307 Raszówka</p>
+                    <p className="text-[#e8dfcc]">{site.streetAddress}<br />{site.postalCode} {site.addressLocality}</p>
                   </div>
                 </div>
 
@@ -98,8 +101,8 @@ export default function KontaktClient() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Telefon</h3>
-                    <a href="tel:+48663288533" className="text-[#e8dfcc] hover:text-[#f5b52c] transition-colors">
-                      +48 663 288 533
+                    <a href={telHref(site.phone)} className="text-[#e8dfcc] hover:text-[#f5b52c] transition-colors">
+                      {site.phone}
                     </a>
                   </div>
                 </div>
@@ -110,8 +113,8 @@ export default function KontaktClient() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Email</h3>
-                    <a href={`mailto:${BUSINESS.email}`} className="text-[#e8dfcc] hover:text-[#f5b52c] transition-colors">
-                      {BUSINESS.email}
+                    <a href={`mailto:${site.email}`} className="text-[#e8dfcc] hover:text-[#f5b52c] transition-colors">
+                      {site.email}
                     </a>
                   </div>
                 </div>
@@ -122,11 +125,14 @@ export default function KontaktClient() {
                   </div>
                   <div>
                     <h3 className="font-semibold mb-1">Godziny otwarcia</h3>
-                    <p className="text-[#e8dfcc]">
-                      Poniedziałek - Piątek: 7:00 - 17:00<br />
-                      Sobota: 8:00 - 14:00<br />
-                      Niedziela: zamknięte
-                    </p>
+                    <dl className="text-[#e8dfcc] space-y-0.5">
+                      {hoursLines(site).map((line) => (
+                        <div key={line.label}>
+                          <dt className="inline">{line.label}: </dt>
+                          <dd className="inline">{line.value}</dd>
+                        </div>
+                      ))}
+                    </dl>
                   </div>
                 </div>
               </div>
@@ -193,7 +199,7 @@ export default function KontaktClient() {
                       value={form.telefon}
                       onChange={(e) => setForm({ ...form, telefon: e.target.value })}
                       className="w-full bg-[#0a0a0a] border border-[#5c4716] rounded-lg p-3 text-white"
-                      placeholder="+48 663 288 533"
+                      placeholder="np. 600 123 456"
                     />
                   </div>
                   <div>
@@ -244,7 +250,7 @@ export default function KontaktClient() {
           <div className="text-center">
             <MapPin className="text-[#f5b52c] size-12 mx-auto mb-4" />
             <p className="text-lg font-semibold">Mapa dojazdu</p>
-            <p className="text-sm">ul. Kolejowa 5a, 59-307 Raszówka</p>
+            <p className="text-sm">{siteAddress}</p>
           </div>
         </div>
       </section>

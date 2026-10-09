@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu, X, Phone, Mail, MapPin } from "lucide-react";
-import { BUSINESS } from "@/lib/site";
+import { Menu, X, Phone, Mail, MapPin, Megaphone } from "lucide-react";
 import ScrapPriceTicker from "./ScrapPriceTicker";
+import { telHref } from "@/lib/site-settings";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
 
 const navLinks = [
   { href: "/", label: "STRONA GŁÓWNA" },
@@ -18,6 +19,8 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+  const site = useSiteSettings();
+  const siteAddress = `${site.streetAddress}, ${site.postalCode} ${site.addressLocality}`;
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
@@ -28,6 +31,20 @@ export default function Navbar() {
 
   return (
     <header className="bg-[#000000] border-b border-[#5c4716]">
+      {site.announcement.enabled && site.announcement.text && (
+        <div className="bg-[#f5b52c] text-black text-sm font-semibold">
+          <div className="container mx-auto px-4 py-2 flex items-center justify-center gap-2 text-center">
+            <Megaphone size={16} className="shrink-0" />
+            {site.announcement.link ? (
+              <a href={site.announcement.link} className="hover:underline underline-offset-2">
+                {site.announcement.text} →
+              </a>
+            ) : (
+              <span>{site.announcement.text}</span>
+            )}
+          </div>
+        </div>
+      )}
       <div className="container mx-auto px-4 py-5 flex items-center justify-between gap-6">
         <Link href="/" className="flex items-center shrink-0">
           <img
@@ -40,15 +57,15 @@ export default function Navbar() {
         <div className="hidden md:flex flex-col gap-2 border border-[#f5b52c]/50 rounded-lg px-5 py-3 text-sm text-[#e8dfcc]">
           <div className="flex items-center gap-3">
             <MapPin size={15} className="text-[#f5b52c] shrink-0" />
-            <span>ul. Kolejowa 5a, 59-307 Raszówka</span>
+            <span>{siteAddress}</span>
           </div>
-          <a href={`tel:${BUSINESS.phone}`} className="flex items-center gap-3 hover:text-[#f5b52c] transition-colors">
+          <a href={telHref(site.phone)} className="flex items-center gap-3 hover:text-[#f5b52c] transition-colors">
             <Phone size={15} className="text-[#f5b52c] shrink-0" />
-            <span>{BUSINESS.phoneDisplay}</span>
+            <span>{site.phone}</span>
           </a>
-          <a href={`mailto:${BUSINESS.email}`} className="flex items-center gap-3 hover:text-[#f5b52c] transition-colors">
+          <a href={`mailto:${site.email}`} className="flex items-center gap-3 hover:text-[#f5b52c] transition-colors">
             <Mail size={15} className="text-[#f5b52c] shrink-0" />
-            <span>{BUSINESS.email}</span>
+            <span>{site.email}</span>
           </a>
         </div>
 
@@ -93,9 +110,9 @@ export default function Navbar() {
               </li>
             ))}
             <li className="pt-2 border-t border-[#5c4716] text-sm text-[#e8dfcc] space-y-2">
-              <div>ul. Kolejowa 5a, 59-307 Raszówka</div>
-              <a href={`tel:${BUSINESS.phone}`} className="block hover:text-[#f5b52c]">{BUSINESS.phoneDisplay}</a>
-              <a href={`mailto:${BUSINESS.email}`} className="block hover:text-[#f5b52c]">{BUSINESS.email}</a>
+              <div>{siteAddress}</div>
+              <a href={telHref(site.phone)} className="block hover:text-[#f5b52c]">{site.phone}</a>
+              <a href={`mailto:${site.email}`} className="block hover:text-[#f5b52c]">{site.email}</a>
             </li>
           </ul>
         </nav>

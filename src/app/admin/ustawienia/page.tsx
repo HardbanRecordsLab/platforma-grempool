@@ -1,8 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Building, Bell, Shield, CheckCircle2, XCircle, Loader2, Send, LogOut } from "lucide-react";
+import {
+  Building,
+  Bell,
+  Shield,
+  CheckCircle2,
+  XCircle,
+  Loader2,
+  Send,
+  LogOut,
+  Megaphone,
+  Home,
+  Package,
+  Save,
+  Upload,
+} from "lucide-react";
 import { BUSINESS } from "@/lib/site";
+import { DEFAULT_SITE_SETTINGS, type SiteSettings, type TimeSlot } from "@/lib/site-settings";
+import { uploadImageFile } from "@/lib/image-utils";
 
 interface SystemStatus {
   notificationEmail: string | null;
@@ -12,18 +28,16 @@ interface SystemStatus {
   database: string | null;
 }
 
-const DAY_LABELS: Record<string, string> = {
-  Monday: "Pon",
-  Tuesday: "Wt",
-  Wednesday: "Śr",
-  Thursday: "Czw",
-  Friday: "Pt",
-  Saturday: "Sob",
-  Sunday: "Ndz",
-};
+type HoursKey = keyof SiteSettings["hours"];
 
-const formatDays = (days: string[]) =>
-  days.length > 1 ? `${DAY_LABELS[days[0]]}–${DAY_LABELS[days[days.length - 1]]}` : DAY_LABELS[days[0]];
+const HOURS_ROWS: { key: HoursKey; label: string }[] = [
+  { key: "weekdays", label: "Poniedziałek – Piątek" },
+  { key: "saturday", label: "Sobota" },
+  { key: "sunday", label: "Niedziela" },
+];
+
+const inputClass =
+  "w-full bg-[#000000] border border-[#5c4716] focus:border-[#f5b52c] rounded-lg px-3 py-2.5 text-white outline-none";
 
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
@@ -31,6 +45,39 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
       <span className="sm:w-44 shrink-0 text-sm text-[#e8dfcc]">{label}</span>
       <span className="text-white break-words">{value}</span>
     </div>
+  );
+}
+
+function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
+  return (
+    <label className="block">
+      <span className="block text-sm text-[#e8dfcc] mb-1.5">{label}</span>
+      {children}
+      {hint && <span className="block text-xs text-[#e8dfcc]/60 mt-1">{hint}</span>}
+    </label>
+  );
+}
+
+function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={() => onChange(!checked)}
+      className="flex items-center gap-3 text-left"
+    >
+      <span
+        className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${checked ? "bg-[#f5b52c]" : "bg-[#5c4716]"}`}
+      >
+        <span
+          className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform ${
+            checked ? "translate-x-5" : ""
+          }`}
+        />
+      </span>
+      <span className="text-white">{label}</span>
+    </button>
   );
 }
 
@@ -53,6 +100,11 @@ export default function UstawieniaPage() {
   const [testState, setTestState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [testError, setTestError] = useState("");
 
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [saveError, setSaveError] = useState("");
+  const [uploading, setUploading] = useState(false);
+
   useEffect(() => {
     fetch("/api/settings")
       .then((res) => (res.ok ? res.json() : null))
@@ -62,7 +114,55 @@ export default function UstawieniaPage() {
       .then((res) => (res.ok ? res.json() : null))
       .then(setUser)
       .catch(() => setUser(null));
+    fetch("/api/site-settings")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((body) => setSettings(body?.settings ?? DEFAULT_SITE_SETTINGS))
+      .catch(() => setSettings(DEFAULT_SITE_SETTINGS));
   }, []);
+
+  const update = (patch: Partial<SiteSettings>) => {
+    setSettings((prev) => (prev ? { ...prev, ...patch } : prev));
+    setSaveState("idle");
+  };
+
+  const save = async () => {
+    if (!settings) return;
+    setSaveState("saving");
+    try {
+      const res = await fetch("/api/site-settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(settings),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setSaveError(body.error ?? "Nie udało się zapisać");
+        setSaveState("error");
+        return;
+      }
+      setSettings(body.settings);
+      setSaveState("saved");
+    } catch {
+      setSaveError("Brak połączenia z serwerem");
+      setSaveState("error");
+    }
+  };
+
+  const setHours = (key: HoursKey, slot: TimeSlot | null) =>
+    settings && update({ hours: { ...settings.hours, [key]: slot } });
+
+  const uploadHeroImage = async (file: File) => {
+    if (!settings) return;
+    setUploading(true);
+    try {
+      const url = await uploadImageFile(file, "site");
+      update({ hero: { ...settings.hero, image: url } });
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Nie udało się wgrać zdjęcia");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const sendTest = async () => {
     setTestState("sending");
@@ -87,10 +187,33 @@ export default function UstawieniaPage() {
   };
 
   const tabs = [
-    { id: "firma", label: "Firma", icon: Building },
+    { id: "firma", label: "Dane firmy", icon: Building },
+    { id: "komunikat", label: "Komunikat na stronie", icon: Megaphone },
+    { id: "strona", label: "Strona główna", icon: Home },
+    { id: "ogloszenia", label: "Ogłoszenia", icon: Package },
     { id: "powiadomienia", label: "Powiadomienia i system", icon: Bell },
     { id: "bezpieczenstwo", label: "Konto i dostęp", icon: Shield },
   ];
+
+  const editableTab = ["firma", "komunikat", "strona", "ogloszenia"].includes(activeTab);
+
+  const saveBar = (
+    <div className="sticky bottom-0 -mx-6 -mb-6 mt-8 px-6 py-4 bg-[#0a0a0a]/95 backdrop-blur border-t border-[#5c4716] rounded-b-xl flex flex-wrap items-center gap-3">
+      <button
+        onClick={save}
+        disabled={saveState === "saving"}
+        className="btn-primary px-6 py-2.5 rounded-lg font-semibold text-[#000000] flex items-center gap-2 disabled:opacity-60"
+      >
+        {saveState === "saving" ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />} Zapisz zmiany
+      </button>
+      {saveState === "saved" && (
+        <span className="text-sm text-green-400 flex items-center gap-1.5">
+          <CheckCircle2 size={16} /> Zapisano — zmiany są już na stronie.
+        </span>
+      )}
+      {saveState === "error" && <span className="text-sm text-red-400">{saveError}</span>}
+    </div>
+  );
 
   return (
     <div>
@@ -115,27 +238,258 @@ export default function UstawieniaPage() {
         </div>
 
         <div className="lg:col-span-3">
-          {activeTab === "firma" && (
+          {editableTab && !settings && (
+            <div className="bg-[#0a0a0a] p-6 rounded-xl border border-[#5c4716] flex items-center gap-2 text-[#e8dfcc]">
+              <Loader2 size={16} className="animate-spin" /> Wczytywanie ustawień...
+            </div>
+          )}
+
+          {activeTab === "firma" && settings && (
             <div className="bg-[#0a0a0a] p-6 rounded-xl border border-[#5c4716]">
               <h2 className="text-xl font-montserrat font-bold mb-2">Dane firmy</h2>
               <p className="text-sm text-[#e8dfcc] mb-6">
-                Te dane widać na stronie (stopka, kontakt, „O nas”) i w wynikach Google. Zmianę zgłoś osobie, która
-                prowadzi stronę — są wpisane w kodzie, żeby nikt ich przypadkiem nie nadpisał.
+                Widoczne w nagłówku, stopce, na stronie kontaktu, na przyciskach „Zadzwoń” i w danych dla Google.
               </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Field label="Telefon" hint="Np. +48 663 288 533 — w takiej formie pokaże się na stronie.">
+                  <input
+                    value={settings.phone}
+                    onChange={(e) => update({ phone: e.target.value })}
+                    className={inputClass}
+                    inputMode="tel"
+                  />
+                </Field>
+                <Field label="E-mail">
+                  <input
+                    type="email"
+                    value={settings.email}
+                    onChange={(e) => update({ email: e.target.value })}
+                    className={inputClass}
+                  />
+                </Field>
+                <Field label="Ulica i numer">
+                  <input
+                    value={settings.streetAddress}
+                    onChange={(e) => update({ streetAddress: e.target.value })}
+                    className={inputClass}
+                  />
+                </Field>
+                <div className="grid grid-cols-[120px_1fr] gap-3">
+                  <Field label="Kod">
+                    <input
+                      value={settings.postalCode}
+                      onChange={(e) => update({ postalCode: e.target.value })}
+                      className={inputClass}
+                    />
+                  </Field>
+                  <Field label="Miejscowość">
+                    <input
+                      value={settings.addressLocality}
+                      onChange={(e) => update({ addressLocality: e.target.value })}
+                      className={inputClass}
+                    />
+                  </Field>
+                </div>
+              </div>
+
+              <h3 className="font-semibold mt-8 mb-3">Godziny otwarcia</h3>
+              <div className="space-y-3">
+                {HOURS_ROWS.map(({ key, label }) => {
+                  const slot = settings.hours[key];
+                  return (
+                    <div key={key} className="flex flex-wrap items-center gap-3 p-3 bg-[#000000] rounded-lg">
+                      <span className="w-44 text-sm text-white">{label}</span>
+                      <Toggle
+                        checked={slot !== null}
+                        onChange={(open) => setHours(key, open ? { opens: "08:00", closes: "16:00" } : null)}
+                        label={slot ? "otwarte" : "nieczynne"}
+                      />
+                      {slot && (
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="time"
+                            value={slot.opens}
+                            onChange={(e) => setHours(key, { ...slot, opens: e.target.value })}
+                            className="bg-[#0a0a0a] border border-[#5c4716] rounded-lg px-2 py-1.5 text-white [color-scheme:dark]"
+                          />
+                          <span className="text-[#e8dfcc]">–</span>
+                          <input
+                            type="time"
+                            value={slot.closes}
+                            onChange={(e) => setHours(key, { ...slot, closes: e.target.value })}
+                            className="bg-[#0a0a0a] border border-[#5c4716] rounded-lg px-2 py-1.5 text-white [color-scheme:dark]"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              <h3 className="font-semibold mt-8 mb-1">Dane rejestrowe</h3>
+              <p className="text-xs text-[#e8dfcc]/70 mb-2">Stałe dane z rejestru — zmienia je osoba prowadząca stronę.</p>
               <Row label="Nazwa" value={BUSINESS.legalName} />
               <Row label="NIP" value={BUSINESS.taxId} />
               <Row label="REGON" value={BUSINESS.regon} />
-              <Row
-                label="Adres"
-                value={`${BUSINESS.streetAddress}, ${BUSINESS.postalCode} ${BUSINESS.addressLocality}`}
+
+              {saveBar}
+            </div>
+          )}
+
+          {activeTab === "komunikat" && settings && (
+            <div className="bg-[#0a0a0a] p-6 rounded-xl border border-[#5c4716]">
+              <h2 className="text-xl font-montserrat font-bold mb-2">Komunikat na stronie</h2>
+              <p className="text-sm text-[#e8dfcc] mb-6">
+                Złoty pasek na samej górze każdej strony. Np. „Nieczynne 11 listopada” albo „Skupujemy aluminium po
+                podwyższonej cenie”.
+              </p>
+
+              <Toggle
+                checked={settings.announcement.enabled}
+                onChange={(enabled) => update({ announcement: { ...settings.announcement, enabled } })}
+                label={settings.announcement.enabled ? "Komunikat włączony" : "Komunikat wyłączony"}
               />
-              <Row label="Telefon" value={BUSINESS.phoneDisplay} />
-              <Row label="E-mail na stronie" value={BUSINESS.email} />
-              <Row
-                label="Godziny otwarcia"
-                value={BUSINESS.openingHours.map((h) => `${formatDays(h.days)} ${h.opens}–${h.closes}`).join(", ")}
+
+              <div className="space-y-4 mt-6">
+                <Field label="Treść" hint={`${settings.announcement.text.length}/200 znaków`}>
+                  <input
+                    value={settings.announcement.text}
+                    maxLength={200}
+                    onChange={(e) => update({ announcement: { ...settings.announcement, text: e.target.value } })}
+                    placeholder="np. 11 listopada skup nieczynny"
+                    className={inputClass}
+                  />
+                </Field>
+                <Field label="Link (opcjonalnie)" hint="Np. /uslugi/skup-zlomu — kliknięcie w pasek przeniesie tam klienta.">
+                  <input
+                    value={settings.announcement.link}
+                    onChange={(e) => update({ announcement: { ...settings.announcement, link: e.target.value } })}
+                    placeholder="/uslugi/skup-zlomu"
+                    className={inputClass}
+                  />
+                </Field>
+              </div>
+
+              {settings.announcement.text && (
+                <div className="mt-6">
+                  <span className="block text-xs text-[#e8dfcc]/60 mb-1.5">Podgląd</span>
+                  <div
+                    className={`rounded-lg px-4 py-2 text-center text-sm font-semibold flex items-center justify-center gap-2 ${
+                      settings.announcement.enabled ? "bg-[#f5b52c] text-black" : "bg-[#5c4716]/40 text-[#e8dfcc]"
+                    }`}
+                  >
+                    <Megaphone size={16} /> {settings.announcement.text}
+                    {settings.announcement.link && " →"}
+                  </div>
+                </div>
+              )}
+
+              {saveBar}
+            </div>
+          )}
+
+          {activeTab === "strona" && settings && (
+            <div className="bg-[#0a0a0a] p-6 rounded-xl border border-[#5c4716]">
+              <h2 className="text-xl font-montserrat font-bold mb-2">Strona główna</h2>
+              <p className="text-sm text-[#e8dfcc] mb-6">Duży baner na górze (Hero) i sekcja „O nas”.</p>
+
+              <h3 className="font-semibold mb-3">Hero</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Field label="Tytuł (biały, duży)">
+                  <input
+                    value={settings.hero.title}
+                    onChange={(e) => update({ hero: { ...settings.hero, title: e.target.value } })}
+                    className={inputClass}
+                  />
+                </Field>
+                <Field label="Podtytuł (złoty)">
+                  <input
+                    value={settings.hero.subtitle}
+                    onChange={(e) => update({ hero: { ...settings.hero, subtitle: e.target.value } })}
+                    className={inputClass}
+                  />
+                </Field>
+                <Field label="Atuty (każdy w osobnej linii)" hint="Do 6 pozycji, wyświetlane z ✓.">
+                  <textarea
+                    rows={4}
+                    value={settings.hero.benefits.join("\n")}
+                    onChange={(e) => update({ hero: { ...settings.hero, benefits: e.target.value.split("\n") } })}
+                    className={inputClass}
+                  />
+                </Field>
+                <div className="space-y-4">
+                  <Field label="Plakietka — liczba">
+                    <input
+                      value={settings.hero.badgeValue}
+                      onChange={(e) => update({ hero: { ...settings.hero, badgeValue: e.target.value } })}
+                      placeholder="10+ LAT"
+                      className={inputClass}
+                    />
+                  </Field>
+                  <Field label="Plakietka — opis" hint="Zostaw puste pola, żeby ukryć plakietkę.">
+                    <input
+                      value={settings.hero.badgeLabel}
+                      onChange={(e) => update({ hero: { ...settings.hero, badgeLabel: e.target.value } })}
+                      className={inputClass}
+                    />
+                  </Field>
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <span className="block text-sm text-[#e8dfcc] mb-1.5">Zdjęcie</span>
+                <div className="flex flex-col sm:flex-row gap-4 items-start">
+                  <img
+                    src={settings.hero.image}
+                    alt="Zdjęcie w Hero"
+                    className="w-full sm:w-64 aspect-video object-cover rounded-lg border border-[#5c4716]"
+                  />
+                  <label className="cursor-pointer px-4 py-2.5 rounded-lg border border-[#5c4716] text-sm text-white hover:border-[#f5b52c] flex items-center gap-2">
+                    {uploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+                    {uploading ? "Wgrywanie..." : "Wgraj nowe zdjęcie"}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      disabled={uploading}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) uploadHeroImage(file);
+                        e.target.value = "";
+                      }}
+                    />
+                  </label>
+                </div>
+              </div>
+
+              <h3 className="font-semibold mt-8 mb-3">O nas</h3>
+              <Field label="Tekst" hint="Akapity oddziel pustą linią.">
+                <textarea
+                  rows={10}
+                  value={settings.about.paragraphs.join("\n\n")}
+                  onChange={(e) => update({ about: { paragraphs: e.target.value.split(/\n\s*\n/) } })}
+                  className={inputClass}
+                />
+              </Field>
+
+              {saveBar}
+            </div>
+          )}
+
+          {activeTab === "ogloszenia" && settings && (
+            <div className="bg-[#0a0a0a] p-6 rounded-xl border border-[#5c4716]">
+              <h2 className="text-xl font-montserrat font-bold mb-2">Ogłoszenia</h2>
+              <p className="text-sm text-[#e8dfcc] mb-6">
+                Tryb DEMO dodaje do ogłoszeń znaczek „DEMO” i informację, że oferty są przykładowe. Wyłącz go, gdy
+                wpiszesz prawdziwe ogłoszenia.
+              </p>
+              <Toggle
+                checked={settings.demoListings}
+                onChange={(demoListings) => update({ demoListings })}
+                label={settings.demoListings ? "Tryb DEMO włączony" : "Tryb DEMO wyłączony — ogłoszenia są prawdziwe"}
               />
-              <Row label="Obszar działania" value={BUSINESS.areaServed.join(", ")} />
+              {saveBar}
             </div>
           )}
 

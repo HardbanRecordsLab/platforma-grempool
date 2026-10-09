@@ -1,9 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { Package, ArrowRight, ArrowUpRight, MapPin, Phone, Clock, Star } from "lucide-react";
 import type { Material } from "@/types";
 import { MATERIAL_CONDITIONS } from "@/lib/materials-store";
 import { categoryOf } from "@/lib/listing-categories";
-import { BUSINESS, DEMO_LISTINGS } from "@/lib/site";
+import { telHref } from "@/lib/site-settings";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
 
 // Listing cards shared by the homepage board and the /ogloszenia page.
 
@@ -38,7 +41,8 @@ export function Price({ value, large = false }: { value?: number; large?: boolea
 }
 
 export function DemoChip() {
-  if (!DEMO_LISTINGS) return null;
+  const site = useSiteSettings();
+  if (!site.demoListings) return null;
   return (
     <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm border border-white/15 text-[10px] font-bold tracking-[0.15em] text-white/80">
       DEMO
@@ -77,6 +81,7 @@ export function Specs({ item, dense = false }: { item: Material; dense?: boolean
 }
 
 export function FeaturedCard({ item }: { item: Material }) {
+  const site = useSiteSettings();
   const ago = addedAgo(item.utworzone);
   return (
     <article className="group relative sm:col-span-2 lg:row-span-2 min-h-[460px] rounded-2xl overflow-hidden border border-[#f5b52c]/40 bg-black shadow-[0_30px_80px_-30px_rgba(245,181,44,0.35)]">
@@ -125,7 +130,7 @@ export function FeaturedCard({ item }: { item: Material }) {
               Zapytaj o ofertę <ArrowRight size={16} />
             </Link>
             <a
-              href={`tel:${BUSINESS.phone}`}
+              href={telHref(site.phone)}
               aria-label="Zadzwoń"
               className="w-12 h-12 flex items-center justify-center rounded-full border border-white/25 text-white hover:border-[#f5b52c] hover:text-[#f5b52c] transition-colors"
             >
@@ -193,6 +198,7 @@ export function ListingCard({ item }: { item: Material }) {
 }
 
 export function SellBanner() {
+  const site = useSiteSettings();
   return (
     <div className="relative sm:col-span-2 rounded-2xl overflow-hidden border border-[#f5b52c]/40">
       <img
@@ -219,10 +225,10 @@ export function SellBanner() {
             Zgłoś do wyceny <ArrowRight size={16} />
           </Link>
           <a
-            href={`tel:${BUSINESS.phone}`}
+            href={telHref(site.phone)}
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold border border-white/25 text-white hover:border-[#f5b52c] hover:text-[#f5b52c] transition-colors"
           >
-            <Phone size={16} /> {BUSINESS.phoneDisplay}
+            <Phone size={16} /> {site.phone}
           </a>
         </div>
       </div>

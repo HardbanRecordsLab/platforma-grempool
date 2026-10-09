@@ -54,7 +54,7 @@ function fileToCompressedBlob(file: File, maxWidth = 1600, quality = 0.8): Promi
   });
 }
 
-export type UploadFolder = "materials" | "services";
+export type UploadFolder = "materials" | "services" | "site";
 
 export async function uploadImageFile(file: File, folder: UploadFolder): Promise<string> {
   const blob = await fileToCompressedBlob(file);

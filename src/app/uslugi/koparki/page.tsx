@@ -3,6 +3,8 @@ import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
 import { Wrench, Phone, ArrowRight, CheckCircle2, MapPin, Clock } from "lucide-react";
 import Link from "next/link";
+import { telHref } from "@/lib/site-settings";
+import { getSiteSettings } from "@/lib/site-settings-server";
 
 export const metadata: Metadata = {
   title: "Usługi Koparką - Wykopy, Niwelacje, Prace Ziemne",
@@ -18,7 +20,8 @@ const gallery = [
   "https://images.unsplash.com/photo-1751054770504-c69daeec4721?auto=format&fit=crop&w=800&q=80",
 ];
 
-export default function KoparkiPage() {
+export default async function KoparkiPage() {
+  const site = await getSiteSettings();
   const machines = [
     { name: "Koparka #01", model: "Caterpillar 320D", weight: "22 tony", depth: "6.7m", equipment: ["Łyżka 0.8m³", "Łyżka 1.2m³", "Świder", "Chwytak"] },
     { name: "Koparka #02", model: "Komatsu PC210", weight: "21 tony", depth: "6.5m", equipment: ["Łyżka 0.7m³", "Łyżka 1.0m³"] },
@@ -70,7 +73,7 @@ export default function KoparkiPage() {
               i prace ziemne na najwyższym poziomie. Działamy na terenie Dolnego Śląska.
             </p>
             <div className="flex gap-4">
-              <a href="tel:+48663288533" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#000000] flex items-center gap-2">
+              <a href={telHref(site.phone)} className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#000000] flex items-center gap-2">
                 <Phone size={20} /> ZADZWOŃ
               </a>
               <Link href="/wycena" className="px-6 py-3 rounded-lg font-semibold border-2 border-[#f5b52c] text-[#f5b52c] hover:bg-[#f5b52c] hover:text-[#000000] transition-all">
@@ -179,8 +182,8 @@ export default function KoparkiPage() {
             POTRZEBUJESZ KOPARKI?
           </h2>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href="tel:+48663288533" className="bg-[#000000] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#0a0a0a] transition-colors flex items-center gap-2">
-              <Phone size={20} /> +48 663 288 533
+            <a href={telHref(site.phone)} className="bg-[#000000] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#0a0a0a] transition-colors flex items-center gap-2">
+              <Phone size={20} /> {site.phone}
             </a>
             <Link href="/wycena" className="border-2 border-[#000000] text-[#000000] px-8 py-4 rounded-lg font-semibold hover:bg-[#000000] hover:text-[#f5b52c] transition-colors flex items-center gap-2">
               WYCENA ONLINE <ArrowRight size={20} />

@@ -3,7 +3,8 @@ import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
 import { Scale, Phone, ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
-import { BUSINESS } from "@/lib/site";
+import { telHref } from "@/lib/site-settings";
+import { getSiteSettings } from "@/lib/site-settings-server";
 
 export const metadata: Metadata = {
   title: "Waga Najazdowa 50 Ton - Ważenie Złomu i Materiałów | Raszówka",
@@ -19,7 +20,8 @@ const gallery = [
   "https://images.unsplash.com/photo-1711989691538-4c1aac2c4279?auto=format&fit=crop&w=800&q=80",
 ];
 
-export default function WagaNajazdowaPage() {
+export default async function WagaNajazdowaPage() {
+  const site = await getSiteSettings();
   const weighed = [
     { title: "Złom stalowy i metale", desc: "Ważenie przy skupie - cenę liczymy od rzeczywistej masy dostawy" },
     { title: "Kruszywa i materiały sypkie", desc: "Piasek, żwir, kamień, ziemia - kontrola masy przy załadunku i rozładunku" },
@@ -62,7 +64,7 @@ export default function WagaNajazdowaPage() {
               rzeczywistej masie ładunku, a nie na szacunkach.
             </p>
             <div className="flex flex-wrap gap-4">
-              <a href={`tel:${BUSINESS.phone}`} className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#000000] flex items-center gap-2">
+              <a href={telHref(site.phone)} className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#000000] flex items-center gap-2">
                 <Phone size={20} /> ZADZWOŃ
               </a>
               <Link href="/wycena" className="btn-outline-gold px-6 py-3 rounded-lg font-semibold">
@@ -160,11 +162,11 @@ export default function WagaNajazdowaPage() {
             PRZYJEDŹ Z ŁADUNKIEM - ZWAŻYMY I ROZLICZYMY
           </h2>
           <p className="text-[#000000]/80 mb-8">
-            {BUSINESS.streetAddress}, {BUSINESS.postalCode} {BUSINESS.addressLocality}
+            {site.streetAddress}, {site.postalCode} {site.addressLocality}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href={`tel:${BUSINESS.phone}`} className="bg-[#000000] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#0a0a0a] transition-colors flex items-center gap-2">
-              <Phone size={20} /> {BUSINESS.phoneDisplay}
+            <a href={telHref(site.phone)} className="bg-[#000000] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#0a0a0a] transition-colors flex items-center gap-2">
+              <Phone size={20} /> {site.phone}
             </a>
             <Link href="/uslugi/skup-zlomu" className="border-2 border-[#000000] text-[#000000] px-8 py-4 rounded-lg font-semibold hover:bg-[#000000] hover:text-[#f5b52c] transition-colors flex items-center gap-2">
               SKUP ZŁOMU <ArrowRight size={20} />

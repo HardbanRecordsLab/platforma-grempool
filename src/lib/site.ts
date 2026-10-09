@@ -23,12 +23,5 @@ export const BUSINESS = {
   addressRegion: "dolnośląskie",
   addressCountry: "PL",
   areaServed: ["Raszówka", "Głogów", "Legnica", "Lubin", "Polkowice", "Chocianów"],
-  openingHours: [
-    { days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "07:00", closes: "17:00" },
-    { days: ["Saturday"], opens: "08:00", closes: "14:00" },
-  ],
 };
 
-// Marketplace listings are sample data while the site is being built.
-// Set to false once real stock is entered in the admin panel.
-export const DEMO_LISTINGS = true;

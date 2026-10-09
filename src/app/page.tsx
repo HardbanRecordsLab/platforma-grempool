@@ -4,6 +4,8 @@ import Hero from "@/components/public/Hero";
 import About from "@/components/public/About";
 import FeaturedMaterials from "@/components/public/FeaturedMaterials";
 import Footer from "@/components/public/Footer";
+import { telHref } from "@/lib/site-settings";
+import { getSiteSettings } from "@/lib/site-settings-server";
 
 export const metadata: Metadata = {
   title: "GREMPOOL - Skup Złomu, Transport, Usługi Koparką | Legnicko-Głogowskie",
@@ -12,7 +14,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-export default function Home() {
+export default async function Home() {
+  const site = await getSiteSettings();
   return (
     <main className="min-h-screen">
       <Navbar />
@@ -44,10 +47,10 @@ export default function Home() {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <a 
-              href="tel:+48663288533" 
+              href={telHref(site.phone)} 
               className="bg-[#000000] text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-[#0a0a0a] transition-colors"
             >
-              +48 663 288 533
+              {site.phone}
             </a>
             <a 
               href="/wycena" 

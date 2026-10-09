@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { uploadToR2 } from "@/lib/r2";
 
-const ALLOWED_FOLDERS = new Set(["materials", "services"]);
+const ALLOWED_FOLDERS = new Set(["materials", "services", "site"]);
 
 export async function POST(request: NextRequest) {
   const folder = request.nextUrl.searchParams.get("folder") || "misc";

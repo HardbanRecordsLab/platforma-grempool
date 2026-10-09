@@ -3,6 +3,9 @@ import { Inter, Montserrat } from "next/font/google";
 import "./globals.css";
 import { SITE_NAME, SITE_URL, BUSINESS } from "@/lib/site";
 import { createAdminClient } from "@/lib/supabase-admin";
+import { getSiteSettings } from "@/lib/site-settings-server";
+import { openingHoursSpecification, telHref } from "@/lib/site-settings";
+import { SiteSettingsProvider } from "@/components/SiteSettingsProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -74,7 +77,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const socialUrls = await getSocialUrls();
+  const [socialUrls, settings] = await Promise.all([getSocialUrls(), getSiteSettings()]);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -93,24 +96,19 @@ export default async function RootLayout({
       width: 512,
       height: 512,
     },
-    telephone: BUSINESS.phone,
-    email: BUSINESS.email,
+    telephone: telHref(settings.phone).replace("tel:", ""),
+    email: settings.email,
     priceRange: "$$",
     address: {
       "@type": "PostalAddress",
-      streetAddress: BUSINESS.streetAddress,
-      postalCode: BUSINESS.postalCode,
-      addressLocality: BUSINESS.addressLocality,
+      streetAddress: settings.streetAddress,
+      postalCode: settings.postalCode,
+      addressLocality: settings.addressLocality,
       addressRegion: BUSINESS.addressRegion,
       addressCountry: BUSINESS.addressCountry,
     },
     areaServed: BUSINESS.areaServed.map((name) => ({ "@type": "City", name })),
-    openingHoursSpecification: BUSINESS.openingHours.map((spec) => ({
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: spec.days,
-      opens: spec.opens,
-      closes: spec.closes,
-    })),
+    openingHoursSpecification: openingHoursSpecification(settings),
     ...(socialUrls.length > 0 ? { sameAs: socialUrls } : {}),
   };
 
@@ -121,7 +119,7 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        {children}
+        <SiteSettingsProvider settings={settings}>{children}</SiteSettingsProvider>
       </body>
     </html>
   );

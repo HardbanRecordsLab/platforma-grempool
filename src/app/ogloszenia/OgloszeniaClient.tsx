@@ -10,7 +10,8 @@ import { ListingCard } from "@/components/public/ListingCards";
 import type { Material } from "@/types";
 import { MATERIAL_CONDITIONS, getAvailableMaterials } from "@/lib/materials-store";
 import { LISTING_CATEGORIES, categoryOf } from "@/lib/listing-categories";
-import { BUSINESS, DEMO_LISTINGS } from "@/lib/site";
+import { telHref } from "@/lib/site-settings";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
 
 const PAGE_SIZE = 12;
 
@@ -25,6 +26,7 @@ function listingsWord(n: number) {
 }
 
 export default function OgloszeniaClient() {
+  const site = useSiteSettings();
   const [materials, setMaterials] = useState<Material[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
@@ -282,10 +284,10 @@ export default function OgloszeniaClient() {
               </p>
               <div className="flex flex-wrap gap-3 mt-8">
                 <a
-                  href={`tel:${BUSINESS.phone}`}
+                  href={telHref(site.phone)}
                   className="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold text-black"
                 >
-                  <Phone size={16} /> {BUSINESS.phoneDisplay}
+                  <Phone size={16} /> {site.phone}
                 </a>
                 <Link
                   href="/wycena"
@@ -298,7 +300,7 @@ export default function OgloszeniaClient() {
 
             <dl className="grid grid-cols-3 rounded-2xl border border-white/10 bg-black/50 backdrop-blur-sm divide-x divide-white/10 shrink-0">
               {[
-                { value: materials.length || "—", label: DEMO_LISTINGS ? "ogłoszeń (demo)" : "ogłoszeń" },
+                { value: materials.length || "—", label: site.demoListings ? "ogłoszeń (demo)" : "ogłoszeń" },
                 { value: categories.length || "—", label: "kategorii" },
                 { value: <Truck size={26} className="text-[#f5b52c]" />, label: "dowóz w regionie" },
               ].map((stat) => (
@@ -343,10 +345,10 @@ export default function OgloszeniaClient() {
               <h3 className="font-montserrat font-bold text-white mb-1.5">Nie widzisz tego, czego szukasz?</h3>
               <p className="text-sm text-[#e8dfcc] mb-4">Nie wszystko jest wystawione. Zadzwoń — sprawdzimy plac.</p>
               <a
-                href={`tel:${BUSINESS.phone}`}
+                href={telHref(site.phone)}
                 className="flex items-center justify-center gap-2 btn-primary py-2.5 rounded-full text-sm font-bold text-black"
               >
-                <Phone size={15} /> {BUSINESS.phoneDisplay}
+                <Phone size={15} /> {site.phone}
               </a>
             </div>
           </aside>

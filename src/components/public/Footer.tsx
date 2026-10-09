@@ -5,9 +5,11 @@ import Link from "next/link";
 import { Phone, Mail, MapPin, Globe } from "lucide-react";
 import type { SocialChannel } from "@/types";
 import { getActiveSocialChannels } from "@/lib/social-channels-store";
-import { BUSINESS } from "@/lib/site";
+import { telHref } from "@/lib/site-settings";
+import { useSiteSettings } from "@/components/SiteSettingsProvider";
 
 export default function Footer() {
+  const site = useSiteSettings();
   const [channels, setChannels] = useState<SocialChannel[]>([]);
 
   useEffect(() => {
@@ -73,18 +75,18 @@ export default function Footer() {
             <ul className="space-y-3 text-[#e8dfcc] text-sm">
               <li className="flex items-start gap-3">
                 <MapPin className="text-[#f5b52c] size-5 shrink-0" />
-                <span>ul. Kolejowa 5a<br />59-307 Raszówka</span>
+                <span>{site.streetAddress}<br />{site.postalCode} {site.addressLocality}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="text-[#f5b52c] size-5 shrink-0" />
-                <a href="tel:+48663288533" className="hover:text-[#f5b52c] transition-colors">
-                  +48 663 288 533
+                <a href={telHref(site.phone)} className="hover:text-[#f5b52c] transition-colors">
+                  {site.phone}
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="text-[#f5b52c] size-5 shrink-0" />
-                <a href={`mailto:${BUSINESS.email}`} className="hover:text-[#f5b52c] transition-colors">
-                  {BUSINESS.email}
+                <a href={`mailto:${site.email}`} className="hover:text-[#f5b52c] transition-colors">
+                  {site.email}
                 </a>
               </li>
             </ul>

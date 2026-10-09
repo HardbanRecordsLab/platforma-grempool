@@ -3,6 +3,8 @@ import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
 import { Hammer, Phone, ArrowRight, CheckCircle2, Truck, Recycle } from "lucide-react";
 import Link from "next/link";
+import { telHref } from "@/lib/site-settings";
+import { getSiteSettings } from "@/lib/site-settings-server";
 
 export const metadata: Metadata = {
   title: "Rozbiórki Budynków i Obiektów z Segregacją Materiałów",
@@ -18,7 +20,8 @@ const gallery = [
   "https://images.unsplash.com/photo-1776594974675-b21647efe342?auto=format&fit=crop&w=800&q=80",
 ];
 
-export default function RozbiorkiPage() {
+export default async function RozbiorkiPage() {
+  const site = await getSiteSettings();
   const services = [
     "Wyburzanie budynków",
     "Rozbiórki częściowe",
@@ -63,7 +66,7 @@ export default function RozbiorkiPage() {
               Zapewniamy bezpieczeństwo, terminowość i dbałość o środowisko.
             </p>
             <div className="flex gap-4">
-              <a href="tel:+48663288533" className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#000000] flex items-center gap-2">
+              <a href={telHref(site.phone)} className="btn-primary px-6 py-3 rounded-lg font-semibold text-[#000000] flex items-center gap-2">
                 <Phone size={20} /> ZADZWOŃ
               </a>
               <Link href="/wycena" className="px-6 py-3 rounded-lg font-semibold border-2 border-[#f5b52c] text-[#f5b52c] hover:bg-[#f5b52c] hover:text-[#000000] transition-all">
@@ -170,8 +173,8 @@ export default function RozbiorkiPage() {
             POTRZEBUJESZ ROZBIÓRKI?
           </h2>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href="tel:+48663288533" className="bg-[#000000] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#0a0a0a] transition-colors flex items-center gap-2">
-              <Phone size={20} /> +48 663 288 533
+            <a href={telHref(site.phone)} className="bg-[#000000] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#0a0a0a] transition-colors flex items-center gap-2">
+              <Phone size={20} /> {site.phone}
             </a>
             <Link href="/wycena" className="border-2 border-[#000000] text-[#000000] px-8 py-4 rounded-lg font-semibold hover:bg-[#000000] hover:text-[#f5b52c] transition-colors flex items-center gap-2">
               ZAPYTAJ O WYCENĘ <ArrowRight size={20} />
