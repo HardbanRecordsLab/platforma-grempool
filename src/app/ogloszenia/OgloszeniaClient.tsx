@@ -6,7 +6,7 @@ import { ChevronRight, LayoutGrid, Phone, Search, SlidersHorizontal, Truck, X, A
 import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
 import DemoListingsNotice from "@/components/public/DemoListingsNotice";
-import { ListingCard, SellBanner } from "@/components/public/ListingCards";
+import { ListingCard } from "@/components/public/ListingCards";
 import type { Material } from "@/types";
 import { MATERIAL_CONDITIONS, getAvailableMaterials } from "@/lib/materials-store";
 import { LISTING_CATEGORIES, categoryOf } from "@/lib/listing-categories";
@@ -432,10 +432,6 @@ export default function OgloszeniaClient() {
                 )}
               </>
             )}
-
-            <div className="grid grid-cols-1 mt-12 min-h-[280px]">
-              <SellBanner />
-            </div>
           </div>
         </div>
       </section>
