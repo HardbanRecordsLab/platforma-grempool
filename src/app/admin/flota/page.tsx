@@ -172,6 +172,42 @@ export default function FlotaPage() {
         </div>
       </div>
 
+      {(() => {
+        // Dates within 14 days or overdue — the same rule as the daily reminder.
+        const due = vehicles
+          .flatMap((v) =>
+            (
+              [
+                ["Przegląd", v.przeglad],
+                ["OC", v.oc],
+                ["Serwis", v.serwis],
+              ] as const
+            ).map(([kind, date]) => ({ kind, date, days: getDaysUntil(date), vehicle: `${v.nazwa} (${v.rejestracja})` }))
+          )
+          .filter((d): d is typeof d & { days: number } => d.days !== null && d.days <= 14)
+          .sort((a, b) => a.days - b.days);
+        if (due.length === 0) return null;
+        return (
+          <div className="mb-6 rounded-xl border border-[#f5b52c]/50 bg-[#f5b52c]/10 p-4">
+            <div className="flex items-center gap-2 font-semibold text-white mb-2">
+              <AlertTriangle size={18} className="text-[#f5b52c]" /> Najbliższe terminy
+            </div>
+            <ul className="space-y-1 text-sm">
+              {due.map((d) => (
+                <li key={`${d.vehicle}-${d.kind}`} className="flex flex-wrap gap-x-2">
+                  <span className="text-white font-semibold">{d.kind}</span>
+                  <span className="text-[#e8dfcc]">{d.vehicle}</span>
+                  <span className={d.days < 0 ? "text-red-400 font-semibold" : d.days <= 3 ? "text-[#f5b52c] font-semibold" : "text-[#e8dfcc]"}>
+                    {d.days < 0 ? `po terminie ${-d.days} dni` : d.days === 0 ? "dziś" : `za ${d.days} dni`} ({d.date})
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p className="text-xs text-[#e8dfcc]/70 mt-2">Przypomnienia idą codziennie rano mailem i pushem (14, 7, 3, 1 dzień przed i w dniu terminu).</p>
+          </div>
+        );
+      })()}
+
       {loading ? (
         <div className="bg-[#0a0a0a] p-12 rounded-xl border border-[#5c4716] text-center text-[#e8dfcc] flex items-center justify-center gap-3">
           <Loader2 className="animate-spin" size={18} /> Wczytywanie...
