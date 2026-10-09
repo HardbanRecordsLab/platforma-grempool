@@ -55,11 +55,13 @@ function WycenaForm() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [leadNumer, setLeadNumer] = useState<string | null>(null);
+  const [materialCode, setMaterialCode] = useState<string | null>(null);
 
   useEffect(() => {
     const materialId = searchParams.get("material");
     const materialName = searchParams.get("nazwa");
     if (materialId) {
+      setMaterialCode(materialId);
       setSelectedService("materialy");
       setFormData((prev) => ({
         ...prev,
@@ -99,7 +101,7 @@ function WycenaForm() {
           opis: formData.opis,
           notatki: detailsSummary || null,
           preferowany_termin: formData.termin || null,
-          status: "nowy",
+          material: materialCode,
         }),
       });
       const data = await res.json();

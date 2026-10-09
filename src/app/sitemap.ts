@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
+import { getAvailableMaterialCodes } from "@/lib/materials-server";
 
 const staticRoutes: { path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"] }[] = [
   { path: "", priority: 1, changeFrequency: "weekly" },
@@ -14,12 +15,24 @@ const staticRoutes: { path: string; priority: number; changeFrequency: MetadataR
   { path: "/kontakt", priority: 0.7, changeFrequency: "monthly" },
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+// Rebuilt at most once an hour, so new listings reach Google without a deploy.
+export const revalidate = 3600;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  return staticRoutes.map((route) => ({
-    url: `${SITE_URL}${route.path}`,
-    lastModified: now,
-    changeFrequency: route.changeFrequency,
-    priority: route.priority,
-  }));
+  const listings = await getAvailableMaterialCodes().catch(() => []);
+  return [
+    ...staticRoutes.map((route) => ({
+      url: `${SITE_URL}${route.path}`,
+      lastModified: now,
+      changeFrequency: route.changeFrequency,
+      priority: route.priority,
+    })),
+    ...listings.map((listing) => ({
+      url: `${SITE_URL}/ogloszenia/${listing.code}`,
+      lastModified: new Date(listing.updated),
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    })),
+  ];
 }

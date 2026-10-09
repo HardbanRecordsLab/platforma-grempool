@@ -47,11 +47,12 @@ export default function FeaturedMaterials() {
     if (sort === "price_asc") list.sort((a, b) => (a.cena ?? Infinity) - (b.cena ?? Infinity));
     else if (sort === "price_desc") list.sort((a, b) => (b.cena ?? -1) - (a.cena ?? -1));
     else list.sort((a, b) => (b.utworzone ?? "").localeCompare(a.utworzone ?? ""));
-    const shown = list.slice(0, LIMIT);
-    // The featured slot needs a photo to look right.
-    const index = shown.findIndex((m) => m.zdjecia && m.zdjecia.length > 0);
-    if (index === -1 || shown.length < 3) return { featured: null, rest: shown };
-    return { featured: shown[index], rest: shown.filter((_, i) => i !== index) };
+    // The big card shows a listing the owner starred in the admin panel; it
+    // needs a photo to look right, so fall back to the first one with a photo.
+    const hasPhoto = (m: Material) => Boolean(m.zdjecia && m.zdjecia.length > 0);
+    const pick = list.find((m) => m.wyrozniony && hasPhoto(m)) ?? list.find(hasPhoto);
+    if (!pick || list.length < 3) return { featured: null, rest: list.slice(0, LIMIT) };
+    return { featured: pick, rest: list.filter((m) => m.id !== pick.id).slice(0, LIMIT - 1) };
   }, [materials, category, sort]);
 
   const search = (e: React.FormEvent) => {

@@ -29,7 +29,7 @@ const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/admin/dashboard" },
   { icon: Users, label: "CRM / Leady", href: "/admin/crm" },
   { icon: FileText, label: "Zlecenia", href: "/admin/zlecenia" },
-  { icon: Package, label: "Materiały", href: "/admin/materialy" },
+  { icon: Package, label: "Ogłoszenia", href: "/admin/materialy" },
   { icon: LayoutGrid, label: "Nasze usługi", href: "/admin/uslugi" },
   { icon: Tags, label: "Cennik złomu", href: "/admin/cennik" },
   { icon: Share2, label: "Social media", href: "/admin/social" },

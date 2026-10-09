@@ -28,7 +28,7 @@ export const MATERIAL_STATUSES: { value: MaterialStatus; label: string }[] = [
   { value: "do_weryfikacji", label: "Do weryfikacji" },
 ];
 
-interface MaterialRow {
+export interface MaterialRow {
   id: string;
   id_materialu: string;
   kategoria: Material["kategoria"];
@@ -42,11 +42,15 @@ interface MaterialRow {
   cena: number | null;
   status: MaterialStatus;
   notatki: string | null;
+  opis: string | null;
+  wyrozniony: boolean | null;
+  wyswietlenia: number | null;
+  zapytania: number | null;
   created_at: string;
   updated_at: string;
 }
 
-function fromRow(row: MaterialRow): Material {
+export function fromRow(row: MaterialRow): Material {
   return {
     id: row.id,
     id_materialu: row.id_materialu,
@@ -61,6 +65,10 @@ function fromRow(row: MaterialRow): Material {
     cena: row.cena ?? undefined,
     status: row.status,
     notatki: row.notatki ?? undefined,
+    opis: row.opis ?? undefined,
+    wyrozniony: row.wyrozniony ?? false,
+    wyswietlenia: row.wyswietlenia ?? 0,
+    zapytania: row.zapytania ?? 0,
     utworzone: row.created_at,
     zaktualizowane: row.updated_at,
   };
@@ -84,7 +92,7 @@ export async function getAvailableMaterials(): Promise<Material[]> {
   return rows.map(fromRow);
 }
 
-export type MaterialInput = Omit<Material, "id" | "id_materialu" | "utworzone" | "zaktualizowane">;
+export type MaterialInput = Omit<Material, "id" | "id_materialu" | "utworzone" | "zaktualizowane" | "wyswietlenia" | "zapytania">;
 
 export async function createMaterial(data: MaterialInput): Promise<Material> {
   const res = await fetch("/api/materials", {

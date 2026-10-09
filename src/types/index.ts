@@ -124,6 +124,10 @@ export interface Material {
   cena?: number;
   status: MaterialStatus;
   notatki?: string;
+  opis?: string;
+  wyrozniony: boolean;
+  wyswietlenia: number;
+  zapytania: number;
   utworzone: string;
   zaktualizowane: string;
 }

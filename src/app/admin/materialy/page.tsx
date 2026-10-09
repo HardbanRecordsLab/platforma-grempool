@@ -18,9 +18,17 @@ import {
   BookmarkCheck,
   Camera,
   Share2,
+  Copy,
+  Star,
+  Eye,
+  MessageSquare,
+  ExternalLink,
+  RotateCcw,
+  Upload,
 } from "lucide-react";
 import type { Material, MaterialStatus } from "@/types";
 import PromoteMaterialModal from "@/components/admin/PromoteMaterialModal";
+import ImportMaterialsModal from "@/components/admin/ImportMaterialsModal";
 import {
   MATERIAL_CATEGORIES,
   MATERIAL_CONDITIONS,
@@ -56,13 +64,17 @@ const emptyForm: MaterialInput = {
   cena: undefined,
   status: "dostepny",
   notatki: "",
+  opis: "",
+  wyrozniony: false,
 };
 
 export default function MaterialyPage() {
   const [materials, setMaterials] = useState<Material[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("Wszystkie");
-  const [filterStatus, setFilterStatus] = useState("wszystkie");
+  // "aktywne" hides sold listings; they live in the archive filter.
+  const [filterStatus, setFilterStatus] = useState("aktywne");
+  const [importOpen, setImportOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<MaterialInput>(emptyForm);
@@ -93,7 +105,9 @@ export default function MaterialyPage() {
         material.nazwa.toLowerCase().includes(searchQuery.toLowerCase()) ||
         material.id_materialu.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = filterCategory === "Wszystkie" || categoryLabel(material.kategoria) === filterCategory;
-      const matchesStatus = filterStatus === "wszystkie" || material.status === filterStatus;
+      const matchesStatus =
+        filterStatus === "wszystkie" ||
+        (filterStatus === "aktywne" ? material.status !== "sprzedany" : material.status === filterStatus);
       return matchesSearch && matchesCategory && matchesStatus;
     });
   }, [materials, searchQuery, filterCategory, filterStatus]);
@@ -126,9 +140,40 @@ export default function MaterialyPage() {
       cena: material.cena,
       status: material.status,
       notatki: material.notatki ?? "",
+      opis: material.opis ?? "",
+      wyrozniony: material.wyrozniony,
     });
     setAskPrice(material.cena === undefined || material.cena === null);
     setModalOpen(true);
+  };
+
+  // Same fields as the original, saved as a new listing with its own number.
+  const openDuplicateModal = (material: Material) => {
+    openEditModal(material);
+    setEditingId(null);
+    setForm((prev) => ({ ...prev, nazwa: `${material.nazwa} (kopia)`, status: "dostepny", wyrozniony: false }));
+  };
+
+  const quickUpdate = async (material: Material, data: Partial<MaterialInput>, failMessage: string) => {
+    try {
+      await updateMaterial(material.id, data);
+      await refresh();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : failMessage);
+    }
+  };
+
+  const handleSold = (material: Material) => {
+    if (!confirm(`Oznaczyć „${material.nazwa}” jako sprzedane? Zniknie ze strony i trafi do archiwum.`)) return;
+    quickUpdate(material, { status: "sprzedany", wyrozniony: false }, "Nie udało się oznaczyć jako sprzedane");
+  };
+
+  const makeMainPhoto = (index: number) => {
+    setForm((prev) => {
+      const photos = [...(prev.zdjecia ?? [])];
+      const [photo] = photos.splice(index, 1);
+      return { ...prev, zdjecia: [photo, ...photos] };
+    });
   };
 
   const closeModal = () => setModalOpen(false);
@@ -198,13 +243,21 @@ export default function MaterialyPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-montserrat font-bold">Materiały</h1>
-        <button
-          onClick={openAddModal}
-          className="btn-primary px-4 py-2 rounded-lg text-sm font-semibold text-[#000000] flex items-center gap-2"
-        >
-          <Plus size={16} /> Dodaj ofertę
-        </button>
+        <h1 className="text-2xl font-montserrat font-bold">Ogłoszenia</h1>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setImportOpen(true)}
+            className="px-4 py-2 rounded-lg text-sm font-semibold border border-[#5c4716] text-[#e8dfcc] hover:text-white hover:border-[#f5b52c] flex items-center gap-2"
+          >
+            <Upload size={16} /> Import z Excela
+          </button>
+          <button
+            onClick={openAddModal}
+            className="btn-primary px-4 py-2 rounded-lg text-sm font-semibold text-[#000000] flex items-center gap-2"
+          >
+            <Plus size={16} /> Dodaj ofertę
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -267,8 +320,10 @@ export default function MaterialyPage() {
             onChange={(e) => setFilterStatus(e.target.value)}
             className="bg-[#000000] border border-[#5c4716] rounded-lg px-4 py-2 text-sm text-white"
           >
-            <option value="wszystkie">Wszystkie statusy</option>
-            {MATERIAL_STATUSES.map((s) => (
+            <option value="aktywne">Aktywne (bez sprzedanych)</option>
+            <option value="sprzedany">Archiwum — sprzedane</option>
+            <option value="wszystkie">Wszystkie</option>
+            {MATERIAL_STATUSES.filter((s) => s.value !== "sprzedany").map((s) => (
               <option key={s.value} value={s.value}>{s.label}</option>
             ))}
           </select>
@@ -288,11 +343,21 @@ export default function MaterialyPage() {
 
             return (
               <div key={material.id} className="bg-[#0a0a0a] rounded-xl border border-[#5c4716] hover:border-[#f5b52c]/30 transition-colors overflow-hidden">
-                <div className="aspect-video bg-[#000000] flex items-center justify-center overflow-hidden">
+                <div className="relative aspect-video bg-[#000000] flex items-center justify-center overflow-hidden">
                   {material.zdjecia && material.zdjecia.length > 0 ? (
                     <img src={material.zdjecia[0]} alt={material.nazwa} className="w-full h-full object-cover" />
                   ) : (
                     <Package className="text-[#5c4716] size-12" />
+                  )}
+                  {material.wyrozniony && (
+                    <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-[#f5b52c] text-black text-[11px] font-bold flex items-center gap-1">
+                      <Star size={11} fill="currentColor" /> Wyróżnione
+                    </span>
+                  )}
+                  {(material.zdjecia?.length ?? 0) > 1 && (
+                    <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded-full bg-black/70 text-white text-[11px]">
+                      {material.zdjecia!.length} zdjęć
+                    </span>
                   )}
                 </div>
                 <div className="p-6">
@@ -335,14 +400,24 @@ export default function MaterialyPage() {
                     </div>
                   </div>
 
-                  <div className="text-lg font-bold text-[#f5b52c] mb-4">
-                    {material.cena ? `${material.cena.toFixed(2)} zł` : "Zapytaj o cenę"}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="text-lg font-bold text-[#f5b52c]">
+                      {material.cena ? `${material.cena.toFixed(2)} zł` : "Zapytaj o cenę"}
+                    </div>
+                    <div className="flex items-center gap-3 text-xs text-[#e8dfcc]">
+                      <span className="flex items-center gap-1" title="Wyświetlenia na stronie">
+                        <Eye size={13} /> {material.wyswietlenia}
+                      </span>
+                      <span className="flex items-center gap-1" title="Zapytania z formularza">
+                        <MessageSquare size={13} /> {material.zapytania}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-2 pt-4 border-t border-[#5c4716]">
+                  <div className="flex items-center gap-1 pt-4 border-t border-[#5c4716]">
                     <button
                       onClick={() => openEditModal(material)}
-                      className="flex-1 px-3 py-2 rounded-lg bg-[#5c4716] text-sm font-semibold hover:bg-[#f5b52c] hover:text-[#000000] transition-colors flex items-center justify-center gap-2"
+                      className="flex-1 min-w-0 px-3 py-2 rounded-lg bg-[#5c4716] text-sm font-semibold hover:bg-[#f5b52c] hover:text-[#000000] transition-colors flex items-center justify-center gap-2"
                     >
                       <Edit size={14} /> Edytuj
                     </button>
@@ -359,6 +434,50 @@ export default function MaterialyPage() {
                         )}
                       </button>
                     )}
+                    <button
+                      onClick={() => quickUpdate(material, { wyrozniony: !material.wyrozniony }, "Nie udało się zmienić wyróżnienia")}
+                      className="p-2 rounded-lg hover:bg-[#5c4716] transition-colors"
+                      title={material.wyrozniony ? "Usuń wyróżnienie" : "Wyróżnij na stronie głównej"}
+                    >
+                      <Star
+                        size={14}
+                        className={material.wyrozniony ? "text-[#f5b52c]" : "text-[#e8dfcc]"}
+                        fill={material.wyrozniony ? "currentColor" : "none"}
+                      />
+                    </button>
+                    <button
+                      onClick={() => openDuplicateModal(material)}
+                      className="p-2 rounded-lg hover:bg-[#5c4716] transition-colors"
+                      title="Duplikuj"
+                    >
+                      <Copy size={14} className="text-[#e8dfcc]" />
+                    </button>
+                    {material.status === "sprzedany" ? (
+                      <button
+                        onClick={() => quickUpdate(material, { status: "dostepny" }, "Nie udało się przywrócić")}
+                        className="p-2 rounded-lg hover:bg-[#5c4716] transition-colors"
+                        title="Przywróć do sprzedaży"
+                      >
+                        <RotateCcw size={14} className="text-green-400" />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleSold(material)}
+                        className="p-2 rounded-lg hover:bg-[#5c4716] transition-colors"
+                        title="Oznacz jako sprzedane"
+                      >
+                        <CheckCircle2 size={14} className="text-green-400" />
+                      </button>
+                    )}
+                    <a
+                      href={`/ogloszenia/${material.id_materialu}`}
+                      target="_blank"
+                      rel="noopener"
+                      className="p-2 rounded-lg hover:bg-[#5c4716] transition-colors"
+                      title="Zobacz na stronie"
+                    >
+                      <ExternalLink size={14} className="text-[#e8dfcc]" />
+                    </a>
                     <button
                       onClick={() => setPromotingMaterial(material)}
                       className="p-2 rounded-lg hover:bg-[#5c4716] transition-colors"
@@ -385,7 +504,7 @@ export default function MaterialyPage() {
           <div className="bg-[#0a0a0a] border border-[#5c4716] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-[#5c4716] sticky top-0 bg-[#0a0a0a]">
               <h2 className="text-xl font-montserrat font-bold">
-                {editingId ? "Edytuj ofertę" : "Dodaj ofertę materiału"}
+                {editingId ? "Edytuj ogłoszenie" : "Dodaj ogłoszenie"}
               </h2>
               <button onClick={closeModal} className="text-[#e8dfcc] hover:text-white">
                 <X size={22} />
@@ -519,7 +638,28 @@ export default function MaterialyPage() {
               </div>
 
               <div>
-                <label className="block text-sm text-[#e8dfcc] mb-1">Notatki wewnętrzne</label>
+                <label className="block text-sm text-[#e8dfcc] mb-1">Opis widoczny na stronie</label>
+                <textarea
+                  rows={4}
+                  value={form.opis ?? ""}
+                  onChange={(e) => setForm({ ...form, opis: e.target.value })}
+                  placeholder="np. Profile z rozbiórki hali, proste, bez korozji. Możliwe cięcie na wymiar."
+                  className="w-full bg-[#000000] border border-[#5c4716] rounded-lg px-4 py-2 text-sm text-white"
+                />
+              </div>
+
+              <label className="flex items-center gap-3 text-sm text-white cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.wyrozniony}
+                  onChange={(e) => setForm({ ...form, wyrozniony: e.target.checked })}
+                  className="accent-[#f5b52c] w-4 h-4"
+                />
+                <Star size={15} className="text-[#f5b52c]" /> Wyróżnij na stronie głównej (duża karta)
+              </label>
+
+              <div>
+                <label className="block text-sm text-[#e8dfcc] mb-1">Notatki wewnętrzne (niewidoczne dla klientów)</label>
                 <textarea
                   rows={3}
                   value={form.notatki}
@@ -532,8 +672,24 @@ export default function MaterialyPage() {
                 <label className="block text-sm text-[#e8dfcc] mb-2">Zdjęcia</label>
                 <div className="flex flex-wrap gap-3 mb-3">
                   {(form.zdjecia ?? []).map((src, i) => (
-                    <div key={i} className="relative w-20 h-20 rounded-lg overflow-hidden border border-[#5c4716]">
+                    <div
+                      key={i}
+                      className={`relative w-20 h-20 rounded-lg overflow-hidden border ${i === 0 ? "border-2 border-[#f5b52c]" : "border-[#5c4716]"}`}
+                    >
                       <img src={src} alt="" className="w-full h-full object-cover" />
+                      {i === 0 ? (
+                        <span className="absolute bottom-0 inset-x-0 bg-[#f5b52c] text-black text-[9px] font-bold text-center">
+                          GŁÓWNE
+                        </span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => makeMainPhoto(i)}
+                          className="absolute bottom-0 inset-x-0 bg-black/70 text-white text-[9px] text-center hover:bg-[#f5b52c] hover:text-black"
+                        >
+                          ustaw główne
+                        </button>
+                      )}
                       <button
                         type="button"
                         onClick={() => removePhoto(i)}
@@ -601,6 +757,16 @@ export default function MaterialyPage() {
             </form>
           </div>
         </div>
+      )}
+
+      {importOpen && (
+        <ImportMaterialsModal
+          onClose={() => setImportOpen(false)}
+          onImported={async () => {
+            setImportOpen(false);
+            await refresh();
+          }}
+        />
       )}
 
       {promotingMaterial && (

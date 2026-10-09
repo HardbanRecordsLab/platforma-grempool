@@ -3,30 +3,12 @@
 import Link from "next/link";
 import { Package, ArrowRight, ArrowUpRight, MapPin, Phone, Clock, Star } from "lucide-react";
 import type { Material } from "@/types";
-import { MATERIAL_CONDITIONS } from "@/lib/materials-store";
+import { addedAgo, conditionLabel, formatPrice, inquiryHref, listingHref } from "@/lib/listing-format";
 import { categoryOf } from "@/lib/listing-categories";
 import { telHref } from "@/lib/site-settings";
 import { useSiteSettings } from "@/components/SiteSettingsProvider";
 
 // Listing cards shared by the homepage board and the /ogloszenia page.
-
-const conditionLabel = (value: Material["stan"]) =>
-  MATERIAL_CONDITIONS.find((c) => c.value === value)?.label ?? value;
-
-export const formatPrice = (price: number) =>
-  price.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-export const inquiryHref = (item: Material) =>
-  `/wycena?material=${encodeURIComponent(item.id_materialu)}&nazwa=${encodeURIComponent(item.nazwa)}`;
-
-export function addedAgo(date?: string) {
-  if (!date) return null;
-  const days = Math.floor((Date.now() - new Date(date).getTime()) / 86_400_000);
-  if (Number.isNaN(days) || days < 0) return null;
-  if (days === 0) return "dziś";
-  if (days === 1) return "wczoraj";
-  return `${days} dni temu`;
-}
 
 export function Price({ value, large = false }: { value?: number; large?: boolean }) {
   if (!value) {
@@ -112,7 +94,9 @@ export function FeaturedCard({ item }: { item: Material }) {
           )}
         </div>
         <h3 className="font-montserrat font-bold text-2xl md:text-3xl text-white leading-tight mb-5 max-w-lg">
-          {item.nazwa}
+          <Link href={listingHref(item)} className="hover:text-[#f5b52c] transition-colors">
+            {item.nazwa}
+          </Link>
         </h3>
         <div className="max-w-lg mb-6">
           <Specs item={item} />
@@ -149,7 +133,7 @@ export function ListingCard({ item }: { item: Material }) {
   const ago = addedAgo(item.utworzone);
   return (
     <Link
-      href={inquiryHref(item)}
+      href={listingHref(item)}
       className="group flex flex-col rounded-2xl overflow-hidden border border-white/10 bg-[#0d0d0d] hover:border-[#f5b52c]/60 hover:-translate-y-1 hover:shadow-[0_24px_60px_-28px_rgba(245,181,44,0.5)] transition-all duration-300"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-black">

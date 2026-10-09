@@ -17,6 +17,7 @@ const PUBLIC_API: PublicEndpoint[] = [
   { method: "GET", path: "/api/social-channels", query: ["active", "1"] },
   { method: "POST", path: "/api/leads" },
   { method: "POST", path: "/api/contact-messages" },
+  { method: "POST", path: "/api/materials/view" },
   { method: "POST", path: "/api/auth/login" },
   { method: "POST", path: "/api/auth/logout" },
   // Daily database ping from Vercel Cron; the route checks CRON_SECRET itself.
