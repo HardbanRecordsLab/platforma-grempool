@@ -85,3 +85,15 @@ CREATE TABLE IF NOT EXISTS public.scrap_price_history (
 );
 ALTER TABLE public.scrap_price_history ENABLE ROW LEVEL SECURITY;
 CREATE INDEX IF NOT EXISTS scrap_price_history_created_idx ON public.scrap_price_history (created_at DESC);
+
+-- Powiadomienia push w panelu (urządzenia, które je włączyły).
+CREATE TABLE IF NOT EXISTS public.push_subscriptions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  endpoint TEXT NOT NULL UNIQUE,
+  p256dh TEXT NOT NULL,
+  auth TEXT NOT NULL,
+  login TEXT,
+  user_agent TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE public.push_subscriptions ENABLE ROW LEVEL SECURITY;

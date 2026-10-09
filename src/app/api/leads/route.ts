@@ -1,6 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { createAdminClient } from "@/lib/supabase-admin";
 import { sendNewLeadNotification } from "@/lib/notifications";
+import { sendPushToAdmins } from "@/lib/push";
+import { SERVICE_LABELS } from "@/lib/supabase";
 
 export async function GET(request: NextRequest) {
   const supabase = createAdminClient();
@@ -46,7 +48,17 @@ export async function POST(request: NextRequest) {
     await supabase.rpc("material_inquired", { p_code: body.material });
   }
 
-  sendNewLeadNotification(data).catch(() => {});
+  // after(): the function stays alive until e-mail and push are sent.
+  after(async () => {
+    await Promise.allSettled([
+      sendNewLeadNotification(data),
+      sendPushToAdmins({
+        title: `Nowe zapytanie ${data.numer}`,
+        body: `${SERVICE_LABELS[data.usluga] ?? data.usluga} · ${data.klient_imie} ${data.klient_nazwisko ?? ""} · ${data.klient_telefon}`.trim(),
+        url: "/admin/crm",
+      }),
+    ]);
+  });
 
   return NextResponse.json(data);
 }

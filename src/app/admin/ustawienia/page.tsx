@@ -19,6 +19,7 @@ import {
 import { BUSINESS } from "@/lib/site";
 import { DEFAULT_SITE_SETTINGS, type SiteSettings, type TimeSlot } from "@/lib/site-settings";
 import { uploadImageFile } from "@/lib/image-utils";
+import PushSettings from "@/components/admin/PushSettings";
 
 interface SystemStatus {
   notificationEmail: string | null;
@@ -539,6 +540,7 @@ export default function UstawieniaPage() {
                   </div>
                 </>
               )}
+              <PushSettings />
             </div>
           )}
 
