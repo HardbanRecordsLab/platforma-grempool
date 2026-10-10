@@ -6,6 +6,7 @@ export const BACKUP_TABLES: Record<string, string> = {
   orders: "Zlecenia",
   offers: "Oferty",
   scrap_purchases: "Kwity skupu",
+  scrap_deliveries: "Dostawy złomu (sprzedaż)",
   scrap_prices: "Cennik złomu",
   scrap_price_history: "Historia cennika",
   contact_messages: "Wiadomości",

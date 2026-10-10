@@ -384,3 +384,6 @@ returns json language sql stable security definer set search_path = public as $$
   ) r;
 $$;
 revoke all on function public.clients_overview(text, text) from public, anon, authenticated;
+
+-- Dostawy złomu: numer karty przekazania odpadów (KPO) z BDO.
+ALTER TABLE public.scrap_deliveries ADD COLUMN IF NOT EXISTS numer_kpo TEXT;

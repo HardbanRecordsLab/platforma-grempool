@@ -10,6 +10,7 @@ import {
   Download,
   Receipt,
   BarChart3,
+  Truck,
   ChevronLeft,
   ChevronRight,
   Search,
@@ -19,6 +20,8 @@ import {
   Minus,
 } from "lucide-react";
 import ScrapPurchaseForm from "@/components/admin/ScrapPurchaseForm";
+import ScrapDeliveryForm from "@/components/admin/ScrapDeliveryForm";
+import { deliveryTotalWeight, type ScrapDelivery } from "@/lib/scrap-deliveries";
 import ScrapSummaryView, { formatMass } from "@/components/admin/ScrapSummaryView";
 import { formatKg, formatPln, type ScrapPurchase } from "@/lib/scrap-purchases";
 import {
@@ -70,7 +73,7 @@ function Delta({ current, previous, label }: { current: number; previous: number
 }
 
 export default function SkupClient({ initialClientId }: { initialClientId: string | null }) {
-  const [tab, setTab] = useState<"ewidencja" | "zestawienie">("ewidencja");
+  const [tab, setTab] = useState<"ewidencja" | "zestawienie" | "dostawy">("ewidencja");
   const [mode, setMode] = useState<PeriodMode>("day");
   const [anchor, setAnchor] = useState(() => new Date());
   const [custom, setCustom] = useState<CustomRange>(() => {
@@ -87,6 +90,8 @@ export default function SkupClient({ initialClientId }: { initialClientId: strin
   const [purchases, setPurchases] = useState<ScrapPurchase[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [deliveries, setDeliveries] = useState<ScrapDelivery[]>([]);
+  const [deliveryFormOpen, setDeliveryFormOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(Boolean(initialClientId));
   const [formClientId, setFormClientId] = useState<string | null>(initialClientId);
   const [reloadKey, setReloadKey] = useState(0);
@@ -136,6 +141,21 @@ export default function SkupClient({ initialClientId }: { initialClientId: strin
   }, [fromIso, toIso, bucket, typ, previous, requestKey, fetchSummary]);
 
   useEffect(() => {
+    if (tab !== "dostawy") return;
+    let stale = false;
+    fetch(`/api/scrap-deliveries?from=${encodeURIComponent(fromIso)}&to=${encodeURIComponent(toIso)}`, { cache: "no-store" })
+      .then(async (res) => {
+        const body = await res.json();
+        if (!res.ok) throw new Error(body.error ?? "Nie udało się wczytać dostaw");
+        if (!stale) setDeliveries(body);
+      })
+      .catch((err) => !stale && setError(err instanceof Error ? err.message : "Nie udało się wczytać dostaw"));
+    return () => {
+      stale = true;
+    };
+  }, [tab, fromIso, toIso, reloadKey]);
+
+  useEffect(() => {
     if (tab !== "ewidencja") return;
     let stale = false;
     fetchList(fromIso, toIso, typ)
@@ -159,6 +179,16 @@ export default function SkupClient({ initialClientId }: { initialClientId: strin
     }
     setMode(next);
   };
+
+  const removeDelivery = async (d: ScrapDelivery) => {
+    if (!confirm(`Usunąć dokument dostawy ${d.numer}? Tej operacji nie da się cofnąć.`)) return;
+    const res = await fetch(`/api/scrap-deliveries/${d.id}`, { method: "DELETE" });
+    if (!res.ok) alert("Nie udało się usunąć dokumentu");
+    setReloadKey((k) => k + 1);
+  };
+
+  const deliveriesKg = deliveries.reduce((sum, d) => sum + deliveryTotalWeight(d.pozycje), 0);
+  const deliveriesValue = deliveries.reduce((sum, d) => sum + d.suma, 0);
 
   const remove = async (p: ScrapPurchase) => {
     if (!confirm(`Usunąć cały kwit ${p.numer} (pozycji: ${p.pozycje.length})? Tej operacji nie da się cofnąć.`)) return;
@@ -306,6 +336,7 @@ export default function SkupClient({ initialClientId }: { initialClientId: strin
         )}
       </div>
 
+      {tab !== "dostawy" && (
       <div className="flex flex-wrap items-center gap-2 mb-4 text-sm text-[#e8dfcc]">
         Sprzedający:
         {SELLER_FILTERS.map((f) => (
@@ -319,10 +350,25 @@ export default function SkupClient({ initialClientId }: { initialClientId: strin
         ))}
         <span className="text-xs text-[#e8dfcc]/60">dotyczy wskaźników, zestawień, listy i eksportów</span>
       </div>
+      )}
 
       {error && <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl mb-4 text-sm">{error}</div>}
 
       {/* KPIs */}
+      {tab === "dostawy" ? (
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+          {[
+            { label: "Dostaw", value: String(deliveries.length) },
+            { label: "Wydano złomu", value: formatKg(Math.round(deliveriesKg * 1000) / 1000) },
+            { label: "Wartość (jeśli podana)", value: formatPln(deliveriesValue) },
+          ].map((k) => (
+            <div key={k.label} className="bg-[#0a0a0a] p-4 rounded-xl border border-[#5c4716]">
+              <div className="text-sm text-[#e8dfcc]">{k.label}</div>
+              <div className="text-2xl font-bold text-white mt-1">{k.value}</div>
+            </div>
+          ))}
+        </div>
+      ) : (
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {loading && !summary
           ? Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-24 rounded-xl bg-white/[0.03] animate-pulse" />)
@@ -334,6 +380,7 @@ export default function SkupClient({ initialClientId }: { initialClientId: strin
               </div>
             ))}
       </div>
+      )}
 
       {/* Tabs + export */}
       <div className="flex flex-wrap items-center gap-3 mb-6">
@@ -341,6 +388,7 @@ export default function SkupClient({ initialClientId }: { initialClientId: strin
           {[
             { id: "ewidencja" as const, label: "Ewidencja", icon: Receipt },
             { id: "zestawienie" as const, label: "Zestawienie", icon: BarChart3 },
+            { id: "dostawy" as const, label: "Sprzedaż do hut", icon: Truck },
           ].map((t) => (
             <button
               key={t.id}
@@ -352,6 +400,16 @@ export default function SkupClient({ initialClientId }: { initialClientId: strin
           ))}
         </div>
 
+        {tab === "dostawy" ? (
+          <div className="ml-auto">
+            <button
+              onClick={() => setDeliveryFormOpen(true)}
+              className="btn-primary px-4 py-2 rounded-lg text-sm font-semibold text-black flex items-center gap-2"
+            >
+              <Plus size={15} /> Nowa dostawa
+            </button>
+          </div>
+        ) : (
         <div className="ml-auto flex flex-wrap gap-2">
           <Link
             href={registerHref}
@@ -375,9 +433,62 @@ export default function SkupClient({ initialClientId }: { initialClientId: strin
             <Download size={15} /> Rejestr kwitów do Excela
           </button>
         </div>
+        )}
       </div>
 
-      {tab === "zestawienie" ? (
+      {tab === "dostawy" ? (
+        <div>
+          <p className="text-sm text-[#e8dfcc] mb-3">
+            Złom przekazany hutom i innym odbiorcom. Dokument dostawy (z logo, w dwóch egzemplarzach) otworzysz ikoną drukarki.
+          </p>
+          {deliveries.length === 0 ? (
+            <div className="bg-[#0a0a0a] p-12 rounded-xl border border-[#5c4716] text-center text-[#e8dfcc]">
+              Brak dostaw w tym okresie. Kliknij „Nowa dostawa”, żeby wystawić dokument.
+            </div>
+          ) : (
+            <div className="bg-[#0a0a0a] rounded-xl border border-[#5c4716] overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="text-left text-[#e8dfcc] border-b border-[#5c4716]">
+                  <tr>
+                    {["Numer", "Data", "Odbiorca", "Pojazd", "Masa", "Wartość", ""].map((h) => (
+                      <th key={h} className="px-4 py-3 font-semibold whitespace-nowrap">
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#5c4716]/50">
+                  {deliveries.map((d) => (
+                    <tr key={d.id} className="hover:bg-white/[0.02]">
+                      <td className="px-4 py-3 font-mono text-[#f5b52c] whitespace-nowrap">{d.numer}</td>
+                      <td className="px-4 py-3 whitespace-nowrap text-[#e8dfcc]">
+                        {new Date(d.data).toLocaleString("pl-PL", { dateStyle: "short", timeStyle: "short" })}
+                      </td>
+                      <td className="px-4 py-3">
+                        {d.odbiorca_nazwa}
+                        {d.nr_zamowienia && <span className="block text-xs text-[#e8dfcc]/60">zam. {d.nr_zamowienia}</span>}
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap">{d.nr_rejestracyjny || "—"}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">{formatKg(deliveryTotalWeight(d.pozycje))}</td>
+                      <td className="px-4 py-3 whitespace-nowrap font-semibold">{d.suma > 0 ? formatPln(d.suma) : "—"}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex justify-end gap-1">
+                          <Link href={`/admin/skup/dostawa/${d.id}`} className="p-2 rounded-lg hover:bg-[#5c4716]" title="Dokument dostawy: drukuj, PDF">
+                            <Printer size={15} className="text-[#e8dfcc]" />
+                          </Link>
+                          <button onClick={() => removeDelivery(d)} className="p-2 rounded-lg hover:bg-[#5c4716]" title="Usuń">
+                            <Trash2 size={15} className="text-red-400" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      ) : tab === "zestawienie" ? (
         summary ? (
           <div className={loading ? "opacity-60 transition-opacity" : "transition-opacity"}>
             <ScrapSummaryView period={period} bucket={bucket} summary={summary} />
@@ -477,6 +588,8 @@ export default function SkupClient({ initialClientId }: { initialClientId: strin
           )}
         </div>
       )}
+
+      {deliveryFormOpen && <ScrapDeliveryForm onClose={() => setDeliveryFormOpen(false)} />}
 
       {formOpen && (
         <ScrapPurchaseForm

@@ -84,6 +84,7 @@ const RESOURCES: [RegExp, string][] = [
   [/^\/api\/materials/, "ogłoszenie"],
   [/^\/api\/scrap-prices/, "cennik złomu"],
   [/^\/api\/scrap-purchases\/[^/]+\/email/, "Wysłano kwit mailem"],
+  [/^\/api\/scrap-deliveries/, "dostawa złomu"],
   [/^\/api\/scrap-purchases/, "kwit skupu"],
   [/^\/api\/offers\/[^/]+\/email/, "Wysłano ofertę mailem"],
   [/^\/api\/offers/, "oferta"],
