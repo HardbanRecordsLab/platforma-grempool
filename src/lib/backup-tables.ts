@@ -1,6 +1,7 @@
 // Tables offered in Ustawienia → Kopia zapasowa, with their Polish names.
 export const BACKUP_TABLES: Record<string, string> = {
   materials: "Ogłoszenia",
+  clients: "Klienci (kartoteka)",
   leads: "Zapytania (CRM)",
   orders: "Zlecenia",
   offers: "Oferty",

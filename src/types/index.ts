@@ -44,6 +44,7 @@ export interface Lead {
   preferowany_termin?: string;
   zgoda_rodo_at?: string | null;
   zgoda_rodo_wersja?: string | null;
+  client_id?: string | null;
   utworzone: string;
   zaktualizowane: string;
 }

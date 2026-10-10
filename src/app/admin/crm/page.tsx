@@ -39,6 +39,7 @@ const stageColor = (status: LeadStatus) => pipelineStages.find((s) => s.id === s
 
 export default function CRMPage() {
   const [replyTo, setReplyTo] = useState<Lead | null>(null);
+  const [addingClient, setAddingClient] = useState(false);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -69,6 +70,25 @@ export default function CRMPage() {
         lead.numer.toLowerCase().includes(q)
     );
   }, [leads, searchQuery]);
+
+  // Puts the person who sent the inquiry into the customer register (or finds the existing card).
+  const addToClients = async (lead: Lead) => {
+    setAddingClient(true);
+    try {
+      const res = await fetch("/api/clients/from-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ leadId: lead.id }),
+      });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.error ?? "Nie udało się dodać klienta");
+      setSelected({ ...lead, client_id: body.id });
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Nie udało się dodać klienta");
+    } finally {
+      setAddingClient(false);
+    }
+  };
 
   const handleStatusChange = async (lead: Lead, status: LeadStatus) => {
     setSaving(true);
@@ -344,6 +364,23 @@ export default function CRMPage() {
                   <OfferIcon size={16} /> Przygotuj ofertę
                 </Link>
               </div>
+
+              {selected.client_id ? (
+                <Link
+                  href={`/admin/klienci/${selected.client_id}`}
+                  className="block text-center px-4 py-2.5 rounded-lg border border-[#5c4716] text-sm font-semibold text-[#f5b52c] hover:border-[#f5b52c]"
+                >
+                  Karta klienta w kartotece →
+                </Link>
+              ) : (
+                <button
+                  onClick={() => addToClients(selected)}
+                  disabled={addingClient}
+                  className="w-full px-4 py-2.5 rounded-lg border border-[#5c4716] text-sm font-semibold text-white hover:border-[#f5b52c] disabled:opacity-60"
+                >
+                  {addingClient ? "Dodawanie…" : "Dodaj do klientów"}
+                </button>
+              )}
 
               <div className="flex items-center gap-3">
                 <button

@@ -88,6 +88,7 @@ const RESOURCES: [RegExp, string][] = [
   [/^\/api\/offers\/[^/]+\/email/, "Wysłano ofertę mailem"],
   [/^\/api\/offers/, "oferta"],
   [/^\/api\/client-emails/, "Wysłano e-mail do klienta"],
+  [/^\/api\/clients/, "klient (kartoteka)"],
   [/^\/api\/leads/, "zapytanie (CRM)"],
   [/^\/api\/orders/, "zlecenie"],
   [/^\/api\/vehicles/, "pojazd"],

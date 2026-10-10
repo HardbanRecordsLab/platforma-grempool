@@ -59,7 +59,15 @@ const inputClass =
 const priceLabel = (p: ScrapPrice) => (p.grupa === "stalowy" ? `Złom stalowy ${p.nazwa.toLowerCase()}` : p.nazwa);
 
 // New scrap purchase receipt. After saving, the receipt opens for printing.
-export default function ScrapPurchaseForm({ onClose, onSaved }: { onClose: () => void; onSaved?: () => void }) {
+export default function ScrapPurchaseForm({
+  onClose,
+  onSaved,
+  clientId,
+}: {
+  onClose: () => void;
+  onSaved?: () => void;
+  clientId?: string | null;
+}) {
   const [prices, setPrices] = useState<ScrapPrice[]>([]);
   const [sellers, setSellers] = useState<SellerSuggestion[]>([]);
   const [saving, setSaving] = useState(false);
@@ -86,6 +94,28 @@ export default function ScrapPurchaseForm({ onClose, onSaved }: { onClose: () =>
     getActiveScrapPrices().then(setPrices).catch(() => setPrices([]));
     loadSellers();
   }, []);
+
+  // Opened from a client card: fill in that client's data.
+  useEffect(() => {
+    if (!clientId) return;
+    fetch(`/api/clients/${clientId}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((body) => {
+        const c = body?.client;
+        if (!c) return;
+        setSeller({
+          sprzedawca_typ: c.typ,
+          sprzedawca_nazwa: c.nazwa,
+          sprzedawca_dokument: c.dokument ?? "",
+          sprzedawca_adres: c.adres ?? "",
+          sprzedawca_telefon: c.telefon ?? "",
+          sprzedawca_email: c.email ?? "",
+          nr_rejestracyjny: "",
+        });
+        setFilledFrom(c.nazwa);
+      })
+      .catch(() => {});
+  }, [clientId]);
 
   // Clears the form for the next customer.
   const reset = () => {
@@ -202,7 +232,7 @@ export default function ScrapPurchaseForm({ onClose, onSaved }: { onClose: () =>
                 </button>
               ))}
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-start">
               <div>
                 <input
                   value={seller.sprzedawca_nazwa}

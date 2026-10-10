@@ -65,10 +65,19 @@ const PURPOSES: Purpose[] = [
   },
   {
     title: "Skup złomu (kwit skupu)",
-    data: "imię i nazwisko lub nazwa firmy, adres, numer dokumentu tożsamości lub NIP, telefon i e-mail (jeśli je podasz), numer rejestracyjny pojazdu, rodzaj i waga towaru, kwota, forma płatności",
+    data: "imię i nazwisko lub nazwa firmy, adres, numer dokumentu tożsamości lub NIP, źródło pochodzenia złomu, telefon i e-mail (jeśli je podasz), numer rejestracyjny pojazdu, rodzaj i waga towaru, kwota, forma płatności",
     goal: "udokumentowanie zakupu i rozliczenie transakcji, prowadzenie ewidencji i spełnienie obowiązków podatkowych oraz związanych z gospodarką odpadami",
     basis: "art. 6 ust. 1 lit. c RODO (obowiązek prawny ciążący na administratorze) oraz lit. b (wykonanie umowy)",
     time: "przez okres wymagany przepisami, zwykle 5 lat licząc od końca roku, w którym dokonano zakupu",
+  },
+  {
+    title: "Kartoteka klientów (stali sprzedający i odbiorcy)",
+    data: "imię i nazwisko lub nazwa firmy, numer dokumentu tożsamości lub NIP, adres, telefon, e-mail, numer BDO (firmy), historia współpracy z nami (kwity skupu, dostawy, oferty, zapytania) oraz nasze notatki",
+    goal: "sprawniejsza obsługa osób i firm, które współpracują z nami wielokrotnie: podpowiadanie danych na kolejnych dokumentach, historia współpracy, kontakt w sprawie zleceń",
+    basis:
+      "art. 6 ust. 1 lit. f RODO (nasz uzasadniony interes: sprawna obsługa stałych klientów i prowadzenie dokumentacji); w zakresie danych z kwitów skupu także lit. c",
+    time:
+      "przez czas współpracy, a po jej zakończeniu przez okres wymagany przepisami (zwykle 5 lat dla dokumentów skupu); kartę klienta usuniemy wcześniej na Twoje żądanie, z wyjątkiem dokumentów, które musimy zachować z mocy prawa",
   },
   {
     title: "Statystyki odwiedzin strony",

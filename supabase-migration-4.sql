@@ -315,3 +315,72 @@ DROP TRIGGER IF EXISTS update_scrap_deliveries_updated_at ON public.scrap_delive
 CREATE TRIGGER update_scrap_deliveries_updated_at BEFORE UPDATE ON public.scrap_deliveries FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 ALTER TABLE public.scrap_deliveries ENABLE ROW LEVEL SECURITY;
 CREATE INDEX IF NOT EXISTS scrap_deliveries_data_idx ON public.scrap_deliveries (data DESC);
+
+-- Kartoteka klientów: stali sprzedający złomu, odbiorcy dostaw i klienci zapytań.
+-- The table existed from the first CRM schema but was never used (empty).
+-- Reshape it into the customer register.
+do $$
+declare c text;
+begin
+  if (select count(*) from public.clients) > 0 then
+    raise exception 'clients is not empty, refusing to reshape it';
+  end if;
+  for c in
+    select column_name from information_schema.columns
+    where table_schema = 'public' and table_name = 'clients'
+      and column_name not in ('id', 'telefon', 'email', 'adres', 'uwagi', 'created_at', 'updated_at', 'typ', 'nazwa', 'dokument', 'dokument_norm', 'bdo')
+  loop
+    execute format('alter table public.clients drop column %I', c);
+  end loop;
+end $$;
+
+alter table public.clients add column if not exists typ text not null default 'osoba';
+alter table public.clients add column if not exists nazwa text not null default '';
+alter table public.clients add column if not exists dokument text;
+alter table public.clients add column if not exists dokument_norm text;
+alter table public.clients add column if not exists bdo text;
+alter table public.clients alter column nazwa drop default;
+alter table public.clients alter column telefon drop not null;
+alter table public.clients drop constraint if exists clients_typ_check;
+alter table public.clients add constraint clients_typ_check check (typ in ('osoba', 'firma'));
+
+create unique index if not exists clients_typ_dokument_idx on public.clients (typ, dokument_norm) where dokument_norm is not null;
+create index if not exists clients_nazwa_idx on public.clients (lower(nazwa));
+alter table public.clients enable row level security;
+drop trigger if exists update_clients_updated_at on public.clients;
+create trigger update_clients_updated_at before update on public.clients for each row execute function update_updated_at_column();
+
+alter table public.scrap_purchases add column if not exists client_id uuid references public.clients(id) on delete set null;
+alter table public.scrap_deliveries add column if not exists client_id uuid references public.clients(id) on delete set null;
+alter table public.offers add column if not exists client_id uuid references public.clients(id) on delete set null;
+create index if not exists scrap_purchases_client_idx on public.scrap_purchases (client_id);
+create index if not exists scrap_deliveries_client_idx on public.scrap_deliveries (client_id);
+
+create or replace function public.clients_overview(p_q text default null, p_typ text default null)
+returns json language sql stable security definer set search_path = public as $$
+  select coalesce(json_agg(r order by r.last_activity desc nulls last, lower(r.nazwa)), '[]'::json) from (
+    select c.id, c.typ, c.nazwa, c.dokument, c.adres, c.telefon, c.email, c.bdo, c.uwagi, c.created_at,
+           coalesce(p.receipts, 0) as receipts, coalesce(p.kg, 0) as kg, coalesce(p.value, 0) as value,
+           coalesce(d.deliveries, 0) as deliveries,
+           greatest(p.last_at, d.last_at, o.last_at) as last_activity
+    from clients c
+    left join (
+      select client_id, count(*) as receipts, sum(suma) as value, max(data) as last_at,
+             sum((select coalesce(sum((e->>'waga_kg')::numeric), 0) from jsonb_array_elements(pozycje) e)) as kg
+      from scrap_purchases where client_id is not null group by client_id
+    ) p on p.client_id = c.id
+    left join (
+      select client_id, count(*) as deliveries, max(data) as last_at
+      from scrap_deliveries where client_id is not null group by client_id
+    ) d on d.client_id = c.id
+    left join (
+      select client_id, max(created_at) as last_at from offers where client_id is not null group by client_id
+    ) o on o.client_id = c.id
+    where (p_typ is null or c.typ = p_typ)
+      and (coalesce(p_q, '') = '' or c.nazwa ilike '%' || p_q || '%' or c.dokument ilike '%' || p_q || '%'
+           or c.telefon ilike '%' || p_q || '%' or c.email ilike '%' || p_q || '%' or c.adres ilike '%' || p_q || '%'
+           or (length(regexp_replace(p_q, '[^A-Za-z0-9]', '', 'g')) >= 3
+               and c.dokument_norm like '%' || upper(regexp_replace(p_q, '[^A-Za-z0-9]', '', 'g')) || '%'))
+  ) r;
+$$;
+revoke all on function public.clients_overview(text, text) from public, anon, authenticated;

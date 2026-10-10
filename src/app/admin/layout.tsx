@@ -24,13 +24,15 @@ import {
   Gavel,
   Receipt,
   FileSignature,
-  BarChart3
+  BarChart3,
+  Contact
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/admin/dashboard" },
   { icon: Users, label: "CRM / Leady", href: "/admin/crm" },
+  { icon: Contact, label: "Klienci", href: "/admin/klienci" },
   { icon: FileSignature, label: "Oferty", href: "/admin/oferty" },
   { icon: FileText, label: "Zlecenia", href: "/admin/zlecenia" },
   { icon: Package, label: "Ogłoszenia", href: "/admin/materialy" },
