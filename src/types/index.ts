@@ -42,6 +42,8 @@ export interface Lead {
   notatki?: string;
   wartosc_wyceny?: number;
   preferowany_termin?: string;
+  zgoda_rodo_at?: string | null;
+  zgoda_rodo_wersja?: string | null;
   utworzone: string;
   zaktualizowane: string;
 }
@@ -175,6 +177,8 @@ export interface ContactMessage {
   telefon?: string;
   temat: string;
   wiadomosc: string;
+  zgoda_rodo_at?: string | null;
+  zgoda_rodo_wersja?: string | null;
   status: 'nowa' | 'przeczytana';
   created_at: string;
   updated_at: string;

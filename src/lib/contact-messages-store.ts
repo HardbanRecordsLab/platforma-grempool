@@ -18,6 +18,7 @@ export type ContactMessageInput = {
   telefon?: string;
   temat: string;
   wiadomosc: string;
+  zgoda: boolean;
 };
 
 export async function createContactMessage(data: ContactMessageInput): Promise<ContactMessage> {

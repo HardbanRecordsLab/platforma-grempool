@@ -4,6 +4,7 @@ import { useState } from "react";
 import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
 import { Phone, Mail, MapPin, Clock, Send, Loader2, CheckCircle2, Navigation } from "lucide-react";
+import PrivacyConsent from "@/components/public/PrivacyConsent";
 import { createContactMessage } from "@/lib/contact-messages-store";
 import { hoursLines, telHref } from "@/lib/site-settings";
 import { useSiteSettings } from "@/components/SiteSettingsProvider";
@@ -27,6 +28,8 @@ export default function KontaktClient() {
     temat: "",
     wiadomosc: "",
   });
+  const [consent, setConsent] = useState(false);
+  const [mapShown, setMapShown] = useState(false);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,8 +46,10 @@ export default function KontaktClient() {
         telefon: form.telefon || undefined,
         temat: TEMAT_LABELS[form.temat] ?? form.temat,
         wiadomosc: form.wiadomosc,
+        zgoda: consent,
       });
       setSent(true);
+      setConsent(false);
       setForm({ imie: "", nazwisko: "", email: "", telefon: "", temat: "", wiadomosc: "" });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Nie udało się wysłać wiadomości. Spróbuj ponownie lub zadzwoń.");
@@ -229,9 +234,10 @@ export default function KontaktClient() {
                       placeholder="Treść wiadomości..."
                     />
                   </div>
+                  <PrivacyConsent checked={consent} onChange={setConsent} />
                   <button
                     type="submit"
-                    disabled={sending}
+                    disabled={sending || !consent}
                     className="w-full btn-primary py-4 rounded-lg font-semibold text-[#000000] flex items-center justify-center gap-2 disabled:opacity-60"
                   >
                     {sending ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
@@ -246,14 +252,36 @@ export default function KontaktClient() {
 
       {/* Map — Google Maps embed needs no API key; the address comes from Ustawienia. */}
       <section className="relative h-[28rem] bg-[#0a0a0a] border-y border-[#5c4716]">
-        <iframe
-          title={`Mapa dojazdu — ${siteAddress}`}
-          src={`https://www.google.com/maps?q=${encodeURIComponent(`GREMPOOL, ${siteAddress}`)}&z=15&output=embed`}
-          className="w-full h-full border-0 grayscale-[30%] contrast-[1.05]"
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          allowFullScreen
-        />
+        {mapShown ? (
+          <iframe
+            title={`Mapa dojazdu — ${siteAddress}`}
+            src={`https://www.google.com/maps?q=${encodeURIComponent(`GREMPOOL, ${siteAddress}`)}&z=15&output=embed`}
+            className="w-full h-full border-0 grayscale-[30%] contrast-[1.05]"
+            referrerPolicy="no-referrer-when-downgrade"
+            allowFullScreen
+          />
+        ) : (
+          // Google receives the visitor's data as soon as its map loads, so it
+          // only loads after a click.
+          <div className="w-full h-full flex flex-col items-center justify-center text-center px-6 bg-[radial-gradient(ellipse_at_center,#1a1405,#0a0a0a)]">
+            <MapPin className="text-[#f5b52c] size-12 mb-4" />
+            <p className="font-montserrat font-bold text-xl text-white mb-1">Mapa dojazdu</p>
+            <p className="text-[#e8dfcc] mb-5">{siteAddress}</p>
+            <button
+              type="button"
+              onClick={() => setMapShown(true)}
+              className="btn-primary px-6 py-3 rounded-lg font-semibold text-black"
+            >
+              Pokaż mapę
+            </button>
+            <p className="text-xs text-[#e8dfcc]/60 mt-4 max-w-sm">
+              Po kliknięciu załadujemy mapę Google, która może zapisać pliki cookies.{" "}
+              <a href="/polityka-prywatnosci#cookies" className="underline underline-offset-2 hover:text-white">
+                Szczegóły
+              </a>
+            </p>
+          </div>
+        )}
         <div className="absolute left-4 bottom-4 sm:left-8 sm:bottom-8 max-w-xs rounded-2xl border border-[#f5b52c]/50 bg-black/90 backdrop-blur p-5 shadow-2xl">
           <div className="flex items-start gap-3 mb-4">
             <MapPin className="text-[#f5b52c] size-6 shrink-0" />

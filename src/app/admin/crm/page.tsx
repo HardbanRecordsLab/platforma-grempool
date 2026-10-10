@@ -286,6 +286,13 @@ export default function CRMPage() {
                 </div>
               )}
 
+              <div className="text-xs text-[#e8dfcc]/70">
+                Polityka prywatności:{" "}
+                {selected.zgoda_rodo_at
+                  ? `potwierdzona ${new Date(selected.zgoda_rodo_at).toLocaleString("pl-PL", { dateStyle: "short", timeStyle: "short" })} (wersja ${selected.zgoda_rodo_wersja ?? "?"})`
+                  : "brak zapisu (zapytanie sprzed wprowadzenia polityki)"}
+              </div>
+
               {selected.notatki && (
                 <div>
                   <div className="text-xs text-[#e8dfcc] mb-1">Szczegóły z formularza</div>

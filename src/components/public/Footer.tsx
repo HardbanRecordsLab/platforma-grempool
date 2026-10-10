@@ -95,7 +95,12 @@ export default function Footer() {
 
         <div className="border-t border-[#5c4716] mt-8 pt-8 text-center text-[#e8dfcc] text-sm space-y-1">
           <p>GREMPOOL Maria Muczyńska &middot; NIP 692-11-91-050 &middot; REGON 022118090</p>
-          <p>&copy; {new Date().getFullYear()} GREMPOOL. Wszelkie prawa zastrzeżone.</p>
+          <p>
+            &copy; {new Date().getFullYear()} GREMPOOL. Wszelkie prawa zastrzeżone. &middot;{" "}
+            <Link href="/polityka-prywatnosci" className="underline underline-offset-2 hover:text-[#f5b52c] transition-colors">
+              Polityka prywatności
+            </Link>
+          </p>
         </div>
       </div>
     </footer>

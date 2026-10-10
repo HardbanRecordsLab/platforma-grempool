@@ -15,5 +15,6 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
   const supabase = createAdminClient();
   const { error } = await supabase.from("contact_messages").delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  await supabase.from("client_emails").delete().eq("ref_id", id);
   return NextResponse.json({ ok: true });
 }

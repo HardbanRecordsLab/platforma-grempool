@@ -199,3 +199,69 @@ CREATE TABLE IF NOT EXISTS public.admin_users (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 ALTER TABLE public.admin_users ENABLE ROW LEVEL SECURITY;
+
+-- RODO: dowód potwierdzenia polityki prywatności w zapytaniach i wiadomościach.
+ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS zgoda_rodo_at TIMESTAMPTZ;
+ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS zgoda_rodo_wersja TEXT;
+ALTER TABLE public.contact_messages ADD COLUMN IF NOT EXISTS zgoda_rodo_at TIMESTAMPTZ;
+ALTER TABLE public.contact_messages ADD COLUMN IF NOT EXISTS zgoda_rodo_wersja TEXT;
+
+-- Wyświetlenia ogłoszeń: jeden odwiedzający raz dziennie, bez zapisu w przeglądarce.
+CREATE TABLE IF NOT EXISTS public.material_view_log (
+  code TEXT NOT NULL,
+  visitor TEXT NOT NULL,
+  day DATE NOT NULL DEFAULT (NOW() AT TIME ZONE 'Europe/Warsaw')::date,
+  PRIMARY KEY (code, visitor, day)
+);
+ALTER TABLE public.material_view_log ENABLE ROW LEVEL SECURITY;
+DROP FUNCTION IF EXISTS public.material_viewed(TEXT);
+CREATE OR REPLACE FUNCTION public.material_viewed(p_code TEXT, p_visitor TEXT) RETURNS VOID
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+DECLARE inserted INTEGER;
+BEGIN
+  INSERT INTO material_view_log (code, visitor) VALUES (p_code, p_visitor) ON CONFLICT DO NOTHING;
+  GET DIAGNOSTICS inserted = ROW_COUNT;
+  IF inserted > 0 THEN
+    UPDATE materials SET wyswietlenia = wyswietlenia + 1 WHERE id_materialu = p_code;
+  END IF;
+END;
+$$;
+REVOKE ALL ON FUNCTION public.material_viewed(TEXT, TEXT) FROM PUBLIC, anon, authenticated;
+
+-- Zestawienia skupu za dowolny okres: sumy, rodzaje, kody odpadów, płatności,
+-- przedziały czasu (dzień / tydzień / miesiąc) i najwięksi sprzedający.
+create or replace function public.scrap_summary(p_from timestamptz, p_to timestamptz, p_bucket text)
+returns json language sql stable security definer set search_path = public as $$
+  with p as (
+    select * from scrap_purchases where data >= p_from and data < p_to
+  ),
+  items as (
+    select p.id, p.data, p.sprzedawca_nazwa, e->>'nazwa' as nazwa, e->>'kod_odpadu' as kod,
+           (e->>'waga_kg')::numeric as kg, (e->>'wartosc')::numeric as value
+    from p, jsonb_array_elements(p.pozycje) e
+  ),
+  bucket as (
+    select case when p_bucket in ('day', 'week', 'month') then p_bucket else 'day' end as unit
+  )
+  select json_build_object(
+    'receipts', (select count(*) from p),
+    'kg', coalesce((select sum(kg) from items), 0),
+    'value', coalesce((select sum(suma) from p), 0),
+    'by_material', coalesce((select json_agg(m order by m.kg desc) from (
+        select nazwa as name, min(kod) as code, sum(kg) as kg, sum(value) as value, count(distinct id) as receipts
+        from items group by nazwa) m), '[]'::json),
+    'by_code', coalesce((select json_agg(c order by c.kg desc) from (
+        select kod as code, sum(kg) as kg, sum(value) as value from items group by kod) c), '[]'::json),
+    'by_payment', coalesce((select json_agg(x) from (
+        select platnosc, count(*) as receipts, sum(suma) as value from p group by platnosc) x), '[]'::json),
+    'buckets', coalesce((select json_agg(b order by b.bucket) from (
+        select to_char(date_trunc((select unit from bucket), data at time zone 'Europe/Warsaw'), 'YYYY-MM-DD') as bucket,
+               count(distinct id) as receipts, sum(kg) as kg, sum(value) as value
+        from items group by 1) b), '[]'::json),
+    'top_sellers', coalesce((select json_agg(s) from (
+        select lower(sprzedawca_nazwa) as key, min(sprzedawca_nazwa) as name, count(distinct id) as receipts,
+               sum(kg) as kg, sum(value) as value
+        from items group by 1 order by sum(value) desc limit 10) s), '[]'::json)
+  );
+$$;
+revoke all on function public.scrap_summary(timestamptz, timestamptz, text) from public, anon, authenticated;

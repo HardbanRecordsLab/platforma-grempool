@@ -6,6 +6,7 @@ import Navbar from "@/components/public/Navbar";
 import Footer from "@/components/public/Footer";
 import { Send, Upload, CheckCircle2, Loader2, X } from "lucide-react";
 import { uploadPublicPhoto } from "@/lib/image-utils";
+import PrivacyConsent from "@/components/public/PrivacyConsent";
 
 const MAX_PHOTOS = 8;
 
@@ -60,6 +61,7 @@ function WycenaForm() {
   const [leadNumer, setLeadNumer] = useState<string | null>(null);
   const [materialCode, setMaterialCode] = useState<string | null>(null);
   const [photos, setPhotos] = useState<string[]>([]);
+  const [consent, setConsent] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [dragging, setDragging] = useState(false);
 
@@ -134,6 +136,7 @@ function WycenaForm() {
           preferowany_termin: formData.termin || null,
           material: materialCode,
           zdjecia: photos,
+          zgoda: consent,
         }),
       });
       const data = await res.json();
@@ -377,9 +380,11 @@ function WycenaForm() {
                   </div>
                 )}
 
+                <PrivacyConsent checked={consent} onChange={setConsent} />
+
                 <button
                   type="submit"
-                  disabled={submitting || uploading}
+                  disabled={submitting || uploading || !consent}
                   className="w-full btn-primary py-4 rounded-lg font-semibold text-[#000000] text-lg flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   <Send size={20} />

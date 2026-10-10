@@ -2,6 +2,7 @@ import { NextRequest, NextResponse, after } from "next/server";
 import { createAdminClient } from "@/lib/supabase-admin";
 import { sendNewLeadNotification } from "@/lib/notifications";
 import { sendPushToAdmins } from "@/lib/push";
+import { PRIVACY_POLICY_VERSION } from "@/lib/privacy";
 import { SERVICE_LABELS } from "@/lib/supabase";
 
 export async function GET(request: NextRequest) {
@@ -36,7 +37,17 @@ export async function POST(request: NextRequest) {
   const supabase = createAdminClient();
   const body = await request.json().catch(() => ({}));
 
-  const lead: Record<string, unknown> = { status: "nowy" };
+  // The customer must have ticked the privacy policy checkbox; we keep when
+  // and for which version of the policy.
+  if (body.zgoda !== true) {
+    return NextResponse.json({ error: "Zaznacz, że zapoznałeś(-aś) się z Polityką prywatności" }, { status: 400 });
+  }
+
+  const lead: Record<string, unknown> = {
+    status: "nowy",
+    zgoda_rodo_at: new Date().toISOString(),
+    zgoda_rodo_wersja: PRIVACY_POLICY_VERSION,
+  };
   for (const field of PUBLIC_LEAD_FIELDS) {
     if (body[field] !== undefined) lead[field] = body[field];
   }

@@ -13,6 +13,7 @@ const staticRoutes: { path: string; priority: number; changeFrequency: MetadataR
   { path: "/ogloszenia", priority: 0.8, changeFrequency: "daily" },
   { path: "/wycena", priority: 0.9, changeFrequency: "monthly" },
   { path: "/kontakt", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/polityka-prywatnosci", priority: 0.2, changeFrequency: "yearly" },
 ];
 
 // Rebuilt at most once an hour, so new listings reach Google without a deploy.

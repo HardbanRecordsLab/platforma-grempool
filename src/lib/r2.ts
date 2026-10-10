@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectsCommand } from "@aws-sdk/client-s3";
 
 function createR2Client() {
   return new S3Client({
@@ -23,4 +23,18 @@ export async function uploadToR2(key: string, body: Buffer, contentType: string)
   );
   const publicUrl = process.env.R2_PUBLIC_URL!.replace(/\/$/, "");
   return `${publicUrl}/${key}`;
+}
+
+// Deletes files given by their public URLs (used when a customer's data is
+// erased). URLs from anywhere else are ignored.
+export async function deleteFromR2(urls: string[]): Promise<void> {
+  const base = (process.env.R2_PUBLIC_URL ?? "").replace(/\/$/, "");
+  const keys = urls.filter((u) => base && u.startsWith(`${base}/leads/`)).map((u) => u.slice(base.length + 1));
+  if (keys.length === 0) return;
+  await createR2Client().send(
+    new DeleteObjectsCommand({
+      Bucket: process.env.R2_BUCKET_NAME!,
+      Delete: { Objects: keys.map((Key) => ({ Key })), Quiet: true },
+    })
+  );
 }

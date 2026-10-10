@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
   // Statistics are kept for 13 months.
   const cutoff = new Date(Date.now() - 395 * 86_400_000).toISOString();
   await supabase.from("page_views").delete().lt("created_at", cutoff);
+  await supabase.from("material_view_log").delete().lt("day", new Date(Date.now() - 3 * 86_400_000).toISOString().slice(0, 10));
   const fleet = await sendFleetReminders().catch(() => ({ reminded: -1 }));
   if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
   return NextResponse.json({ ok: true, rows: count, fleetReminders: fleet.reminded, at: new Date().toISOString() });

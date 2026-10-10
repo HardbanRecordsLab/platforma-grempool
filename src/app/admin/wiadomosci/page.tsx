@@ -128,6 +128,12 @@ export default function WiadomosciPage() {
               </div>
               <div className="text-sm font-semibold text-[#f5b52c] mb-1">{msg.temat}</div>
               <p className="text-sm text-[#e8dfcc] whitespace-pre-wrap">{msg.wiadomosc}</p>
+              <p className="text-xs text-[#e8dfcc]/60 mt-3">
+                Polityka prywatności:{" "}
+                {msg.zgoda_rodo_at
+                  ? `potwierdzona ${new Date(msg.zgoda_rodo_at).toLocaleDateString("pl-PL")}`
+                  : "brak zapisu (wiadomość sprzed wprowadzenia polityki)"}
+              </p>
             </div>
           ))}
         </div>
