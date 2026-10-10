@@ -31,6 +31,8 @@ export interface SiteSettings {
   streetAddress: string;
   postalCode: string;
   addressLocality: string;
+  // Numer rejestrowy w BDO; printed on scrap documents when filled in.
+  bdo: string;
   hours: {
     weekdays: TimeSlot | null;
     saturday: TimeSlot | null;
@@ -64,6 +66,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   streetAddress: BUSINESS.streetAddress,
   postalCode: BUSINESS.postalCode,
   addressLocality: BUSINESS.addressLocality,
+  bdo: "",
   hours: {
     weekdays: { opens: "08:00", closes: "16:00" },
     saturday: { opens: "08:00", closes: "14:00" },
@@ -157,6 +160,7 @@ export function normalizeSiteSettings(input: unknown): SiteSettings {
     streetAddress: str(raw.streetAddress, d.streetAddress, 120) || d.streetAddress,
     postalCode: str(raw.postalCode, d.postalCode, 12) || d.postalCode,
     addressLocality: str(raw.addressLocality, d.addressLocality, 80) || d.addressLocality,
+    bdo: str(raw.bdo, d.bdo, 30),
     hours: {
       weekdays: slot(hours.weekdays, d.hours.weekdays),
       saturday: slot(hours.saturday, d.hours.saturday),

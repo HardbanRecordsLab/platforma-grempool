@@ -1,4 +1,4 @@
-import { BUSINESS } from "@/lib/site";
+import { BUSINESS, SITE_URL } from "@/lib/site";
 import type { SiteSettings } from "@/lib/site-settings";
 import { escapeHtml } from "@/lib/notifications";
 import { formatKg, formatPln, type ScrapPurchase } from "@/lib/scrap-purchases";
@@ -21,6 +21,7 @@ export function receiptEmailHtml(p: ScrapPurchase, site: SiteSettings): string {
 
   return `
   <div style="font-family:Arial,sans-serif;max-width:640px;color:#111;">
+    <img src="${SITE_URL}/assets/logo-grempool-wide.png" alt="GREMPOOL" height="44" style="display:block;height:44px;width:auto;margin:0 0 18px;">
     <h2 style="margin:0 0 4px;">Kwit skupu ${escapeHtml(p.numer)}</h2>
     <p style="margin:0 0 16px;color:#555;">${escapeHtml(date)}</p>
     <table style="width:100%;margin-bottom:16px;font-size:13px;">

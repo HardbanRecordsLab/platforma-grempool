@@ -8,10 +8,12 @@ import { fromScrapPurchaseRow, validateScrapPurchase } from "@/lib/scrap-purchas
 export async function GET(request: NextRequest) {
   const from = request.nextUrl.searchParams.get("from");
   const to = request.nextUrl.searchParams.get("to");
+  const typ = request.nextUrl.searchParams.get("typ");
   const supabase = createAdminClient();
   let query = supabase.from("scrap_purchases").select("*").order("data", { ascending: false }).limit(2000);
   if (from) query = query.gte("data", from);
   if (to) query = query.lt("data", to);
+  if (typ === "osoba" || typ === "firma") query = query.eq("sprzedawca_typ", typ);
   const { data, error } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json(data.map(fromScrapPurchaseRow));

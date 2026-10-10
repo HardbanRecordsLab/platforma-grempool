@@ -1,4 +1,4 @@
-import { BUSINESS } from "@/lib/site";
+import { BUSINESS, SITE_URL } from "@/lib/site";
 import type { SiteSettings } from "@/lib/site-settings";
 import { escapeHtml } from "@/lib/notifications";
 
@@ -11,6 +11,7 @@ export function clientEmailHtml(body: string, site: SiteSettings, extraHtml = ""
     .join("");
   return `
   <div style="font-family:Arial,sans-serif;max-width:640px;color:#111;font-size:14px;line-height:1.5;">
+    <img src="${SITE_URL}/assets/logo-grempool-wide.png" alt="GREMPOOL" height="44" style="display:block;height:44px;width:auto;margin:0 0 18px;">
     ${paragraphs}
     ${extraHtml}
     <div style="margin-top:24px;padding-top:14px;border-top:3px solid #f5b52c;font-size:13px;color:#444;">

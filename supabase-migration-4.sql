@@ -228,18 +228,21 @@ END;
 $$;
 REVOKE ALL ON FUNCTION public.material_viewed(TEXT, TEXT) FROM PUBLIC, anon, authenticated;
 
--- Zestawienia skupu za dowolny okres: sumy, rodzaje, kody odpadów, płatności,
--- przedziały czasu (dzień / tydzień / miesiąc) i najwięksi sprzedający.
-create or replace function public.scrap_summary(p_from timestamptz, p_to timestamptz, p_bucket text)
+-- Zestawienia skupu za dowolny okres (opcjonalnie tylko osoby prywatne albo tylko firmy).
+drop function if exists public.scrap_summary(timestamptz, timestamptz, text);
+
+create or replace function public.scrap_summary(p_from timestamptz, p_to timestamptz, p_bucket text, p_type text default null)
 returns json language sql stable security definer set search_path = public as $$
-  with p as (
+  with base as (
     select * from scrap_purchases where data >= p_from and data < p_to
   ),
-  items as (
-    select p.id, p.data, p.sprzedawca_nazwa, e->>'nazwa' as nazwa, e->>'kod_odpadu' as kod,
+  base_items as (
+    select b.id, b.data, b.sprzedawca_typ, b.sprzedawca_nazwa, e->>'nazwa' as nazwa, e->>'kod_odpadu' as kod,
            (e->>'waga_kg')::numeric as kg, (e->>'wartosc')::numeric as value
-    from p, jsonb_array_elements(p.pozycje) e
+    from base b, jsonb_array_elements(b.pozycje) e
   ),
+  p as (select * from base where p_type is null or sprzedawca_typ = p_type),
+  items as (select * from base_items where p_type is null or sprzedawca_typ = p_type),
   bucket as (
     select case when p_bucket in ('day', 'week', 'month') then p_bucket else 'day' end as unit
   )
@@ -247,6 +250,10 @@ returns json language sql stable security definer set search_path = public as $$
     'receipts', (select count(*) from p),
     'kg', coalesce((select sum(kg) from items), 0),
     'value', coalesce((select sum(suma) from p), 0),
+    'by_seller_type', coalesce((select json_agg(t order by t.typ) from (
+        select b.sprzedawca_typ as typ, count(*) as receipts, sum(b.suma) as value,
+               coalesce((select sum(i.kg) from base_items i where i.sprzedawca_typ = b.sprzedawca_typ), 0) as kg
+        from base b group by b.sprzedawca_typ) t), '[]'::json),
     'by_material', coalesce((select json_agg(m order by m.kg desc) from (
         select nazwa as name, min(kod) as code, sum(kg) as kg, sum(value) as value, count(distinct id) as receipts
         from items group by nazwa) m), '[]'::json),
@@ -264,4 +271,47 @@ returns json language sql stable security definer set search_path = public as $$
         from items group by 1 order by sum(value) desc limit 10) s), '[]'::json)
   );
 $$;
-revoke all on function public.scrap_summary(timestamptz, timestamptz, text) from public, anon, authenticated;
+revoke all on function public.scrap_summary(timestamptz, timestamptz, text, text) from public, anon, authenticated;
+
+-- Kwity w formie formularza przyjęcia odpadów metali (FPO): źródło pochodzenia i potwierdzenie sprawdzenia dokumentu.
+ALTER TABLE public.scrap_purchases ADD COLUMN IF NOT EXISTS zrodlo_pochodzenia TEXT;
+ALTER TABLE public.scrap_purchases ADD COLUMN IF NOT EXISTS dokument_zweryfikowany BOOLEAN NOT NULL DEFAULT FALSE;
+
+-- Sprzedaż / dostawy złomu do hut i innych odbiorców (numeracja DZ-RRRR-00001).
+CREATE SEQUENCE IF NOT EXISTS public.scrap_delivery_seq;
+CREATE TABLE IF NOT EXISTS public.scrap_deliveries (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  numer TEXT UNIQUE,
+  data TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  odbiorca_nazwa TEXT NOT NULL,
+  odbiorca_nip TEXT,
+  odbiorca_adres TEXT,
+  odbiorca_bdo TEXT,
+  nr_zamowienia TEXT,
+  nr_rejestracyjny TEXT,
+  przewoznik TEXT,
+  waga_brutto NUMERIC(10,1),
+  waga_tara NUMERIC(10,1),
+  pozycje JSONB NOT NULL DEFAULT '[]'::jsonb,
+  suma NUMERIC(12,2) NOT NULL DEFAULT 0,
+  oswiadczenie_czystosci BOOLEAN NOT NULL DEFAULT FALSE,
+  uwagi TEXT,
+  wystawil TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE OR REPLACE FUNCTION public.generate_scrap_delivery_number() RETURNS TRIGGER
+LANGUAGE plpgsql AS $$
+BEGIN
+  IF NEW.numer IS NULL THEN
+    NEW.numer := 'DZ-' || to_char(COALESCE(NEW.data, NOW()) AT TIME ZONE 'Europe/Warsaw', 'YYYY') || '-' || lpad(nextval('scrap_delivery_seq')::text, 5, '0');
+  END IF;
+  RETURN NEW;
+END;
+$$;
+DROP TRIGGER IF EXISTS set_scrap_delivery_number ON public.scrap_deliveries;
+CREATE TRIGGER set_scrap_delivery_number BEFORE INSERT ON public.scrap_deliveries FOR EACH ROW EXECUTE FUNCTION generate_scrap_delivery_number();
+DROP TRIGGER IF EXISTS update_scrap_deliveries_updated_at ON public.scrap_deliveries;
+CREATE TRIGGER update_scrap_deliveries_updated_at BEFORE UPDATE ON public.scrap_deliveries FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+ALTER TABLE public.scrap_deliveries ENABLE ROW LEVEL SECURITY;
+CREATE INDEX IF NOT EXISTS scrap_deliveries_data_idx ON public.scrap_deliveries (data DESC);

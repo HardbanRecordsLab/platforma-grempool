@@ -36,7 +36,7 @@ const menuItems = [
   { icon: Package, label: "Ogłoszenia", href: "/admin/materialy" },
   { icon: LayoutGrid, label: "Nasze usługi", href: "/admin/uslugi" },
   { icon: Tags, label: "Cennik złomu", href: "/admin/cennik" },
-  { icon: Receipt, label: "Skup — kwity", href: "/admin/skup" },
+  { icon: Receipt, label: "Skup złomu", href: "/admin/skup" },
   { icon: Share2, label: "Social media", href: "/admin/social" },
   { icon: Calendar, label: "Kalendarz", href: "/admin/kalendarz" },
   { icon: Truck, label: "Flota", href: "/admin/flota" },

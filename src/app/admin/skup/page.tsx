@@ -2,245 +2,340 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Plus, X, Loader2, Trash2, Printer, Download, Receipt, BarChart3, Scale } from "lucide-react";
-import type { ScrapPrice } from "@/types";
-import { getActiveScrapPrices } from "@/lib/scrap-prices-store";
 import {
-  WASTE_CODES,
-  formatKg,
-  formatPln,
-  guessWasteCode,
-  itemValue,
-  totalValue,
-  totalWeight,
-  wasteCodeLabel,
-  type ScrapPurchase,
-} from "@/lib/scrap-purchases";
+  Plus,
+  Loader2,
+  Trash2,
+  Printer,
+  Download,
+  Receipt,
+  BarChart3,
+  ChevronLeft,
+  ChevronRight,
+  Search,
+  BookOpen,
+  TrendingUp,
+  TrendingDown,
+  Minus,
+} from "lucide-react";
+import ScrapPurchaseForm from "@/components/admin/ScrapPurchaseForm";
+import ScrapSummaryView, { formatMass } from "@/components/admin/ScrapSummaryView";
+import { formatKg, formatPln, type ScrapPurchase } from "@/lib/scrap-purchases";
+import {
+  PREVIOUS_LABEL,
+  bucketFor,
+  isCurrentOrFuture,
+  periodFor,
+  previousPeriod,
+  shift,
+  ymd,
+  type CustomRange,
+  type PeriodMode,
+} from "@/lib/scrap-periods";
+import { avgPrice, csvCell, csvDecimal, deltaPercent, downloadCsv, summaryCsv, type ScrapSummary } from "@/lib/scrap-summary";
 
-interface FormItem {
-  nazwa: string;
-  kod_odpadu: string;
-  waga_kg: string;
-  cena_kg: string;
+const MODES: { id: PeriodMode; label: string }[] = [
+  { id: "day", label: "Dzień" },
+  { id: "week", label: "Tydzień" },
+  { id: "month", label: "Miesiąc" },
+  { id: "year", label: "Rok" },
+  { id: "custom", label: "Własny zakres" },
+];
+
+const LIST_LIMIT = 2000;
+
+type SellerFilter = "all" | "osoba" | "firma";
+
+const SELLER_FILTERS: { id: SellerFilter; label: string }[] = [
+  { id: "all", label: "Wszyscy" },
+  { id: "osoba", label: "Osoby prywatne" },
+  { id: "firma", label: "Firmy" },
+];
+
+const typQuery = (typ: SellerFilter) => (typ === "all" ? "" : `&typ=${typ}`);
+
+function Delta({ current, previous, label }: { current: number; previous: number | null; label: string }) {
+  const pct = previous === null ? null : deltaPercent(current, previous);
+  if (pct === null) return <div className="text-xs text-[#e8dfcc]/50 mt-1">brak danych do porównania</div>;
+  const flat = Math.abs(pct) < 0.5;
+  const Icon = flat ? Minus : pct > 0 ? TrendingUp : TrendingDown;
+  const color = flat ? "text-[#e8dfcc]" : pct > 0 ? "text-green-400" : "text-red-400";
+  return (
+    <div className={`text-xs mt-1 flex items-center gap-1 ${color}`}>
+      <Icon size={13} />
+      {pct > 0 ? "+" : ""}
+      {pct.toFixed(0)}% <span className="text-[#e8dfcc]/60">vs {label}</span>
+    </div>
+  );
 }
 
-const emptyItem: FormItem = { nazwa: "", kod_odpadu: "17 04 05", waga_kg: "", cena_kg: "" };
-
-const nowLocal = () => {
-  const d = new Date();
-  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-  return d.toISOString().slice(0, 16);
-};
-
-const currentMonth = () => nowLocal().slice(0, 7);
-
-const monthRange = (month: string) => {
-  const [y, m] = month.split("-").map(Number);
-  return { from: new Date(y, m - 1, 1).toISOString(), to: new Date(y, m, 1).toISOString() };
-};
-
-const toNumber = (value: string) => Number(value.replace(",", "."));
-
-const inputClass = "w-full bg-[#000000] border border-[#5c4716] focus:border-[#f5b52c] rounded-lg px-3 py-2 text-sm text-white outline-none";
-
-const csvCell = (value: string | number | null | undefined) => {
-  const s = value === null || value === undefined ? "" : String(value);
-  return /[;"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-};
-
 export default function SkupPage() {
-  const [tab, setTab] = useState<"kwity" | "zestawienie">("kwity");
-  const [month, setMonth] = useState(currentMonth());
-  const [purchases, setPurchases] = useState<ScrapPurchase[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [prices, setPrices] = useState<ScrapPrice[]>([]);
-
-  const [formOpen, setFormOpen] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [formError, setFormError] = useState<string | null>(null);
-  const [seller, setSeller] = useState({
-    sprzedawca_typ: "osoba" as "osoba" | "firma",
-    sprzedawca_nazwa: "",
-    sprzedawca_dokument: "",
-    sprzedawca_adres: "",
-    sprzedawca_telefon: "",
-    sprzedawca_email: "",
-    nr_rejestracyjny: "",
+  const [tab, setTab] = useState<"ewidencja" | "zestawienie">("ewidencja");
+  const [mode, setMode] = useState<PeriodMode>("day");
+  const [anchor, setAnchor] = useState(() => new Date());
+  const [custom, setCustom] = useState<CustomRange>(() => {
+    const now = new Date();
+    return { from: ymd(new Date(now.getFullYear(), now.getMonth(), 1)), to: ymd(now) };
   });
-  const [data, setData] = useState(nowLocal());
-  const [brutto, setBrutto] = useState("");
-  const [tara, setTara] = useState("");
-  const [items, setItems] = useState<FormItem[]>([{ ...emptyItem }]);
-  const [platnosc, setPlatnosc] = useState<"gotowka" | "przelew">("gotowka");
-  const [uwagi, setUwagi] = useState("");
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    try {
-      const { from, to } = monthRange(month);
-      const res = await fetch(`/api/scrap-purchases?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`);
-      const body = await res.json();
-      if (!res.ok) throw new Error(body.error ?? "Nie udało się wczytać kwitów");
-      setPurchases(body);
-      setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Nie udało się wczytać kwitów");
-    } finally {
-      setLoading(false);
-    }
-  }, [month]);
+  const period = useMemo(() => periodFor(mode, anchor, custom), [mode, anchor, custom]);
+  const previous = useMemo(() => previousPeriod(period), [period]);
+  const bucket = bucketFor(period);
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  const [typ, setTyp] = useState<SellerFilter>("all");
+  const [result, setResult] = useState<{ key: string; summary: ScrapSummary; previous: ScrapSummary } | null>(null);
+  const [purchases, setPurchases] = useState<ScrapPurchase[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [formOpen, setFormOpen] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
-  useEffect(() => {
-    getActiveScrapPrices().then(setPrices).catch(() => setPrices([]));
+  const fromIso = period.from.toISOString();
+  const toIso = period.to.toISOString();
+
+  const fetchSummary = useCallback(async (from: string, to: string, unit: string, who: SellerFilter): Promise<ScrapSummary> => {
+    const res = await fetch(`/api/scrap-purchases/summary?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}&bucket=${unit}${typQuery(who)}`, {
+      cache: "no-store",
+    });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body.error ?? "Nie udało się wczytać zestawienia");
+    return body;
   }, []);
 
-  const priceLabel = (p: ScrapPrice) => (p.grupa === "stalowy" ? `Złom stalowy ${p.nazwa.toLowerCase()}` : p.nazwa);
+  const fetchList = useCallback(async (from: string, to: string, who: SellerFilter): Promise<ScrapPurchase[]> => {
+    const res = await fetch(`/api/scrap-purchases?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}${typQuery(who)}`, { cache: "no-store" });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body.error ?? "Nie udało się wczytać kwitów");
+    return body;
+  }, []);
 
-  const openForm = () => {
-    setSeller({
-      sprzedawca_typ: "osoba",
-      sprzedawca_nazwa: "",
-      sprzedawca_dokument: "",
-      sprzedawca_adres: "",
-      sprzedawca_telefon: "",
-      sprzedawca_email: "",
-      nr_rejestracyjny: "",
-    });
-    setData(nowLocal());
-    setBrutto("");
-    setTara("");
-    setItems([{ ...emptyItem }]);
-    setPlatnosc("gotowka");
-    setUwagi("");
-    setFormError(null);
-    setFormOpen(true);
+  // What is being shown depends on this key; while the stored result has an
+  // older key, new data is on its way (the old numbers stay, dimmed).
+  const requestKey = `${fromIso}|${toIso}|${bucket}|${typ}|${reloadKey}`;
+  const loading = result?.key !== requestKey;
+  const summary = result?.summary ?? null;
+  const prevSummary = result?.previous ?? null;
+
+  // Summary for the period and the one before it (for the comparison).
+  useEffect(() => {
+    let stale = false;
+    Promise.all([
+      fetchSummary(fromIso, toIso, bucket, typ),
+      fetchSummary(previous.from.toISOString(), previous.to.toISOString(), "day", typ),
+    ])
+      .then(([current, before]) => {
+        if (stale) return;
+        setResult({ key: requestKey, summary: current, previous: before });
+        setError(null);
+      })
+      .catch((err) => !stale && setError(err instanceof Error ? err.message : "Nie udało się wczytać zestawienia"));
+    return () => {
+      stale = true;
+    };
+  }, [fromIso, toIso, bucket, typ, previous, requestKey, fetchSummary]);
+
+  useEffect(() => {
+    if (tab !== "ewidencja") return;
+    let stale = false;
+    fetchList(fromIso, toIso, typ)
+      .then((list) => !stale && setPurchases(list))
+      .catch((err) => !stale && setError(err instanceof Error ? err.message : "Nie udało się wczytać kwitów"));
+    return () => {
+      stale = true;
+    };
+  }, [tab, fromIso, toIso, typ, reloadKey, fetchList]);
+
+  const move = (dir: -1 | 1) => {
+    const next = shift(mode, anchor, custom, dir);
+    setAnchor(next.anchor);
+    setCustom(next.custom);
   };
 
-  const setItem = (index: number, patch: Partial<FormItem>) =>
-    setItems((prev) => prev.map((item, i) => (i === index ? { ...item, ...patch } : item)));
-
-  const pickPrice = (index: number, priceId: string) => {
-    const price = prices.find((p) => p.id === priceId);
-    if (!price) return;
-    const nazwa = priceLabel(price);
-    setItem(index, { nazwa, cena_kg: String(price.cena_od), kod_odpadu: guessWasteCode(nazwa) });
-  };
-
-  const netto = brutto && tara ? Math.round((toNumber(brutto) - toNumber(tara)) * 10) / 10 : null;
-  const numericItems = items.map((i) => ({ waga_kg: toNumber(i.waga_kg) || 0, cena_kg: toNumber(i.cena_kg) || 0 }));
-
-  const save = async () => {
-    setSaving(true);
-    setFormError(null);
-    try {
-      const res = await fetch("/api/scrap-purchases", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...seller,
-          data: new Date(data).toISOString(),
-          waga_brutto: brutto,
-          waga_tara: tara,
-          pozycje: items,
-          platnosc,
-          uwagi,
-        }),
-      });
-      const body = await res.json();
-      if (!res.ok) {
-        setFormError(body.error ?? "Nie udało się zapisać kwitu");
-        return;
-      }
-      // Same tab: a new window opened after an await is usually blocked as a pop-up.
-      window.location.assign(`/admin/skup/${body.id}`);
-    } catch {
-      setFormError("Brak połączenia z serwerem");
-    } finally {
-      setSaving(false);
+  const changeMode = (next: PeriodMode) => {
+    if (next === "custom" && mode !== "custom") {
+      // Start the custom range from the period that is currently shown.
+      setCustom({ from: ymd(period.from), to: ymd(new Date(period.to.getTime() - 86_400_000)) });
     }
+    setMode(next);
   };
 
   const remove = async (p: ScrapPurchase) => {
-    if (!confirm(`Usunąć kwit ${p.numer}? Tej operacji nie da się cofnąć.`)) return;
+    if (!confirm(`Usunąć cały kwit ${p.numer} (pozycji: ${p.pozycje.length})? Tej operacji nie da się cofnąć.`)) return;
     const res = await fetch(`/api/scrap-purchases/${p.id}`, { method: "DELETE" });
     if (!res.ok) alert("Nie udało się usunąć kwitu");
-    await load();
+    setReloadKey((k) => k + 1);
   };
 
-  const summary = useMemo(() => {
-    const byMaterial = new Map<string, { kod: string; kg: number; value: number }>();
-    const byCode = new Map<string, number>();
-    for (const p of purchases) {
-      for (const item of p.pozycje) {
-        const m = byMaterial.get(item.nazwa) ?? { kod: item.kod_odpadu, kg: 0, value: 0 };
-        m.kg += item.waga_kg;
-        m.value += item.wartosc;
-        byMaterial.set(item.nazwa, m);
-        byCode.set(item.kod_odpadu, (byCode.get(item.kod_odpadu) ?? 0) + item.waga_kg);
-      }
+  const fileStem = `${ymd(period.from)}_${ymd(new Date(period.to.getTime() - 86_400_000))}`;
+
+  const typLabel = typ === "all" ? "" : ` — ${SELLER_FILTERS.find((f) => f.id === typ)?.label}`;
+  const exportSummary = () => summary && downloadCsv(`zestawienie-skupu-${fileStem}.csv`, summaryCsv(`${period.label}${typLabel}`, summary));
+
+  // Printable register (ewidencja) of every purchase in the period.
+  const registerHref = `/admin/skup/ewidencja?from=${encodeURIComponent(fromIso)}&to=${encodeURIComponent(toIso)}&okres=${encodeURIComponent(period.label)}${typQuery(typ)}`;
+
+  const exportReceipts = async () => {
+    try {
+      const list = await fetchList(fromIso, toIso, typ);
+      const header = ["numer", "data", "sprzedajacy", "dokument", "rodzaj", "kod_odpadu", "waga_kg", "cena_zl_kg", "wartosc_zl", "platnosc", "wystawil"];
+      const lines = list.flatMap((p) =>
+        p.pozycje.map((item) =>
+          [
+            p.numer,
+            new Date(p.data).toLocaleString("pl-PL"),
+            p.sprzedawca_nazwa,
+            p.sprzedawca_dokument ?? "",
+            item.nazwa,
+            item.kod_odpadu,
+            csvDecimal(item.waga_kg, 1),
+            csvDecimal(item.cena_kg, 2),
+            csvDecimal(item.wartosc, 2),
+            p.platnosc,
+            p.wystawil ?? "",
+          ]
+            .map(csvCell)
+            .join(";")
+        )
+      );
+      downloadCsv(`rejestr-skupu-${fileStem}.csv`, "﻿" + [header.join(";"), ...lines].join("\r\n"));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Eksport się nie udał");
     }
-    return {
-      materials: [...byMaterial.entries()].sort((a, b) => b[1].kg - a[1].kg),
-      codes: [...byCode.entries()].sort((a, b) => b[1] - a[1]),
-      kg: purchases.reduce((s, p) => s + totalWeight(p.pozycje), 0),
-      value: purchases.reduce((s, p) => s + p.suma, 0),
-    };
-  }, [purchases]);
-
-  const exportCsv = () => {
-    const header = ["numer", "data", "sprzedajacy", "dokument", "rodzaj", "kod_odpadu", "waga_kg", "cena_zl_kg", "wartosc_zl", "platnosc", "wystawil"];
-    const lines = purchases.flatMap((p) =>
-      p.pozycje.map((item) =>
-        [
-          p.numer,
-          new Date(p.data).toLocaleString("pl-PL"),
-          p.sprzedawca_nazwa,
-          p.sprzedawca_dokument,
-          item.nazwa,
-          item.kod_odpadu,
-          String(item.waga_kg).replace(".", ","),
-          String(item.cena_kg).replace(".", ","),
-          String(item.wartosc).replace(".", ","),
-          p.platnosc,
-          p.wystawil,
-        ]
-          .map(csvCell)
-          .join(";")
-      )
-    );
-    const blob = new Blob(["﻿" + [header.join(";"), ...lines].join("\r\n")], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `rejestr-skupu-${month}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
   };
+
+  // One row per purchased item (the register is kept per material).
+  const rows = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return purchases
+      .flatMap((purchase) => purchase.pozycje.map((item, index) => ({ purchase, item, index })))
+      .filter(
+        ({ purchase, item }) =>
+          !q ||
+          [purchase.numer, purchase.sprzedawca_nazwa, purchase.nr_rejestracyjny, purchase.sprzedawca_dokument, item.nazwa, item.kod_odpadu].some(
+            (v) => v?.toLowerCase().includes(q)
+          )
+      );
+  }, [purchases, search]);
+  const rowsKg = rows.reduce((sum, r) => sum + r.item.waga_kg, 0);
+  const rowsValue = rows.reduce((sum, r) => sum + r.item.wartosc, 0);
+
+  const prevLabel = PREVIOUS_LABEL[mode];
+  const kpis = summary
+    ? [
+        { label: "Kwitów", value: String(summary.receipts), cur: summary.receipts, prev: prevSummary?.receipts ?? null },
+        { label: "Masa skupu", value: formatMass(summary.kg), cur: summary.kg, prev: prevSummary?.kg ?? null },
+        { label: "Wypłacono", value: formatPln(summary.value), cur: summary.value, prev: prevSummary?.value ?? null },
+        { label: "Średnia cena", value: `${formatPln(avgPrice(summary))}/kg`, cur: avgPrice(summary), prev: prevSummary ? avgPrice(prevSummary) : null },
+      ]
+    : [];
 
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-2xl font-montserrat font-bold">Skup złomu — kwity</h1>
-          <p className="text-sm text-[#e8dfcc] mt-1">Kwity dla sprzedających i rejestr skupu do ewidencji odpadów.</p>
+          <h1 className="text-2xl font-montserrat font-bold">Skup złomu</h1>
+          <p className="text-sm text-[#e8dfcc] mt-1">Kwity, rejestr skupu i zestawienia: tygodniowe, miesięczne, roczne lub za dowolny okres.</p>
         </div>
         <button
-          onClick={openForm}
+          onClick={() => setFormOpen(true)}
           className="btn-primary px-4 py-2.5 rounded-lg text-sm font-semibold text-black flex items-center gap-2"
         >
           <Plus size={16} /> Nowy kwit
         </button>
       </div>
 
+      {/* Period */}
+      <div className="bg-[#0a0a0a] border border-[#5c4716] rounded-xl p-3 mb-4 flex flex-wrap items-center gap-3">
+        <div className="flex rounded-lg border border-[#5c4716] overflow-hidden">
+          {MODES.map((m) => (
+            <button
+              key={m.id}
+              onClick={() => changeMode(m.id)}
+              className={`px-3.5 py-2 text-sm whitespace-nowrap ${mode === m.id ? "bg-[#f5b52c] text-black font-semibold" : "text-[#e8dfcc] hover:bg-[#5c4716]"}`}
+            >
+              {m.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-1">
+          <button onClick={() => move(-1)} className="p-2 rounded-lg hover:bg-[#5c4716]" aria-label="Poprzedni okres">
+            <ChevronLeft size={18} />
+          </button>
+          <div className="min-w-[12rem] text-center font-semibold">{period.label}</div>
+          <button
+            onClick={() => move(1)}
+            disabled={isCurrentOrFuture(period)}
+            className="p-2 rounded-lg hover:bg-[#5c4716] disabled:opacity-25"
+            aria-label="Następny okres"
+          >
+            <ChevronRight size={18} />
+          </button>
+        </div>
+
+        {mode !== "custom" && (
+          <button onClick={() => setAnchor(new Date())} className="text-sm text-[#f5b52c] hover:underline underline-offset-2">
+            {mode === "day" ? "Dziś" : mode === "week" ? "Ten tydzień" : mode === "month" ? "Ten miesiąc" : "Ten rok"}
+          </button>
+        )}
+
+        {mode === "custom" && (
+          <div className="flex flex-wrap items-center gap-2 text-sm text-[#e8dfcc]">
+            <input
+              type="date"
+              value={custom.from}
+              max={custom.to}
+              onChange={(e) => e.target.value && setCustom({ ...custom, from: e.target.value })}
+              className="bg-black border border-[#5c4716] rounded-lg px-3 py-1.5 text-white [color-scheme:dark]"
+              aria-label="Od"
+            />
+            –
+            <input
+              type="date"
+              value={custom.to}
+              min={custom.from}
+              onChange={(e) => e.target.value && setCustom({ ...custom, to: e.target.value })}
+              className="bg-black border border-[#5c4716] rounded-lg px-3 py-1.5 text-white [color-scheme:dark]"
+              aria-label="Do"
+            />
+          </div>
+        )}
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2 mb-4 text-sm text-[#e8dfcc]">
+        Sprzedający:
+        {SELLER_FILTERS.map((f) => (
+          <button
+            key={f.id}
+            onClick={() => setTyp(f.id)}
+            className={`px-3.5 py-1.5 rounded-full border ${typ === f.id ? "bg-[#f5b52c] border-[#f5b52c] text-black font-semibold" : "border-[#5c4716] hover:border-[#f5b52c]"}`}
+          >
+            {f.label}
+          </button>
+        ))}
+        <span className="text-xs text-[#e8dfcc]/60">dotyczy wskaźników, zestawień, listy i eksportów</span>
+      </div>
+
+      {error && <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl mb-4 text-sm">{error}</div>}
+
+      {/* KPIs */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {loading && !summary
+          ? Array.from({ length: 4 }).map((_, i) => <div key={i} className="h-24 rounded-xl bg-white/[0.03] animate-pulse" />)
+          : kpis.map((k) => (
+              <div key={k.label} className={`bg-[#0a0a0a] p-4 rounded-xl border border-[#5c4716] ${loading ? "opacity-60" : ""}`}>
+                <div className="text-sm text-[#e8dfcc]">{k.label}</div>
+                <div className="text-2xl font-bold text-white mt-1">{k.value}</div>
+                <Delta current={k.cur} previous={k.prev} label={prevLabel} />
+              </div>
+            ))}
+      </div>
+
+      {/* Tabs + export */}
       <div className="flex flex-wrap items-center gap-3 mb-6">
         <div className="flex rounded-lg border border-[#5c4716] overflow-hidden">
           {[
-            { id: "kwity" as const, label: "Kwity", icon: Receipt },
+            { id: "ewidencja" as const, label: "Ewidencja", icon: Receipt },
             { id: "zestawienie" as const, label: "Zestawienie", icon: BarChart3 },
           ].map((t) => (
             <button
@@ -252,381 +347,138 @@ export default function SkupPage() {
             </button>
           ))}
         </div>
-        <label className="flex items-center gap-2 text-sm text-[#e8dfcc]">
-          Miesiąc:
-          <input
-            type="month"
-            value={month}
-            onChange={(e) => e.target.value && setMonth(e.target.value)}
-            className="bg-[#0a0a0a] border border-[#5c4716] rounded-lg px-3 py-2 text-white [color-scheme:dark]"
-          />
-        </label>
-        <button
-          onClick={exportCsv}
-          disabled={purchases.length === 0}
-          className="ml-auto px-4 py-2 rounded-lg border border-[#5c4716] text-sm text-[#e8dfcc] hover:text-white hover:border-[#f5b52c] flex items-center gap-2 disabled:opacity-40"
-        >
-          <Download size={15} /> Eksport do Excela
-        </button>
-      </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-[#0a0a0a] p-4 rounded-xl border border-[#5c4716]">
-          <div className="text-2xl font-bold text-[#f5b52c]">{purchases.length}</div>
-          <div className="text-sm text-[#e8dfcc]">Kwitów w miesiącu</div>
-        </div>
-        <div className="bg-[#0a0a0a] p-4 rounded-xl border border-[#5c4716]">
-          <div className="text-2xl font-bold text-white">{formatKg(Math.round(summary.kg * 10) / 10)}</div>
-          <div className="text-sm text-[#e8dfcc]">Skupiono ({(summary.kg / 1000).toLocaleString("pl-PL", { maximumFractionDigits: 3 })} t)</div>
-        </div>
-        <div className="bg-[#0a0a0a] p-4 rounded-xl border border-[#5c4716] col-span-2 md:col-span-1">
-          <div className="text-2xl font-bold text-white">{formatPln(summary.value)}</div>
-          <div className="text-sm text-[#e8dfcc]">Wypłacono</div>
+        <div className="ml-auto flex flex-wrap gap-2">
+          <Link
+            href={registerHref}
+            target="_blank"
+            className="px-4 py-2 rounded-lg border border-[#f5b52c]/60 text-sm text-white hover:bg-[#f5b52c] hover:text-black flex items-center gap-2 transition-colors"
+          >
+            <BookOpen size={15} /> Drukuj ewidencję
+          </Link>
+          <button
+            onClick={exportSummary}
+            disabled={!summary || summary.receipts === 0}
+            className="px-4 py-2 rounded-lg border border-[#5c4716] text-sm text-[#e8dfcc] hover:text-white hover:border-[#f5b52c] flex items-center gap-2 disabled:opacity-40"
+          >
+            <Download size={15} /> Zestawienie do Excela
+          </button>
+          <button
+            onClick={exportReceipts}
+            disabled={!summary || summary.receipts === 0}
+            className="px-4 py-2 rounded-lg border border-[#5c4716] text-sm text-[#e8dfcc] hover:text-white hover:border-[#f5b52c] flex items-center gap-2 disabled:opacity-40"
+          >
+            <Download size={15} /> Rejestr kwitów do Excela
+          </button>
         </div>
       </div>
 
-      {error && <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl mb-6 text-sm">{error}</div>}
-
-      {loading ? (
-        <div className="bg-[#0a0a0a] p-12 rounded-xl border border-[#5c4716] text-center text-[#e8dfcc] flex items-center justify-center gap-3">
-          <Loader2 className="animate-spin" size={18} /> Wczytywanie...
-        </div>
-      ) : tab === "kwity" ? (
-        purchases.length === 0 ? (
-          <div className="bg-[#0a0a0a] p-12 rounded-xl border border-[#5c4716] text-center text-[#e8dfcc]">
-            Brak kwitów w tym miesiącu. Kliknij „Nowy kwit”, żeby wystawić pierwszy.
+      {tab === "zestawienie" ? (
+        summary ? (
+          <div className={loading ? "opacity-60 transition-opacity" : "transition-opacity"}>
+            <ScrapSummaryView period={period} bucket={bucket} summary={summary} />
           </div>
         ) : (
-          <div className="bg-[#0a0a0a] rounded-xl border border-[#5c4716] overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="text-left text-[#e8dfcc] border-b border-[#5c4716]">
-                <tr>
-                  {["Numer", "Data", "Sprzedający", "Waga", "Kwota", "Płatność", ""].map((h) => (
-                    <th key={h} className="px-4 py-3 font-semibold whitespace-nowrap">
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#5c4716]/50">
-                {purchases.map((p) => (
-                  <tr key={p.id} className="hover:bg-white/[0.02]">
-                    <td className="px-4 py-3 font-mono text-[#f5b52c] whitespace-nowrap">{p.numer}</td>
-                    <td className="px-4 py-3 whitespace-nowrap">{new Date(p.data).toLocaleString("pl-PL", { dateStyle: "short", timeStyle: "short" })}</td>
-                    <td className="px-4 py-3">{p.sprzedawca_nazwa}</td>
-                    <td className="px-4 py-3 whitespace-nowrap">{formatKg(totalWeight(p.pozycje))}</td>
-                    <td className="px-4 py-3 whitespace-nowrap font-semibold">{formatPln(p.suma)}</td>
-                    <td className="px-4 py-3">{p.platnosc === "przelew" ? "przelew" : "gotówka"}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex justify-end gap-1">
-                        <Link
-                          href={`/admin/skup/${p.id}`}
-                          className="p-2 rounded-lg hover:bg-[#5c4716]"
-                          title="Kwit — drukuj / PDF / e-mail"
-                        >
-                          <Printer size={15} className="text-[#e8dfcc]" />
-                        </Link>
-                        <button onClick={() => remove(p)} className="p-2 rounded-lg hover:bg-[#5c4716]" title="Usuń">
-                          <Trash2 size={15} className="text-red-400" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          !error && (
+            <div className="bg-[#0a0a0a] p-12 rounded-xl border border-[#5c4716] text-center text-[#e8dfcc] flex items-center justify-center gap-3">
+              <Loader2 className="animate-spin" size={18} /> Wczytywanie...
+            </div>
+          )
         )
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-[#0a0a0a] rounded-xl border border-[#5c4716] p-5">
-            <h2 className="font-montserrat font-bold mb-4">Według rodzaju złomu</h2>
-            {summary.materials.length === 0 ? (
-              <p className="text-sm text-[#e8dfcc]">Brak danych w tym miesiącu.</p>
-            ) : (
+        <div>
+          <p className="text-sm text-[#e8dfcc] mb-3">
+            Każdy skupiony materiał w osobnym wierszu, od najnowszego. Kwit (formularz przyjęcia) otworzysz ikoną drukarki.
+          </p>
+          <div className="relative max-w-sm mb-4">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#e8dfcc] size-4" />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Szukaj: sprzedający, materiał, numer, rejestracja…"
+              className="w-full bg-[#0a0a0a] border border-[#5c4716] rounded-lg pl-10 pr-4 py-2 text-sm text-white outline-none focus:border-[#f5b52c]"
+            />
+          </div>
+
+          {rows.length === 0 ? (
+            <div className="bg-[#0a0a0a] p-12 rounded-xl border border-[#5c4716] text-center text-[#e8dfcc]">
+              {purchases.length === 0
+                ? "Nic nie skupiono w tym okresie. Kliknij „Nowy kwit”, żeby zapisać pierwszy zakup."
+                : "Nic nie pasuje do wyszukiwania."}
+            </div>
+          ) : (
+            <div className="bg-[#0a0a0a] rounded-xl border border-[#5c4716] overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="text-[#e8dfcc] text-left">
+                <thead className="text-left text-[#e8dfcc] border-b border-[#5c4716]">
                   <tr>
-                    <th className="py-2 font-semibold">Rodzaj</th>
-                    <th className="py-2 font-semibold text-right">Waga</th>
-                    <th className="py-2 font-semibold text-right">Kwota</th>
+                    {["Data", "Sprzedający", "Materiał", "Masa", "Cena", "Wartość", "Kwit", ""].map((h) => (
+                      <th key={h} className="px-4 py-3 font-semibold whitespace-nowrap">
+                        {h}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#5c4716]/50">
-                  {summary.materials.map(([name, m]) => (
-                    <tr key={name}>
-                      <td className="py-2">{name}</td>
-                      <td className="py-2 text-right whitespace-nowrap">{formatKg(Math.round(m.kg * 10) / 10)}</td>
-                      <td className="py-2 text-right whitespace-nowrap">{formatPln(m.value)}</td>
+                  {rows.map((row) => (
+                    <tr key={`${row.purchase.id}-${row.index}`} className="hover:bg-white/[0.02]">
+                      <td className="px-4 py-2.5 whitespace-nowrap text-[#e8dfcc]">
+                        {new Date(row.purchase.data).toLocaleString("pl-PL", { dateStyle: "short", timeStyle: "short" })}
+                      </td>
+                      <td className="px-4 py-2.5">
+                        {row.purchase.sprzedawca_nazwa}
+                        <span className="block text-[11px] text-[#e8dfcc]/50">
+                          {row.purchase.sprzedawca_typ === "firma" ? "firma" : "osoba prywatna"}
+                          {row.purchase.nr_rejestracyjny ? ` · ${row.purchase.nr_rejestracyjny}` : ""}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2.5">
+                        {row.item.nazwa}
+                        <span className="block text-[11px] text-[#e8dfcc]/50 font-mono">{row.item.kod_odpadu}</span>
+                      </td>
+                      <td className="px-4 py-2.5 whitespace-nowrap">{formatKg(row.item.waga_kg)}</td>
+                      <td className="px-4 py-2.5 whitespace-nowrap text-[#e8dfcc]">{formatPln(row.item.cena_kg)}/kg</td>
+                      <td className="px-4 py-2.5 whitespace-nowrap font-semibold">{formatPln(row.item.wartosc)}</td>
+                      <td className="px-4 py-2.5 font-mono text-xs text-[#f5b52c] whitespace-nowrap">{row.purchase.numer}</td>
+                      <td className="px-4 py-2.5">
+                        <div className="flex justify-end gap-1">
+                          <Link href={`/admin/skup/${row.purchase.id}`} className="p-2 rounded-lg hover:bg-[#5c4716]" title="Kwit: drukuj, PDF, e-mail">
+                            <Printer size={15} className="text-[#e8dfcc]" />
+                          </Link>
+                          <button onClick={() => remove(row.purchase)} className="p-2 rounded-lg hover:bg-[#5c4716]" title="Usuń cały kwit">
+                            <Trash2 size={15} className="text-red-400" />
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
-              </table>
-            )}
-          </div>
-          <div className="bg-[#0a0a0a] rounded-xl border border-[#5c4716] p-5">
-            <h2 className="font-montserrat font-bold mb-1">Według kodu odpadu</h2>
-            <p className="text-xs text-[#e8dfcc]/70 mb-4">Pomoc przy ewidencji w BDO — masa w tonach (Mg).</p>
-            {summary.codes.length === 0 ? (
-              <p className="text-sm text-[#e8dfcc]">Brak danych w tym miesiącu.</p>
-            ) : (
-              <table className="w-full text-sm">
-                <thead className="text-[#e8dfcc] text-left">
+                <tfoot className="border-t border-[#5c4716] font-semibold">
                   <tr>
-                    <th className="py-2 font-semibold">Kod</th>
-                    <th className="py-2 font-semibold">Opis</th>
-                    <th className="py-2 font-semibold text-right">Mg</th>
+                    <td className="px-4 py-3" colSpan={3}>
+                      Razem ({rows.length} {rows.length === 1 ? "pozycja" : "pozycji"})
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">{formatKg(rowsKg)}</td>
+                    <td />
+                    <td className="px-4 py-3 whitespace-nowrap">{formatPln(rowsValue)}</td>
+                    <td colSpan={2} />
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-[#5c4716]/50">
-                  {summary.codes.map(([code, kg]) => (
-                    <tr key={code}>
-                      <td className="py-2 font-mono whitespace-nowrap">{code}</td>
-                      <td className="py-2">{wasteCodeLabel(code)}</td>
-                      <td className="py-2 text-right">{(kg / 1000).toLocaleString("pl-PL", { minimumFractionDigits: 3, maximumFractionDigits: 3 })}</td>
-                    </tr>
-                  ))}
-                </tbody>
+                </tfoot>
               </table>
-            )}
-          </div>
+            </div>
+          )}
+          {purchases.length >= LIST_LIMIT && (
+            <p className="text-xs text-[#e8dfcc]/70 mt-3">
+              Pokazano najnowsze {LIST_LIMIT} kwitów. Zawęź okres albo użyj zestawienia, które liczy wszystkie.
+            </p>
+          )}
         </div>
       )}
 
       {formOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70">
-          <div className="bg-[#0a0a0a] border border-[#5c4716] rounded-2xl w-full max-w-3xl max-h-[92vh] flex flex-col">
-            <div className="flex items-center justify-between p-5 border-b border-[#5c4716]">
-              <h2 className="text-xl font-montserrat font-bold">Nowy kwit skupu</h2>
-              <button onClick={() => setFormOpen(false)} className="text-[#e8dfcc] hover:text-white" aria-label="Zamknij">
-                <X size={22} />
-              </button>
-            </div>
-
-            <div className="p-5 overflow-y-auto space-y-6">
-              <section>
-                <h3 className="font-semibold mb-3">Sprzedający</h3>
-                <div className="flex gap-2 mb-3">
-                  {(["osoba", "firma"] as const).map((t) => (
-                    <button
-                      key={t}
-                      type="button"
-                      onClick={() => setSeller({ ...seller, sprzedawca_typ: t })}
-                      className={`px-4 py-1.5 rounded-full text-sm border ${seller.sprzedawca_typ === t ? "bg-[#f5b52c] border-[#f5b52c] text-black font-semibold" : "border-[#5c4716] text-[#e8dfcc]"}`}
-                    >
-                      {t === "osoba" ? "Osoba prywatna" : "Firma"}
-                    </button>
-                  ))}
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <input
-                    value={seller.sprzedawca_nazwa}
-                    onChange={(e) => setSeller({ ...seller, sprzedawca_nazwa: e.target.value })}
-                    placeholder={seller.sprzedawca_typ === "firma" ? "Nazwa firmy *" : "Imię i nazwisko *"}
-                    className={inputClass}
-                  />
-                  <input
-                    value={seller.sprzedawca_dokument}
-                    onChange={(e) => setSeller({ ...seller, sprzedawca_dokument: e.target.value })}
-                    placeholder={seller.sprzedawca_typ === "firma" ? "NIP" : "Seria i nr dowodu osobistego"}
-                    className={inputClass}
-                  />
-                  <input
-                    value={seller.sprzedawca_adres}
-                    onChange={(e) => setSeller({ ...seller, sprzedawca_adres: e.target.value })}
-                    placeholder="Adres"
-                    className={`${inputClass} sm:col-span-2`}
-                  />
-                  <input
-                    value={seller.sprzedawca_telefon}
-                    onChange={(e) => setSeller({ ...seller, sprzedawca_telefon: e.target.value })}
-                    placeholder="Telefon"
-                    inputMode="tel"
-                    className={inputClass}
-                  />
-                  <input
-                    type="email"
-                    value={seller.sprzedawca_email}
-                    onChange={(e) => setSeller({ ...seller, sprzedawca_email: e.target.value })}
-                    placeholder="E-mail (do wysłania kwitu)"
-                    className={inputClass}
-                  />
-                </div>
-              </section>
-
-              <section>
-                <h3 className="font-semibold mb-3 flex items-center gap-2">
-                  <Scale size={16} className="text-[#f5b52c]" /> Ważenie (waga najazdowa)
-                </h3>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 items-end">
-                  <label className="text-xs text-[#e8dfcc]">
-                    Data i godzina
-                    <input
-                      type="datetime-local"
-                      value={data}
-                      onChange={(e) => setData(e.target.value)}
-                      className={`${inputClass} mt-1 [color-scheme:dark]`}
-                    />
-                  </label>
-                  <label className="text-xs text-[#e8dfcc]">
-                    Nr rejestracyjny
-                    <input
-                      value={seller.nr_rejestracyjny}
-                      onChange={(e) => setSeller({ ...seller, nr_rejestracyjny: e.target.value })}
-                      placeholder="np. DLU 12345"
-                      className={`${inputClass} mt-1 uppercase`}
-                    />
-                  </label>
-                  <label className="text-xs text-[#e8dfcc]">
-                    Brutto (kg)
-                    <input value={brutto} onChange={(e) => setBrutto(e.target.value)} inputMode="decimal" className={`${inputClass} mt-1`} />
-                  </label>
-                  <label className="text-xs text-[#e8dfcc]">
-                    Tara (kg)
-                    <input value={tara} onChange={(e) => setTara(e.target.value)} inputMode="decimal" className={`${inputClass} mt-1`} />
-                  </label>
-                </div>
-                {netto !== null && Number.isFinite(netto) && (
-                  <div className="mt-2 flex flex-wrap items-center gap-3 text-sm">
-                    <span className="text-white">
-                      Netto: <strong>{formatKg(netto)}</strong>
-                    </span>
-                    {items.length === 1 && netto > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => setItem(0, { waga_kg: String(netto) })}
-                        className="text-[#f5b52c] hover:underline underline-offset-2"
-                      >
-                        wstaw do pozycji 1
-                      </button>
-                    )}
-                  </div>
-                )}
-              </section>
-
-              <section>
-                <h3 className="font-semibold mb-3">Pozycje</h3>
-                <div className="space-y-3">
-                  {items.map((item, i) => (
-                    <div key={i} className="grid grid-cols-2 sm:grid-cols-[1.6fr_1fr_0.8fr_0.8fr_auto] gap-2 items-center p-3 bg-black rounded-lg">
-                      <div className="col-span-2 sm:col-span-1 space-y-1.5">
-                        <select
-                          value=""
-                          onChange={(e) => pickPrice(i, e.target.value)}
-                          className={`${inputClass} text-[#e8dfcc]`}
-                        >
-                          <option value="">{item.nazwa || "Wybierz z cennika…"}</option>
-                          {prices.map((p) => (
-                            <option key={p.id} value={p.id}>
-                              {priceLabel(p)} — {formatPln(p.cena_od)}/kg
-                            </option>
-                          ))}
-                        </select>
-                        <input
-                          value={item.nazwa}
-                          onChange={(e) => setItem(i, { nazwa: e.target.value })}
-                          placeholder="lub wpisz rodzaj"
-                          className={inputClass}
-                        />
-                      </div>
-                      <select
-                        value={item.kod_odpadu}
-                        onChange={(e) => setItem(i, { kod_odpadu: e.target.value })}
-                        className={`${inputClass} col-span-2 sm:col-span-1`}
-                        title="Kod odpadu"
-                      >
-                        {WASTE_CODES.map((w) => (
-                          <option key={w.code} value={w.code}>
-                            {w.code} {w.label}
-                          </option>
-                        ))}
-                      </select>
-                      <input
-                        value={item.waga_kg}
-                        onChange={(e) => setItem(i, { waga_kg: e.target.value })}
-                        placeholder="kg"
-                        inputMode="decimal"
-                        className={inputClass}
-                      />
-                      <input
-                        value={item.cena_kg}
-                        onChange={(e) => setItem(i, { cena_kg: e.target.value })}
-                        placeholder="zł/kg"
-                        inputMode="decimal"
-                        className={inputClass}
-                      />
-                      <div className="col-span-2 sm:col-span-1 flex items-center justify-between sm:justify-end gap-2">
-                        <span className="text-sm text-white whitespace-nowrap">{formatPln(itemValue(numericItems[i]))}</span>
-                        {items.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => setItems((prev) => prev.filter((_, j) => j !== i))}
-                            className="p-1.5 rounded hover:bg-[#5c4716]"
-                            aria-label="Usuń pozycję"
-                          >
-                            <X size={15} className="text-red-400" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setItems((prev) => [...prev, { ...emptyItem }])}
-                  className="mt-3 text-sm text-[#f5b52c] hover:underline underline-offset-2 flex items-center gap-1"
-                >
-                  <Plus size={14} /> Dodaj pozycję
-                </button>
-              </section>
-
-              <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <h3 className="font-semibold mb-2">Płatność</h3>
-                  <div className="flex gap-2">
-                    {(["gotowka", "przelew"] as const).map((m) => (
-                      <button
-                        key={m}
-                        type="button"
-                        onClick={() => setPlatnosc(m)}
-                        className={`px-4 py-1.5 rounded-full text-sm border ${platnosc === m ? "bg-[#f5b52c] border-[#f5b52c] text-black font-semibold" : "border-[#5c4716] text-[#e8dfcc]"}`}
-                      >
-                        {m === "gotowka" ? "Gotówka" : "Przelew"}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-2">Uwagi</h3>
-                  <input value={uwagi} onChange={(e) => setUwagi(e.target.value)} className={inputClass} />
-                </div>
-              </section>
-            </div>
-
-            <div className="p-5 border-t border-[#5c4716] flex flex-wrap items-center gap-3">
-              <div className="mr-auto">
-                <div className="text-xs text-[#e8dfcc]">
-                  Razem {formatKg(totalWeight(numericItems))}
-                </div>
-                <div className="text-2xl font-montserrat font-bold text-[#f5b52c]">{formatPln(totalValue(numericItems))}</div>
-              </div>
-              {formError && <span className="w-full text-sm text-red-400 order-first">{formError}</span>}
-              <button
-                onClick={() => setFormOpen(false)}
-                className="px-5 py-2.5 rounded-lg border border-[#5c4716] text-[#e8dfcc] hover:text-white"
-              >
-                Anuluj
-              </button>
-              <button
-                onClick={save}
-                disabled={saving}
-                className="btn-primary px-6 py-2.5 rounded-lg font-semibold text-black flex items-center gap-2 disabled:opacity-60"
-              >
-                {saving ? <Loader2 size={16} className="animate-spin" /> : <Printer size={16} />} Zapisz i wystaw kwit
-              </button>
-            </div>
-          </div>
-        </div>
+        <ScrapPurchaseForm
+          onClose={() => setFormOpen(false)}
+          onSaved={() => setReloadKey((k) => k + 1)}
+        />
       )}
     </div>
   );

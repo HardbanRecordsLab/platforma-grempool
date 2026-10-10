@@ -313,6 +313,17 @@ export default function UstawieniaPage() {
                 </div>
               </div>
 
+              <div className="mt-4 max-w-sm">
+                <Field label="Numer rejestrowy BDO" hint="Drukowany na kwitach, dokumentach dostaw i ewidencji skupu.">
+                  <input
+                    value={settings.bdo}
+                    onChange={(e) => update({ bdo: e.target.value })}
+                    placeholder="np. 000123456"
+                    className={inputClass}
+                  />
+                </Field>
+              </div>
+
               <h3 className="font-semibold mt-8 mb-3">Godziny otwarcia</h3>
               <div className="space-y-3">
                 {HOURS_ROWS.map(({ key, label }) => {
